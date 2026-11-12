@@ -1,3 +1,5 @@
+> **τ-Banking adapted harness:** this fork adds a two-hour harness exercise. Start at [adapted-harness/README.md](adapted-harness/README.md).
+
 # $\tau$-Bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
 
 [![python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
