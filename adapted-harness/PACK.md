@@ -4,7 +4,7 @@
 
 **Assignment:** Develop a harness that helps the agent use information effectively, exploring knowledge representation, retrieval, maintenance, and the balance between exploration and exploitation.
 
-**Two-hour session:** We want to see two things. The first is engineering: how you iterate on DEV, inspecting failures, choosing an improvement, trying it, and using the results to guide the next iteration. The second is productionizing: what it would take to run your harness for real customers and keep changing it safely, which we'll discuss together. The success criteria below are pointers, not a checklist; you are not expected to cover them all. Focus on the areas that seem most useful based on what you observe. Test runs can continue beyond the two-hour window.
+**Two-hour session:** We want to see two things. The first is engineering: how you iterate on DEV, inspecting failures, choosing an improvement, trying it, and using the results to guide the next iteration. The second is productionizing: what it would take to run your harness for real customers and keep changing it safely, which we'll discuss together. The directions below are pointers, not a checklist; you are not expected to cover them all. Focus on the areas that seem most useful based on what you observe. Test runs can continue beyond the two-hour window.
 
 API credentials will be shared separately through 1Password. Setup, the baseline configuration and a DEV baseline run with readable traces are in [README.md](README.md).
 
@@ -36,27 +36,16 @@ In the **terminal setup**, the knowledge base is available as files, and the age
 
 Build a harness that helps the agent answer: What do I know? What is still unknown? Which rules apply? What can I do next? What will that change? How will I verify the result?
 
-Start with a reproducible baseline and use its failures to decide what to build. The table below offers possible directions and success criteria to guide your iterations. Choose the areas that address the failures you observe; completing every row is not required.
+Start from the baseline and let its failures decide what you build. Depending on what you see, some directions you might take (none is required):
 
-| Possible focus | Success criteria (guidance) |
-| --- | --- |
-| Information representation | Representations are inspectable, linked to source material, and can be updated without task-specific patches. |
-| Partial observability | The agent verifies decision-critical claims, resolves missing prerequisites before acting, and preserves uncertainty when verification is unavailable. Measure unsupported assumptions and missed verification steps. |
-| Consequence prediction | Predictions are recorded before execution and checked against observable outcomes. Measure prediction accuracy and whether dependency-related ordering failures decrease relative to baseline. |
-| Workflow and state changes | The agent detects observable prediction mismatches, updates affected facts and prerequisites, and replans accordingly. Measure stale-state errors and successful recovery after unexpected results. |
-| Execution traces and audit logs | Audit logs are transformed into reusable representations that capture actions, state changes, and outcomes, helping the agent use information from previous executions. |
-| Previous-execution memory | Retrieved lessons have traceable origins and applicability conditions and can be revised or invalidated. Use DEV comparisons to identify repeated failures, benefits, and regressions; freeze memory before milestone TEST runs. |
-| Failure analysis | Each failed run receives a supported diagnosis or an explicit unresolved label. Representative cases identify the failed requirement, responsible step, and proposed correction; reruns assess whether the correction addresses that failure. |
-| Harness maintenance | Changes to representations, policies, memory, and configuration are tracked. A source or rule change can be traced to affected representations and lessons, updated or invalidated, and checked on the relevant DEV cases without rewriting task-specific logic. |
-| Changes to workflow rules over time | The agent uses the updated rules, invalidates conflicting stored lessons, and avoids applying obsolete procedures. Report adaptation performance separately from standard benchmark results. |
+- how knowledge is represented and retrieved;
+- what the agent checks before it acts;
+- how the agent keeps track of state and recovers when something unexpected happens;
+- what the agent learns and remembers from earlier runs;
+- how failures are diagnosed;
+- how the harness stays current as policies change.
 
-An agent trace records what the agent observed and did. A backend audit log may expose additional state changes the agent never saw. Preserve that distinction: evaluator-only database access must not silently become agent input.
-
-For consequence prediction, evaluate only changes that can actually be verified. Mark unobserved effects as unknown. Store concise decision summaries and evidence rather than requiring private chain-of-thought.
-
-### Failure categories
-
-Classify failures as retrieval omission, incorrect policy interpretation, missing prerequisite or verification, tool discovery/calling error, wrong action order, stale or incorrect state, unsupported success claim, failure to recover, or evaluation ambiguity. Allow multiple labels but identify the earliest supported cause. Separate model/harness errors from simulator and infrastructure errors.
+One rule: information only the grader sees (the hidden customer instructions, the expected actions, the backend database) must never become agent input.
 
 ## 4. Limited evaluation plan and deliverables
 
@@ -105,7 +94,7 @@ For this session, share:
 
 Include available results and identify any TEST runs still in progress. Those runs can finish after the session.
 
-**Success for this session:** show thoughtful iteration across DEV, using observed failures to improve how the harness supports the agent, and a credible view of what it would take to run and change that harness in production. Explain your choices and what you learned. The criteria above are pointers for this work, not required deliverables within two hours.
+**Success for this session:** show thoughtful iteration across DEV, using observed failures to improve how the harness supports the agent, and a credible view of what it would take to run and change that harness in production. Explain your choices and what you learned. The directions above are pointers for this work, not required deliverables within two hours.
 
 ## Sources
 
