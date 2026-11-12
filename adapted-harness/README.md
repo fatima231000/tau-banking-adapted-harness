@@ -1,6 +1,6 @@
 # τ-Banking harness exercise
 
-Start with [PACK.md](PACK.md), which describes the exercise, and [AGENDA.md](AGENDA.md), which has the session plan. This folder has what you need to run it.
+Start with [PACK.md](PACK.md), which describes the exercise. This folder has what you need to run it.
 
 ## Setup
 

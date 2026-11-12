@@ -4,9 +4,9 @@
 
 **Assignment:** Develop a harness that helps the agent use information effectively, exploring knowledge representation, retrieval, maintenance, and the balance between exploration and exploitation.
 
-**Two-hour session:** We want to see two things. The first is engineering: how you iterate on DEV, inspecting failures, choosing an improvement, trying it, and using the results to guide the next iteration. The second is productionizing: what it would take to run your harness for real customers and keep changing it safely (section 5). The success criteria below are pointers, not a checklist; you are not expected to cover them all. Focus on the areas that seem most useful based on what you observe. Test runs can continue beyond the two-hour window.
+**Two-hour session:** We want to see two things. The first is engineering: how you iterate on DEV, inspecting failures, choosing an improvement, trying it, and using the results to guide the next iteration. The second is productionizing: what it would take to run your harness for real customers and keep changing it safely, which we'll discuss together. The success criteria below are pointers, not a checklist; you are not expected to cover them all. Focus on the areas that seem most useful based on what you observe. Test runs can continue beyond the two-hour window.
 
-API credentials will be shared separately through 1Password. Setup, the baseline configuration and a DEV baseline run with readable traces are in [README.md](README.md). The session plan is in [AGENDA.md](AGENDA.md).
+API credentials will be shared separately through 1Password. Setup, the baseline configuration and a DEV baseline run with readable traces are in [README.md](README.md).
 
 ## 1. What is τ-bench?
 
@@ -95,23 +95,7 @@ task_001 task_002 task_003 task_004 task_007 task_010 task_025 task_027 task_031
 5. **Report representation and maintenance quality first.** Assess source grounding, state consistency, dependency handling, uncertainty, update/invalidation behavior, trace completeness, and the ability to diagnose failures. Include task outcomes, costs, and latency as supporting diagnostics. Label results by the actual split; do not present subset results as full-benchmark scores. Repeated-run reliability is optional and limited to a planned milestone budget.
 6. **Keep adaptation experiments on DEV.** If changing policies or testing cross-execution learning, specify the changes, task order, reset rules, and available feedback. Freeze the resulting memory for TEST. Independent repeated trials must not learn from one another.
 
-## 5. Productionizing
-
-The harness you iterate on would eventually serve real customers. In production there is no expected database state to grade against, policies and documents keep changing, and every conversation costs money and time. In the second part of the session, we'll talk through what it would take to run and change your harness safely there. These are pointers, not a checklist.
-
-| Area | Questions to consider |
-| --- | --- |
-| Promotion | How does a harness change get from DEV to production? What must pass first, and how do you catch regressions on cases that used to work? |
-| Monitoring without ground truth | With no DB match to check, what would you measure from traces to tell whether the agent is doing well or drifting? |
-| Policy and knowledge changes | When a product document or rule changes, what in your harness goes stale, and how is it found, updated or invalidated? |
-| Cost and latency | What does a conversation cost, and how long does it take? Where are the budgets, and what happens when one is exceeded? |
-| Risky actions | Which actions need a confirmation, a second check or a human? How does the harness enforce that? |
-| Failure triage | When a real conversation goes wrong, how does it become a diagnosed failure and, where useful, a new regression case? |
-| Rollout and rollback | How would you introduce a new harness version, and how would you back it out? |
-
-You don't need to build all of this. If building one small piece helps make your case, such as a gate that replays DEV before a change is promoted, that is welcome.
-
-## 6. What to share
+## 5. What to share
 
 For this session, share:
 
