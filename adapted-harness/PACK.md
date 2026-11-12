@@ -47,7 +47,7 @@ Start from the baseline and let its failures decide what you build. Depending on
 
 One rule: information only the grader sees (the hidden customer instructions, the expected actions, the backend database) must never become agent input.
 
-## 4. Limited evaluation plan and deliverables
+## 4. Evaluation plan
 
 Use the following project splits. SMOKE is a subset of DEV, not a separate held-out set. Iterate on DEV; keep TEST frozen and use it only at milestones. Do not run the full benchmark or launch broad repeated evaluations as part of routine development.
 
@@ -77,12 +77,11 @@ task_001 task_002 task_003 task_004 task_007 task_010 task_025 task_027 task_031
 
 ### Evaluation procedure
 
-1. **Start from the recorded baseline.** The baseline configuration (domain, split IDs, agent and user-simulator models, retrieval configuration) is recorded in [README.md](README.md), and a DEV baseline run is provided. Record any change you make to the configuration, prompts or budgets. The TEST list contains 37 unique tasks and has no overlap with DEV. We hold a TEST baseline for comparison.
-2. **Check the pipeline with SMOKE.** Before the session, establish that the pipeline runs on your machine and produces usable traces.
-3. **Iterate on DEV.** Diagnose a concrete failure, change the relevant representation or harness component, and rerun affected cases. Use component comparisons only when they answer a specific design question. Build reusable memory from DEV executions.
-4. **Evaluate TEST at milestones only.** Record the milestone and run budget in advance. Freeze the harness and all derived representations and memory before execution. Keep TEST cases out of development memory and task-specific tuning; do not rerun TEST after each change. Keep hidden user instructions, expected actions, and evaluator-only state out of agent context.
-5. **Report representation and maintenance quality first.** Assess source grounding, state consistency, dependency handling, uncertainty, update/invalidation behavior, trace completeness, and the ability to diagnose failures. Include task outcomes, costs, and latency as supporting diagnostics. Label results by the actual split; do not present subset results as full-benchmark scores. Repeated-run reliability is optional and limited to a planned milestone budget.
-6. **Keep adaptation experiments on DEV.** If changing policies or testing cross-execution learning, specify the changes, task order, reset rules, and available feedback. Freeze the resulting memory for TEST. Independent repeated trials must not learn from one another.
+1. **Start from the baseline.** The configuration is in [README.md](README.md), and a DEV baseline run is provided. Note any change you make to it. We hold a TEST baseline for comparison.
+2. **Check your setup with SMOKE** before the session.
+3. **Iterate on DEV.** Pick a failure, change the harness, and rerun the tasks it affects.
+4. **Run TEST only at milestones,** with the harness and any memory frozen first. Keep TEST tasks out of your memory and tuning.
+5. **Label results by split** (SMOKE, DEV or TEST). Scores are supporting evidence, not the goal.
 
 ## 5. What to share
 
