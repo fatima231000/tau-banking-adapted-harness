@@ -1,0 +1,2919 @@
+{
+ "model": "claude-opus-5-5",
+ "workflows": {
+  "doc_bank_accounts_bank_accounts_(general)_001": {
+   "scenario": "Opening a personal checking account for a customer",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity.",
+     "tool": null,
+     "condition": null,
+     "quote": "1. Verify customer identity."
+    },
+    {
+     "order": 2,
+     "step": "Check eligibility requirements: customer verified, at least 18, no more than 4 personal checking accounts, no checking accounts closed for cause in past 6 months.",
+     "tool": null,
+     "condition": null,
+     "quote": "2. Check eligibility requirements listed above."
+    },
+    {
+     "order": 3,
+     "step": "Confirm the customer's desired account_class selection, using the full official name ending with 'Account'.",
+     "tool": null,
+     "condition": null,
+     "quote": "3. Confirm the customer's desired account_class selection."
+    },
+    {
+     "order": 4,
+     "step": "Open the account.",
+     "tool": "open_bank_account_4821",
+     "condition": "If the customer meets all eligibility requirements",
+     "quote": "4. Use open_bank_account_4821 to open the account."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_002": {
+   "scenario": "Opening a personal savings account for an eligible Rho-Bank customer",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity: authenticate the customer and confirm identity verification status on file",
+     "tool": null,
+     "condition": null,
+     "quote": "Authenticate the customer and confirm identity verification status on file."
+    },
+    {
+     "order": 2,
+     "step": "Confirm an active checking account exists and meets the 14-day tenure requirement",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm an active checking account exists and meets the 14-day tenure requirement."
+    },
+    {
+     "order": 3,
+     "step": "Count existing personal savings accounts and ensure the customer is below the 5 limit",
+     "tool": null,
+     "condition": null,
+     "quote": "Count existing personal savings accounts; ensure the customer is below the 5 limit."
+    },
+    {
+     "order": 4,
+     "step": "Review account status to ensure no collections activity and no negative balances",
+     "tool": null,
+     "condition": null,
+     "quote": "Review account status; there must be no collections activity and no negative balances."
+    },
+    {
+     "order": 5,
+     "step": "Discuss available personal savings account options with the customer",
+     "tool": null,
+     "condition": "All eligibility requirements are met",
+     "quote": "Discuss available personal savings account options with the customer."
+    },
+    {
+     "order": 6,
+     "step": "Capture the exact account_class string as the full official name ending with 'Account'",
+     "tool": null,
+     "condition": null,
+     "quote": "Capture the exact account_class string."
+    },
+    {
+     "order": 7,
+     "step": "Open the savings account with account_type 'savings' and the confirmed account_class",
+     "tool": "open_bank_account_4821",
+     "condition": "Eligibility confirmed and customer has selected an account_class",
+     "quote": "Use the open_bank_account_4821 tool with account_type set to 'savings' and the confirmed account_class."
+    },
+    {
+     "order": 8,
+     "step": "Ask the customer if they want the opening deposit transferred from their checking account now",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask the customer if they want you to transfer the opening deposit from their checking account now."
+    },
+    {
+     "order": 9,
+     "step": "Transfer the required opening deposit amount from checking to the new savings account",
+     "tool": "transfer_funds_between_bank_accounts_7291",
+     "condition": "Customer authorizes an immediate transfer",
+     "quote": "If yes: use transfer_funds_between_bank_accounts_7291 to transfer the required amount from the customer\u2019s checking account to the newly opened savings account."
+    },
+    {
+     "order": 10,
+     "step": "Inform the customer they have 30 days to fund the account or it will be closed",
+     "tool": null,
+     "condition": "Customer declines immediate transfer",
+     "quote": "If no: inform the customer they have 30 days to fund the account (via internal transfer or external deposit) or the account will be closed."
+    },
+    {
+     "order": 11,
+     "step": "Provide the new account details and confirm funding status or funding deadline",
+     "tool": null,
+     "condition": null,
+     "quote": "Provide the new account details and confirm the funding status or the funding deadline."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_003": {
+   "scenario": "Opening a business checking account for a customer",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity.",
+     "tool": null,
+     "condition": null,
+     "quote": "1. Verify customer identity."
+    },
+    {
+     "order": 2,
+     "step": "Check eligibility requirements: customer verified, has at least one OPEN personal checking account, does not exceed 6 business checking accounts, has no CLOSED accounts, and existing checking account balance is at least $500.",
+     "tool": null,
+     "condition": null,
+     "quote": "2. Check eligibility requirements listed above."
+    },
+    {
+     "order": 3,
+     "step": "Confirm the customer's desired account_class selection (e.g., Navy Blue, Cobalt Blue, True Blue).",
+     "tool": null,
+     "condition": "If customer meets eligibility requirements",
+     "quote": "3. Confirm the customer's desired account_class selection."
+    },
+    {
+     "order": 4,
+     "step": "Open the business checking account.",
+     "tool": "open_bank_account_4821",
+     "condition": "If customer meets eligibility requirements",
+     "quote": "4. Use open_bank_account_4821 to open the account."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_004": {
+   "scenario": "Opening a business savings account for a customer",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity.",
+     "tool": null,
+     "condition": null,
+     "quote": "1) Verify customer identity."
+    },
+    {
+     "order": 2,
+     "step": "Check eligibility requirements.",
+     "tool": null,
+     "condition": null,
+     "quote": "2) Check eligibility requirements (see list above)."
+    },
+    {
+     "order": 3,
+     "step": "Confirm account selection with the customer, asking for the desired business savings account_class and capturing the exact official name.",
+     "tool": null,
+     "condition": null,
+     "quote": "3) Confirm account selection with the customer:"
+    },
+    {
+     "order": 4,
+     "step": "Open the new business savings account with account_type 'savings' and the exact account_class.",
+     "tool": "open_bank_account_4821",
+     "condition": "After eligibility is confirmed and the customer has selected the desired business savings account_class.",
+     "quote": "4) Open the new business savings account using the agent tool (see Tool Instructions below)."
+    },
+    {
+     "order": 5,
+     "step": "Ask the customer if they want the opening deposit transferred now from their eligible business checking account.",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask the customer if they want you to transfer the opening deposit now from their eligible business checking account."
+    },
+    {
+     "order": 6,
+     "step": "Initiate the internal transfer of the opening deposit from the qualifying business checking account to the new savings account.",
+     "tool": "transfer_funds_between_bank_accounts_7291",
+     "condition": "If the customer authorizes transferring the opening deposit now.",
+     "quote": "If yes: initiate the internal transfer using the agent tool (see Tool Instructions below)."
+    },
+    {
+     "order": 7,
+     "step": "Inform the customer they have 30 days to fund the account via internal transfer or external deposit, or it will be closed.",
+     "tool": null,
+     "condition": "If the customer declines to transfer the opening deposit now.",
+     "quote": "If no: inform the customer they have 30 days to fund the account via internal transfer or external deposit; otherwise, the account will be closed."
+    },
+    {
+     "order": 8,
+     "step": "If the transfer fails, inform the customer and remind them of the 30-day funding deadline.",
+     "tool": null,
+     "condition": "If the transfer fails (e.g., insufficient funds).",
+     "quote": "Inform the customer and remind them they have 30 days to fund the account via internal transfer or external deposit, or the account will be closed."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_005": {
+   "scenario": "Closing a personal checking account",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify pre-closure requirements are met (balance $0 or at least the early closure fee amount, account status OPEN, no pending transactions).",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify pre-closure requirements are met."
+    },
+    {
+     "order": 2,
+     "step": "Determine the account tier and applicable early closure fees and notice period.",
+     "tool": null,
+     "condition": null,
+     "quote": "Determine the account tier and applicable fees/notice period."
+    },
+    {
+     "order": 3,
+     "step": "Close the account.",
+     "tool": "close_bank_account_7392",
+     "condition": null,
+     "quote": "Use close_bank_account_7392 to close the account."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_006": {
+   "scenario": "Closing personal savings accounts",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify pre-closure requirements are met (balance, OPEN status, no pending transactions).",
+     "tool": null,
+     "condition": null,
+     "quote": "1. Verify pre-closure requirements are met."
+    },
+    {
+     "order": 2,
+     "step": "Determine the account tier and applicable fees/notice period.",
+     "tool": null,
+     "condition": null,
+     "quote": "2. Determine the account tier and applicable fees/notice period."
+    },
+    {
+     "order": 3,
+     "step": "Obtain manager approval before proceeding.",
+     "tool": null,
+     "condition": "Account is ELITE tier",
+     "quote": "3. For ELITE tier, obtain manager approval before proceeding."
+    },
+    {
+     "order": 4,
+     "step": "Close the account.",
+     "tool": "close_bank_account_7392",
+     "condition": null,
+     "quote": "4. Use close_bank_account_7392 to close the account."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_007": {
+   "scenario": "Closing business checking accounts",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify pre-closure requirements are met (balance covers fee or is $0, status OPEN, no pending transactions, no open linked business savings accounts).",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify pre-closure requirements are met."
+    },
+    {
+     "order": 2,
+     "step": "Determine the account tier and applicable fees/notice period.",
+     "tool": null,
+     "condition": null,
+     "quote": "Determine the account tier and applicable fees/notice period."
+    },
+    {
+     "order": 3,
+     "step": "Obtain supervisor review.",
+     "tool": null,
+     "condition": "Account is PREMIUM tier",
+     "quote": "For PREMIUM tier, obtain supervisor review."
+    },
+    {
+     "order": 4,
+     "step": "Obtain manager approval.",
+     "tool": null,
+     "condition": "Account is ELITE tier",
+     "quote": "For ELITE tier, obtain manager approval."
+    },
+    {
+     "order": 5,
+     "step": "Close the account.",
+     "tool": "close_bank_account_7392",
+     "condition": null,
+     "quote": "Use close_bank_account_7392 to close the account."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_008": {
+   "scenario": "Closing a business savings account",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify pre-closure requirements are met (balance/fee, OPEN status, no pending transactions, remaining active business checking account).",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify pre-closure requirements are met."
+    },
+    {
+     "order": 2,
+     "step": "Determine the account tier and applicable fees/notice period.",
+     "tool": null,
+     "condition": null,
+     "quote": "Determine the account tier and applicable fees/notice period."
+    },
+    {
+     "order": 3,
+     "step": "Obtain supervisor review.",
+     "tool": null,
+     "condition": "Account is PREMIUM tier (Gold Saver Account)",
+     "quote": "For PREMIUM tier, obtain supervisor review."
+    },
+    {
+     "order": 4,
+     "step": "Obtain manager approval.",
+     "tool": null,
+     "condition": "Account is ELITE tier (Platinum Reserve Account)",
+     "quote": "For ELITE tier, obtain manager approval."
+    },
+    {
+     "order": 5,
+     "step": "Close the account.",
+     "tool": "close_bank_account_7392",
+     "condition": null,
+     "quote": "Use close_bank_account_7392 to close the account."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_009": {
+   "scenario": "Retrieving a customer's bank account information (checking, savings) by user ID",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Retrieve the customer's bank accounts (checking, savings) using their user_id",
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "condition": null,
+     "quote": "Use get_all_user_accounts_by_user_id_3847 to retrieve the bank accounts (checkings, savings) for a customer."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_010": {
+   "scenario": "Transferring funds between a customer's bank accounts using transfer_funds_between_bank_accounts_7291",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Gather required inputs: source_account_id, destination_account_id, and amount (USD)",
+     "tool": null,
+     "condition": null,
+     "quote": "Gather required inputs:"
+    },
+    {
+     "order": 2,
+     "step": "Validate account statuses (ACTIVE or OPEN) and available funds per the Preconditions and Validation section",
+     "tool": null,
+     "condition": null,
+     "quote": "Validate account statuses and available funds per the Preconditions and Validation section."
+    },
+    {
+     "order": 3,
+     "step": "Call the transfer tool with source account, destination account, and amount",
+     "tool": "transfer_funds_between_bank_accounts_7291",
+     "condition": null,
+     "quote": "Call the tool:"
+    },
+    {
+     "order": 4,
+     "step": "Confirm completion to the customer and share updated balances if requested",
+     "tool": null,
+     "condition": "On success; share balances only if requested",
+     "quote": "On success, confirm completion to the customer and, if requested, share updated balances."
+    },
+    {
+     "order": 5,
+     "step": "Document the action per internal procedures",
+     "tool": null,
+     "condition": null,
+     "quote": "Document the action per internal procedures."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_013": {
+   "scenario": "Recommending business checking accounts during the November 2025 promotion (11/01/2025 to 11/30/2025)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Recommend the Sky Blue account first, as it is under promotional priority",
+     "tool": null,
+     "condition": "If multiple accounts meet all of the customer's stated requirements during the promotion period",
+     "quote": "(1) Sky Blue account should be recommended first, as it is currently under promotional priority;"
+    },
+    {
+     "order": 2,
+     "step": "Recommend the Lime Green account second, as it is also under promotional priority",
+     "tool": null,
+     "condition": "If multiple accounts meet all of the customer's stated requirements during the promotion period",
+     "quote": "(2) Lime Green account should be recommended second, as it is also under promotional priority;"
+    },
+    {
+     "order": 3,
+     "step": "Recommend other qualifying accounts",
+     "tool": null,
+     "condition": "Only if neither Sky Blue nor Lime Green meet the customer's requirements",
+     "quote": "(3) All other qualifying accounts may be recommended only if neither Sky Blue nor Lime Green meet the customer's requirements."
+    },
+    {
+     "order": 4,
+     "step": "Ensure the recommended account meets all of the customer's stated requirements; do not recommend a promotional account that does not satisfy the customer's needs",
+     "tool": null,
+     "condition": null,
+     "quote": "Always ensure the recommended account still meets ALL of the customer's stated requirements - do not recommend a promotional account if it does not satisfy the customer's needs."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_014": {
+   "scenario": "Recommending business checking accounts during the October 2025 promotion (10/12/2025 to 11/12/2025) when multiple accounts meet the customer's requirements",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Recommend the Lime Green account first, as it is under promotional priority",
+     "tool": null,
+     "condition": "If multiple business checking accounts meet all of the customer's stated requirements and Lime Green meets them",
+     "quote": "(1) Lime Green account should be recommended first, as it is currently under promotional priority;"
+    },
+    {
+     "order": 2,
+     "step": "Recommend the Hunter Green account second, as it is also under promotional priority",
+     "tool": null,
+     "condition": "If multiple business checking accounts meet all of the customer's stated requirements and Hunter Green meets them",
+     "quote": "(2) Hunter Green account should be recommended second, as it is also under promotional priority;"
+    },
+    {
+     "order": 3,
+     "step": "Recommend other qualifying accounts",
+     "tool": null,
+     "condition": "Only if neither Lime Green nor Hunter Green meet the customer's requirements",
+     "quote": "(3) All other qualifying accounts may be recommended only if neither Lime Green nor Hunter Green meet the customer's requirements."
+    },
+    {
+     "order": 4,
+     "step": "Verify the recommended account meets all of the customer's stated requirements; do not recommend a promotional account that does not satisfy the customer's needs",
+     "tool": null,
+     "condition": null,
+     "quote": "Always ensure the recommended account still meets ALL of the customer's stated requirements - do not recommend a promotional account if it does not satisfy the customer's needs."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_015": {
+   "scenario": "Recommending business savings accounts to customers during the November 2025 promotion (11/01/2025 to 11/30/2025)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Recommend the Gold Saver Account first, as it is under promotional priority",
+     "tool": null,
+     "condition": "If multiple accounts meet all of the customer's stated requirements and the Gold Saver Account meets them",
+     "quote": "(1) Gold Saver Account should be recommended first, as it is currently under promotional priority;"
+    },
+    {
+     "order": 2,
+     "step": "Recommend the Silver Plus Saver second, as it is also under promotional priority",
+     "tool": null,
+     "condition": "If multiple accounts meet all of the customer's stated requirements and the Silver Plus Saver meets them",
+     "quote": "(2) Silver Plus Saver should be recommended second, as it is also under promotional priority;"
+    },
+    {
+     "order": 3,
+     "step": "Recommend other qualifying accounts",
+     "tool": null,
+     "condition": "Only if neither Gold Saver Account nor Silver Plus Saver meets the customer's requirements",
+     "quote": "(3) All other qualifying accounts may be recommended only if neither Gold Saver Account nor Silver Plus Saver meet the customer's requirements."
+    },
+    {
+     "order": 4,
+     "step": "Ensure the recommended account meets all of the customer's stated requirements; do not recommend a promotional account that does not satisfy the customer's needs",
+     "tool": null,
+     "condition": null,
+     "quote": "Always ensure the recommended account still meets ALL of the customer's stated requirements - do not recommend a promotional account if it does not satisfy the customer's needs."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_016": {
+   "scenario": "Recommending business savings accounts to customers during the October 2025 promotion (10/12/2025 to 11/12/2025) when multiple accounts meet the customer's requirements",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Recommend Gold Plus Saver first, as it is under promotional priority",
+     "tool": null,
+     "condition": "Multiple business savings accounts meet all of the customer's stated requirements and Gold Plus Saver meets them",
+     "quote": "(1) Gold Plus Saver should be recommended first, as it is currently under promotional priority;"
+    },
+    {
+     "order": 2,
+     "step": "Recommend Silver Plus Saver second, as it is also under promotional priority",
+     "tool": null,
+     "condition": "Multiple business savings accounts meet all of the customer's stated requirements and Silver Plus Saver meets them",
+     "quote": "(2) Silver Plus Saver should be recommended second, as it is also under promotional priority;"
+    },
+    {
+     "order": 3,
+     "step": "Recommend other qualifying accounts",
+     "tool": null,
+     "condition": "Neither Gold Plus Saver nor Silver Plus Saver meets the customer's requirements",
+     "quote": "(3) All other qualifying accounts may be recommended only if neither Gold Plus Saver nor Silver Plus Saver meet the customer's requirements."
+    },
+    {
+     "order": 4,
+     "step": "Verify the recommended account meets all of the customer's stated requirements; do not recommend a promotional account that does not satisfy the customer's needs",
+     "tool": null,
+     "condition": null,
+     "quote": "Always ensure the recommended account still meets ALL of the customer's stated requirements - do not recommend a promotional account if it does not satisfy the customer's needs."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_017": {
+   "scenario": "Applying credits and rebates to customer checking accounts for missing rebates or fee mischarges",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity and account ownership",
+     "tool": null,
+     "condition": null,
+     "quote": "1. Verify the customer's identity and account ownership"
+    },
+    {
+     "order": 2,
+     "step": "Confirm the account is a checking account",
+     "tool": null,
+     "condition": null,
+     "quote": "2. Confirm the account is a checking account (credits cannot be applied to savings or other account types)"
+    },
+    {
+     "order": 3,
+     "step": "Verify the customer meets one of the eligible circumstances (missing rebate or fee mischarge)",
+     "tool": null,
+     "condition": null,
+     "quote": "3. Verify the customer meets one of the eligible circumstances listed above"
+    },
+    {
+     "order": 4,
+     "step": "Calculate the correct credit amount based on the rebate policy or overcharged fee, combining multiple corrections into a single total if needed",
+     "tool": null,
+     "condition": null,
+     "quote": "4. Calculate the correct credit amount based on the rebate policy or fee that was overcharged"
+    },
+    {
+     "order": 5,
+     "step": "Apply the credit to the checking account with the appropriate credit_type (only once per account per interaction)",
+     "tool": "apply_checking_account_credit_5829",
+     "condition": "After confirming the customer meets one of the eligible circumstances",
+     "quote": "5. Use the apply_checking_account_credit_5829 tool to apply the credit"
+    },
+    {
+     "order": 6,
+     "step": "Inform the customer of the applied credit and new account balance",
+     "tool": null,
+     "condition": null,
+     "quote": "6. Inform the customer of the applied credit and new account balance"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_018": {
+   "scenario": "Retrieving a customer's bank account (checking or savings) transaction history",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Retrieve the transaction history for the customer's bank account by calling the tool with the bank account ID; results are returned most recent first.",
+     "tool": "get_bank_account_transactions_9173",
+     "condition": "When reviewing account activity, verifying fees, checking for applied rebates, or investigating customer inquiries",
+     "quote": "Agents can retrieve the transaction history for a customer's bank account (checking or savings) using the get_bank_account_transactions_9173 tool."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_023": {
+   "scenario": "Ordering a debit card linked to a specific checking account",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity",
+     "tool": null,
+     "condition": null,
+     "quote": "1) Verify customer identity"
+    },
+    {
+     "order": 2,
+     "step": "Confirm which checking account the debit card should be linked to",
+     "tool": null,
+     "condition": null,
+     "quote": "2) Confirm which checking account the debit card should be linked to."
+    },
+    {
+     "order": 3,
+     "step": "Check eligibility requirements for the specified account",
+     "tool": null,
+     "condition": null,
+     "quote": "3) Check eligibility requirements for the specified account"
+    },
+    {
+     "order": 4,
+     "step": "Ask customer for preferred delivery option (STANDARD, EXPEDITED, or RUSH) and explain fees",
+     "tool": null,
+     "condition": null,
+     "quote": "4) Ask customer for preferred delivery option (STANDARD, EXPEDITED, or RUSH) and explain fees."
+    },
+    {
+     "order": 5,
+     "step": "Ask customer for preferred card design (CLASSIC, PREMIUM, or CUSTOM) and explain fees",
+     "tool": null,
+     "condition": null,
+     "quote": "5) Ask customer for preferred card design (CLASSIC, PREMIUM, or CUSTOM) and explain fees."
+    },
+    {
+     "order": 6,
+     "step": "Confirm the mailing address for the card",
+     "tool": null,
+     "condition": null,
+     "quote": "6) Confirm the address that the customer would like to mail the card to."
+    },
+    {
+     "order": 7,
+     "step": "Order the debit card",
+     "tool": "order_debit_card_5739",
+     "condition": null,
+     "quote": "7) Use order_debit_card_5739 to order the card."
+    },
+    {
+     "order": 8,
+     "step": "Inform customer of expected delivery timeframe and any applicable fees",
+     "tool": null,
+     "condition": null,
+     "quote": "8) Inform customer of expected delivery timeframe and any applicable fees"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_024": {
+   "scenario": "Activating a customer's new debit card, selecting the correct activation tool based on the card's issue reason",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity using standard verification procedures",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "order": 2,
+     "step": "Look up the card in the debit_cards table and check the issue_reason field to determine which activation tool to use",
+     "tool": null,
+     "condition": null,
+     "quote": "Look up the card in the debit_cards table and check the 'issue_reason' field to determine which activation tool to use"
+    },
+    {
+     "order": 3,
+     "step": "Ask customer for the last 4 digits of the card number",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask customer for the last 4 digits of the card number"
+    },
+    {
+     "order": 4,
+     "step": "Ask customer for the card expiration date",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask customer for the card expiration date"
+    },
+    {
+     "order": 5,
+     "step": "Ask customer for the 3-digit CVV on the back",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask customer for the 3-digit CVV on the back"
+    },
+    {
+     "order": 6,
+     "step": "Verify the card details match the customer's account",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the card details match the customer's account"
+    },
+    {
+     "order": 7,
+     "step": "Ask customer to set a 4-digit PIN (exactly 4 digits, not sequential or repeating)",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask customer to set a 4-digit PIN for the card (must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111)"
+    },
+    {
+     "order": 8,
+     "step": "Activate the new card",
+     "tool": "activate_debit_card_8291",
+     "condition": "Card is a new card (issue_reason = 'new_account' or 'first_card')",
+     "quote": "For new cards: activate_debit_card_8291"
+    },
+    {
+     "order": 9,
+     "step": "Activate the replacement card",
+     "tool": "activate_debit_card_8292",
+     "condition": "Card is a replacement card (issue_reason = 'lost', 'stolen', or 'fraud')",
+     "quote": "For replacement cards (lost/stolen/fraud): activate_debit_card_8292"
+    },
+    {
+     "order": 10,
+     "step": "Activate the reissued card",
+     "tool": "activate_debit_card_8293",
+     "condition": "Card is a reissued card (issue_reason = 'expired', 'damaged', 'upgrade', or 'bank_reissue')",
+     "quote": "For reissued cards (expired/damaged/upgrade): activate_debit_card_8293"
+    },
+    {
+     "order": 11,
+     "step": "Confirm activation was successful",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm activation was successful"
+    },
+    {
+     "order": 12,
+     "step": "Remind customer to review recent transactions for unauthorized charges",
+     "tool": null,
+     "condition": "Replacement card (activated with 8292)",
+     "quote": "After activation, remind customer to review recent transactions for any unauthorized charges"
+    },
+    {
+     "order": 13,
+     "step": "Ask if they have noticed any suspicious activity on their account",
+     "tool": null,
+     "condition": "Replacement card (activated with 8292)",
+     "quote": "Ask if they have noticed any suspicious activity on their account"
+    },
+    {
+     "order": 14,
+     "step": "Recommend changing online banking password",
+     "tool": null,
+     "condition": "Replacement card and fraud was suspected",
+     "quote": "Recommend changing their online banking password if fraud was suspected"
+    },
+    {
+     "order": 15,
+     "step": "Inform customer the old card remains active for a 24-hour grace period",
+     "tool": null,
+     "condition": "Reissued card (activated with 8293)",
+     "quote": "Inform customer that their old card will remain active for 24 hours as a grace period"
+    },
+    {
+     "order": 16,
+     "step": "Remind customer to update recurring payments with new card details",
+     "tool": null,
+     "condition": "Reissued card and the card number changed",
+     "quote": "Remind them to update any recurring payments with the new card details if the card number changed"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_025": {
+   "scenario": "Closing/cancelling a customer's debit card",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity using standard verification procedures",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "order": 2,
+     "step": "Ask customer for the reason they want to close the card",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask customer for the reason they want to close the card (select from: lost, stolen, fraud_suspected, damaged, no_longer_needed, account_closing)"
+    },
+    {
+     "order": 3,
+     "step": "Check eligibility requirements; if any is not met, inform the customer what needs to be resolved and do not proceed",
+     "tool": null,
+     "condition": null,
+     "quote": "Check eligibility requirements. If any requirement is not met, inform the customer what needs to be resolved and do not proceed with closure."
+    },
+    {
+     "order": 4,
+     "step": "Bypass the minimum card age requirement for security purposes",
+     "tool": null,
+     "condition": "If reason is 'lost', 'stolen', or 'fraud_suspected'",
+     "quote": "These reasons bypass the minimum card age requirement (requirement 6) for security purposes"
+    },
+    {
+     "order": 5,
+     "step": "Inform customer that any pending transactions will still be processed",
+     "tool": null,
+     "condition": "If reason is 'lost', 'stolen', or 'fraud_suspected'",
+     "quote": "Inform customer that any pending transactions will still be processed"
+    },
+    {
+     "order": 6,
+     "step": "Ask if they want to order a replacement card immediately",
+     "tool": null,
+     "condition": "If reason is 'lost', 'stolen', or 'fraud_suspected'",
+     "quote": "Ask if they want to order a replacement card immediately"
+    },
+    {
+     "order": 7,
+     "step": "Advise customer to review recent transactions and file disputes for unauthorized charges",
+     "tool": null,
+     "condition": "If fraud is suspected",
+     "quote": "If fraud is suspected, advise customer to review recent transactions and file disputes for any unauthorized charges"
+    },
+    {
+     "order": 8,
+     "step": "Close the card with parameters card_id and reason",
+     "tool": "close_debit_card_4721",
+     "condition": null,
+     "quote": "Use close_debit_card_4721 to close the card with parameters: card_id, reason"
+    },
+    {
+     "order": 9,
+     "step": "Confirm the card has been closed and provide information on permanent deactivation, recurring payments, and ordering a new card",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm the card has been closed and provide the following information:"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_026": {
+   "scenario": "Freezing and unfreezing a customer's debit card",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity before freezing",
+     "tool": null,
+     "condition": "Customer wants to freeze an ACTIVE debit card they own",
+     "quote": "1. Verify customer identity"
+    },
+    {
+     "order": 2,
+     "step": "Ask customer why they want to freeze the card",
+     "tool": null,
+     "condition": "Customer wants to freeze the card",
+     "quote": "2. Ask customer why they want to freeze the card"
+    },
+    {
+     "order": 3,
+     "step": "Inform customer of freeze effects: new transactions and recurring payments declined, pending authorized transactions may still process, can unfreeze anytime via customer service or mobile app",
+     "tool": null,
+     "condition": "Customer wants to freeze the card",
+     "quote": "3. Inform customer of the following:"
+    },
+    {
+     "order": 4,
+     "step": "Freeze the debit card using the card_id",
+     "tool": "freeze_debit_card_3892",
+     "condition": "Customer verified, owns the card, and card is in ACTIVE status",
+     "quote": "4. Use freeze_debit_card_3892 with the card_id"
+    },
+    {
+     "order": 5,
+     "step": "Confirm the freeze was successful",
+     "tool": null,
+     "condition": "Customer wants to freeze the card",
+     "quote": "5. Confirm the freeze was successful"
+    },
+    {
+     "order": 6,
+     "step": "Verify customer identity before unfreezing",
+     "tool": null,
+     "condition": "Customer wants to unfreeze a FROZEN debit card they own",
+     "quote": "1. Verify customer identity"
+    },
+    {
+     "order": 7,
+     "step": "Unfreeze the debit card using the card_id",
+     "tool": "unfreeze_debit_card_3893",
+     "condition": "Customer verified, owns the card, card is in FROZEN status, and linked checking account is OPEN",
+     "quote": "2. Use unfreeze_debit_card_3893 with the card_id"
+    },
+    {
+     "order": 8,
+     "step": "Confirm the card is now active and ready to use immediately",
+     "tool": null,
+     "condition": "Customer wants to unfreeze the card",
+     "quote": "3. Confirm the card is now active and ready to use immediately"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_027": {
+   "scenario": "Resetting or changing a debit card PIN for a verified customer who owns an ACTIVE debit card",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify customer identity using standard verification procedures",
+     "tool": null,
+     "condition": "Customer forgot their PIN (reset)",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "order": 2,
+     "step": "Ask customer to confirm the last 4 digits of their card",
+     "tool": null,
+     "condition": "Customer forgot their PIN (reset)",
+     "quote": "For security, ask customer to confirm the last 4 digits of their card"
+    },
+    {
+     "order": 3,
+     "step": "Ask customer to provide a new 4-digit PIN",
+     "tool": null,
+     "condition": "Customer forgot their PIN (reset)",
+     "quote": "Ask customer to provide a new 4-digit PIN"
+    },
+    {
+     "order": 4,
+     "step": "Validate the new PIN meets security requirements (exactly 4 digits, not sequential, not all same digit, not birth year or birth month/day)",
+     "tool": null,
+     "condition": "Customer forgot their PIN (reset)",
+     "quote": "Validate the new PIN meets security requirements:"
+    },
+    {
+     "order": 5,
+     "step": "Reset the PIN with card_id, last_4_digits, new_pin",
+     "tool": "reset_debit_card_pin_6284",
+     "condition": "Customer forgot their PIN (reset)",
+     "quote": "Use reset_debit_card_pin_6284 with parameters: card_id, last_4_digits, new_pin"
+    },
+    {
+     "order": 6,
+     "step": "Confirm the PIN has been changed and is effective immediately",
+     "tool": null,
+     "condition": "Customer forgot their PIN (reset)",
+     "quote": "Confirm the PIN has been changed and is effective immediately"
+    },
+    {
+     "order": 7,
+     "step": "Verify customer identity",
+     "tool": null,
+     "condition": "Customer knows current PIN (change)",
+     "quote": "Verify customer identity"
+    },
+    {
+     "order": 8,
+     "step": "Ask customer to confirm their current PIN",
+     "tool": null,
+     "condition": "Customer knows current PIN (change)",
+     "quote": "Ask customer to confirm their current PIN for additional security"
+    },
+    {
+     "order": 9,
+     "step": "Ask customer to provide a new 4-digit PIN",
+     "tool": null,
+     "condition": "Customer knows current PIN (change)",
+     "quote": "Ask customer to provide a new 4-digit PIN"
+    },
+    {
+     "order": 10,
+     "step": "Validate the new PIN meets security requirements",
+     "tool": null,
+     "condition": "Customer knows current PIN (change)",
+     "quote": "Validate the new PIN meets security requirements (same as above)"
+    },
+    {
+     "order": 11,
+     "step": "Change the PIN with card_id, current_pin, new_pin",
+     "tool": "change_debit_card_pin_6285",
+     "condition": "Customer knows current PIN (change)",
+     "quote": "Use change_debit_card_pin_6285 with parameters: card_id, current_pin, new_pin"
+    },
+    {
+     "order": 12,
+     "step": "Confirm the PIN has been changed",
+     "tool": null,
+     "condition": "Customer knows current PIN (change)",
+     "quote": "Confirm the PIN has been changed"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_029": {
+   "scenario": "Ordering a replacement debit card according to the customer's checking account tier rules, including checking replacement history and applying fees",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Retrieve all cards for the account",
+     "tool": null,
+     "condition": null,
+     "quote": "1) Retrieve all cards for the account"
+    },
+    {
+     "order": 2,
+     "step": "Identify cards with issue_reason of lost, stolen, fraud, or damaged",
+     "tool": null,
+     "condition": null,
+     "quote": "2) Look for cards with issue_reason of 'lost', 'stolen', 'fraud', or 'damaged'"
+    },
+    {
+     "order": 3,
+     "step": "Check date_issued and count replacement cards issued within the last 12 months",
+     "tool": null,
+     "condition": null,
+     "quote": "3) Check the date_issued field and count cards issued within the last 12 months"
+    },
+    {
+     "order": 4,
+     "step": "Exclude cards issued for new_account, first_card, expired, upgrade, or bank_reissue from the replacement count",
+     "tool": null,
+     "condition": null,
+     "quote": "4) Cards with issue_reason of 'new_account', 'first_card', 'expired', 'upgrade', or 'bank_reissue' do NOT count toward the replacement limit."
+    },
+    {
+     "order": 5,
+     "step": "Inform the customer that the fee will be deducted from their checking account balance before placing the order",
+     "tool": null,
+     "condition": "If applicable fees apply",
+     "quote": "Always inform the customer that the fee will be deducted from their checking account balance before placing the order."
+    },
+    {
+     "order": 6,
+     "step": "Order the replacement card providing the exact delivery_fee and design_fee based on tier rules",
+     "tool": "order_debit_card_5739",
+     "condition": null,
+     "quote": "When using order_debit_card_5739, you must provide the exact delivery_fee and design_fee amounts based on the tier rules below."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_030": {
+   "scenario": "Cross-product security protocol when a customer reports a lost or stolen debit card",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Complete the standard debit card freeze/close procedure",
+     "tool": null,
+     "condition": "When a customer reports a lost or stolen debit card",
+     "quote": "1) Complete the standard debit card freeze/close procedure"
+    },
+    {
+     "order": 2,
+     "step": "Check if the customer has any Rho-Bank credit cards on file using get_credit_card_accounts_by_user",
+     "tool": "get_credit_card_accounts_by_user",
+     "condition": null,
+     "quote": "Use get_credit_card_accounts_by_user to retrieve any credit card accounts for the customer."
+    },
+    {
+     "order": 3,
+     "step": "Inform the customer that they also have a credit card with Rho-Bank",
+     "tool": null,
+     "condition": "If the customer has one or more credit cards",
+     "quote": "- Inform them that you noticed they also have a credit card with Rho-Bank"
+    },
+    {
+     "order": 4,
+     "step": "Ask if their credit card was also in the lost/stolen wallet",
+     "tool": null,
+     "condition": "If the customer has one or more credit cards",
+     "quote": "- Ask if their credit card was also in the lost/stolen wallet"
+    },
+    {
+     "order": 5,
+     "step": "Offer to order a replacement credit card with a new card number",
+     "tool": null,
+     "condition": "If the customer has one or more credit cards",
+     "quote": "- Offer to order a replacement credit card with a new card number to prevent any unauthorized charges"
+    },
+    {
+     "order": 6,
+     "step": "Explain that wallet theft often involves multiple cards and this protects against potential fraud",
+     "tool": null,
+     "condition": "If the customer has one or more credit cards",
+     "quote": "4) Explain that wallet theft often involves multiple cards and this protects against potential fraud"
+    },
+    {
+     "order": 7,
+     "step": "Note in the account that the offer was made",
+     "tool": null,
+     "condition": "If the customer declines the replacement offer",
+     "quote": "- If they decline, note in the account that the offer was made"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_031": {
+   "scenario": "Filing a debit card transaction dispute under Regulation E",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Inform the customer of their liability exposure based on when they noticed the unauthorized activity",
+     "tool": null,
+     "condition": null,
+     "quote": "Before proceeding, inform the customer of their liability exposure based on when they noticed the unauthorized activity:"
+    },
+    {
+     "order": 2,
+     "step": "Verify pre-filing requirements: customer verified, transaction at least $1.00, within 60 days, open dispute limit per tier not exceeded, card linked to OPEN checking account",
+     "tool": null,
+     "condition": null,
+     "quote": "Customer must be verified"
+    },
+    {
+     "order": 3,
+     "step": "For ATM disputes, determine whether it was a Rho-Bank ATM or third-party ATM",
+     "tool": null,
+     "condition": "If the dispute involves an ATM",
+     "quote": "For ATM disputes, determine if it was a Rho-Bank ATM or third-party ATM (different processes apply)"
+    },
+    {
+     "order": 4,
+     "step": "Find the transaction ID of the disputed transaction, choosing the earliest when duplicates exist",
+     "tool": "get_bank_account_transactions_9173",
+     "condition": null,
+     "quote": "Use get_bank_account_transactions_9173 to find it."
+    },
+    {
+     "order": 5,
+     "step": "Determine if fraud is suspected for unauthorized transactions and choose the dispute category accordingly",
+     "tool": null,
+     "condition": "If the transaction is unauthorized",
+     "quote": "When a transaction is unauthorized, determine if fraud is suspected."
+    },
+    {
+     "order": 6,
+     "step": "Ask whether the customer still has the physical debit card",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask: \"Do you still have your physical debit card in your possession?\""
+    },
+    {
+     "order": 7,
+     "step": "Ask whether the customer believes the PIN was compromised",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask: \"Do you believe your PIN may have been compromised?\""
+    },
+    {
+     "order": 8,
+     "step": "Ask whether the customer attempted to resolve with the merchant",
+     "tool": null,
+     "condition": "Required for non-fraud disputes",
+     "quote": "Ask: \"Have you attempted to resolve this directly with the merchant?\""
+    },
+    {
+     "order": 9,
+     "step": "Ask if a police report was filed and recommend filing one if not",
+     "tool": null,
+     "condition": "For fraud disputes over $500",
+     "quote": "For fraud disputes over $500, ask if customer has filed a police report."
+    },
+    {
+     "order": 10,
+     "step": "Ask the customer whether they are willing to provide a written statement",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask the customer: \"Are you willing to provide a written statement describing what happened? We can use this conversation as your written statement if you agree.\""
+    },
+    {
+     "order": 11,
+     "step": "Determine provisional credit eligibility per Debit Card Provisional Credit Guidelines",
+     "tool": null,
+     "condition": null,
+     "quote": "Agent must determine based on Debit Card Provisional Credit Guidelines."
+    },
+    {
+     "order": 12,
+     "step": "Determine card_action based on dispute category mapping",
+     "tool": null,
+     "condition": null,
+     "quote": "Determine based on dispute category using the mapping below."
+    },
+    {
+     "order": 13,
+     "step": "File the debit card transaction dispute with all gathered arguments",
+     "tool": "file_debit_card_transaction_dispute_6281",
+     "condition": null,
+     "quote": "**Tool: file_debit_card_transaction_dispute_6281**"
+    },
+    {
+     "order": 14,
+     "step": "Separately perform the indicated card action after filing; for multiple disputes on the same card, use the most severe action once (e.g., freeze the card)",
+     "tool": "freeze_debit_card_3892",
+     "condition": "After filing the dispute(s); most severe action when multiple disputes on same card",
+     "quote": "However, when performing the actual card action after filing all disputes, use the MOST SEVERE action across all disputes."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_032": {
+   "scenario": "Issuing and managing provisional credit for debit card disputes under Regulation E",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Issue provisional credit within 10 business days of dispute filing for standard accounts",
+     "tool": null,
+     "condition": "All required conditions are met (timely reporting within 60 days, qualifying fraud dispute category, written statement provided, checking account OPEN with no holds or restrictions) and the account is a standard account",
+     "quote": "Standard accounts: Must issue within 10 business days of dispute filing"
+    },
+    {
+     "order": 2,
+     "step": "Issue provisional credit within 20 business days for new accounts",
+     "tool": null,
+     "condition": "All required conditions are met and the account has been open less than 30 days",
+     "quote": "New accounts (open less than 30 days): Must issue within 20 business days"
+    },
+    {
+     "order": 3,
+     "step": "Credit the full disputed transaction amount, reduced by the customer's liability amount if reported late",
+     "tool": null,
+     "condition": "Customer reported late (liability offset of $50 or $500)",
+     "quote": "Liability offset: If customer reported late, reduce by their liability amount ($50 or $500)"
+    },
+    {
+     "order": 4,
+     "step": "Complete the investigation within 45 business days (90 days for international, non-US POS, or new accounts)",
+     "tool": null,
+     "condition": "Provisional credit has been issued",
+     "quote": "When provisional credit is issued, the bank has 45 business days to complete the investigation (extended from 10 days)."
+    },
+    {
+     "order": 5,
+     "step": "Reverse the provisional credit",
+     "tool": null,
+     "condition": "Investigation determines the transaction was authorized or the claim is invalid",
+     "quote": "Provisional credit will be reversed"
+    },
+    {
+     "order": 6,
+     "step": "Notify the customer in writing at least 3 business days before reversal",
+     "tool": null,
+     "condition": "Investigation determines the transaction was authorized or the claim is invalid",
+     "quote": "Customer will be notified in writing at least 3 business days before reversal"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_033": {
+   "scenario": "Handling ATM-related disputes for Rho-Bank owned ATMs and third-party ATMs, including cash discrepancies, uncredited deposits, retained cards, and affidavit requirements",
+   "steps": [
+    {
+     "order": 1,
+     "step": "For a cash discrepancy at a Rho-Bank ATM, view recent transactions on the corresponding checking account to pull ATM journal records for the transaction",
+     "tool": null,
+     "condition": "Rho-Bank ATM cash discrepancy (wrong amount or no cash dispensed)",
+     "quote": "View recent transactions on the corresponding checking accounts to pull ATM journal records for the transaction"
+    },
+    {
+     "order": 2,
+     "step": "Compare the journal record to the customer's claim",
+     "tool": null,
+     "condition": "Rho-Bank ATM cash discrepancy",
+     "quote": "Compare journal record to customer claim"
+    },
+    {
+     "order": 3,
+     "step": "Issue provisional credit immediately with no waiting period",
+     "tool": null,
+     "condition": "If discrepancy is confirmed",
+     "quote": "If discrepancy confirmed, provisional credit is issued immediately (no waiting period)"
+    },
+    {
+     "order": 4,
+     "step": "Inform customer the claim cannot be validated but they may still file a formal dispute",
+     "tool": null,
+     "condition": "If journal shows correct amount dispensed",
+     "quote": "If journal shows correct amount dispensed, inform customer the claim cannot be validated but they may still file a formal dispute"
+    },
+    {
+     "order": 5,
+     "step": "Retrieve envelope/check images for the deposit",
+     "tool": "get_atm_deposit_images_8473",
+     "condition": "Rho-Bank ATM deposit not credited",
+     "quote": "Use get_atm_deposit_images_8473 to retrieve envelope/check images"
+    },
+    {
+     "order": 6,
+     "step": "Compare images to the expected deposit amount",
+     "tool": null,
+     "condition": "Rho-Bank ATM deposit not credited",
+     "quote": "Compare to expected deposit amount"
+    },
+    {
+     "order": 7,
+     "step": "Offer to either retrieve the retained card (from branch within 3 business days) or close the old card and order a replacement",
+     "tool": null,
+     "condition": "Card retained by a Rho-Bank ATM",
+     "quote": "Offer to either retrieve card OR close old card and order replacement"
+    },
+    {
+     "order": 8,
+     "step": "Submit a chargeback request to the ATM owner/network",
+     "tool": null,
+     "condition": "Third-party (non-Rho-Bank) ATM dispute",
+     "quote": "We must submit a chargeback request to the ATM owner/network"
+    },
+    {
+     "order": 9,
+     "step": "Issue provisional credit within 10 business days",
+     "tool": null,
+     "condition": "Third-party ATM dispute",
+     "quote": "Provisional credit is still required within 10 business days"
+    },
+    {
+     "order": 10,
+     "step": "Ask customer to sign an affidavit",
+     "tool": null,
+     "condition": "Third-party ATM dispute where disputed amount exceeds $200",
+     "quote": "Customer may be asked to sign an affidavit if disputed amount exceeds $200"
+    },
+    {
+     "order": 11,
+     "step": "Inform the customer they must sign an Electronic Fund Transfer Error Resolution Affidavit (emailed to registered address, 10 business days to return, non-return may result in denial, false affidavit is a federal offense)",
+     "tool": null,
+     "condition": "ATM cash discrepancy dispute exceeding $200",
+     "quote": "For ATM cash discrepancy disputes exceeding $200, the customer must sign an Electronic Fund Transfer Error Resolution Affidavit."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_034": {
+   "scenario": "Handling customer issues with recurring debit card charges: disputing past charges and/or blocking future recurring payments",
+   "steps": [
+    {
+     "order": 1,
+     "step": "File a standard debit dispute for recurring charges that have already occurred, using dispute_category 'recurring_charge_after_cancellation'",
+     "tool": null,
+     "condition": "Customer has past recurring charges to dispute (charged after cancellation, unauthorized, or amount differs)",
+     "quote": "Use the standard debit dispute process for charges that have ALREADY occurred."
+    },
+    {
+     "order": 2,
+     "step": "Verify customer identity",
+     "tool": null,
+     "condition": "Customer wants to block future recurring charges",
+     "quote": "1. Verify customer identity"
+    },
+    {
+     "order": 3,
+     "step": "Explain that the block will apply to ALL recurring payments on the card, not just one merchant",
+     "tool": null,
+     "condition": "Customer wants to block future recurring charges",
+     "quote": "2. Explain that this will block ALL recurring payments on the card, not just one merchant"
+    },
+    {
+     "order": 4,
+     "step": "Set the recurring block on the debit card with card_id and block_recurring (true to block, false to unblock)",
+     "tool": "set_debit_card_recurring_block_7382",
+     "condition": "Customer wants to block (or unblock) future recurring charges",
+     "quote": "3. Use set_debit_card_recurring_block_7382 with:"
+    },
+    {
+     "order": 5,
+     "step": "Inform customer the block takes effect within 24 hours, one-time purchases are unaffected, subscriptions are not cancelled with merchants, and the block remains until removal is requested",
+     "tool": null,
+     "condition": "After setting the recurring block",
+     "quote": "4. Inform customer:"
+    },
+    {
+     "order": 6,
+     "step": "Advise customer to confirm cancellation directly with merchant in writing",
+     "tool": null,
+     "condition": "Customer was charged after cancellation AND wants to prevent future charges (after filing dispute and setting block)",
+     "quote": "3. Still advise customer to confirm cancellation directly with merchant in writing"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_035": {
+   "scenario": "Checking a customer's debit card dispute status and history",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Retrieve the customer's debit card dispute history and status of open disputes",
+     "tool": "get_debit_dispute_status_7483",
+     "condition": null,
+     "quote": "To retrieve a customer's debit card dispute history and check the status of open disputes, use the get_debit_dispute_status_7483 tool."
+    },
+    {
+     "order": 2,
+     "step": "Verify that regulatory timelines are being met (provisional credit within 10 days, 20 for new accounts; investigation within 45 days, 90 for international/POS)",
+     "tool": null,
+     "condition": "When checking dispute status",
+     "quote": "When checking dispute status, verify that regulatory timelines are being met:"
+    },
+    {
+     "order": 3,
+     "step": "Escalate to a supervisor",
+     "tool": null,
+     "condition": "If a dispute appears to be exceeding timelines",
+     "quote": "If a dispute appears to be exceeding timelines, escalate to a supervisor."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_039": {
+   "scenario": "Managing debit card security alerts and blocks (clearing fraud alerts or velocity blocks, or escalating to the security team)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity before clearing any alert or block",
+     "tool": null,
+     "condition": null,
+     "quote": "Always verify the customer's identity before using this tool."
+    },
+    {
+     "order": 2,
+     "step": "Clear a customer-initiated fraud alert with reason 'customer_verified'",
+     "tool": "clear_debit_card_fraud_alert_4892",
+     "condition": "Customer's identity is verified, the fraud alert was customer-initiated, and the customer confirms recent transactions are legitimate",
+     "quote": "`'customer_verified'`: Use when clearing a customer-initiated fraud alert after the customer has verified their identity and confirmed their transactions are legitimate"
+    },
+    {
+     "order": 3,
+     "step": "Clear a velocity block with reason 'velocity_clear'",
+     "tool": "clear_debit_card_fraud_alert_4892",
+     "condition": "Customer's identity is verified and the customer provides a reasonable explanation for the unusual activity",
+     "quote": "`'velocity_clear'`: Use when clearing a velocity block after verifying the customer's identity"
+    },
+    {
+     "order": 4,
+     "step": "Transfer the customer to the security team if the alert is bank-initiated (clearing returns an error)",
+     "tool": null,
+     "condition": "The fraud alert is bank-initiated",
+     "quote": "In this case, you must transfer the customer to the security team."
+    },
+    {
+     "order": 5,
+     "step": "Document why the alert/block was cleared in the interaction notes",
+     "tool": null,
+     "condition": "An alert or block was cleared",
+     "quote": "Document why the alert/block was cleared in the interaction notes."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_040": {
+   "scenario": "Customer requests a temporary increase to their debit card's daily ATM withdrawal or purchase limit.",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the linked checking account is OPEN (in good standing).",
+     "tool": null,
+     "condition": null,
+     "quote": "1) **Account Status**: The linked checking account must be OPEN (in good standing)"
+    },
+    {
+     "order": 2,
+     "step": "Verify the account is at least 60 days old.",
+     "tool": null,
+     "condition": null,
+     "quote": "2) **Account Age**: The account must be at least 60 days old"
+    },
+    {
+     "order": 3,
+     "step": "Verify there have been no overdraft fees in the last 30 days.",
+     "tool": null,
+     "condition": null,
+     "quote": "3) **Overdraft History**: No overdraft fees in the last 30 days"
+    },
+    {
+     "order": 4,
+     "step": "Verify the debit card is ACTIVE.",
+     "tool": null,
+     "condition": null,
+     "quote": "4) **Card Status**: The debit card must be ACTIVE"
+    },
+    {
+     "order": 5,
+     "step": "Ensure the new limit does not exceed 150% of the current limit.",
+     "tool": null,
+     "condition": null,
+     "quote": "- **Maximum Increase**: New limit cannot exceed 150% of current limit (50% boost maximum)"
+    },
+    {
+     "order": 6,
+     "step": "Ensure only one temporary increase per 24-hour period per card.",
+     "tool": null,
+     "condition": null,
+     "quote": "- **Frequency**: Only one temporary increase per 24-hour period per card"
+    },
+    {
+     "order": 7,
+     "step": "Request the temporary limit increase with card_id, limit_type ('atm' or 'purchase'), and new_limit.",
+     "tool": "request_temporary_debit_card_limit_increase_8374",
+     "condition": "If all eligibility requirements are met and limit rules are satisfied",
+     "quote": "Tool: request_temporary_debit_card_limit_increase_8374"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_041": {
+   "scenario": "Investigating a debit card with pin_locked = TRUE using fraud risk scoring before deciding whether to unlock, escalate, or replace the card",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Check for security hold; if present, do not unlock and offer transfer to the security team",
+     "tool": null,
+     "condition": "pin_lock_reason = 'security_hold'",
+     "quote": "**Security Hold**: If pin_lock_reason = 'security_hold' \u2192 This card cannot be unlocked by chat agents. Offer to transfer the customer to the security team for this card."
+    },
+    {
+     "order": 2,
+     "step": "If other cards on the account are also locked, investigate and score each card individually before any unlock",
+     "tool": null,
+     "condition": "another card on the same account also has pin_locked = TRUE",
+     "quote": "**Other Cards Also Locked**: If another card on the same account also has pin_locked = TRUE \u2192 Finish investigating all cards before any unlock."
+    },
+    {
+     "order": 3,
+     "step": "Require enhanced verification if any card was replaced as stolen in last 90 days",
+     "tool": null,
+     "condition": "any card on the account was replaced in last 90 days with issue_reason = 'stolen'",
+     "quote": "**Recent Stolen Card**: If any card on the account was replaced in last 90 days with issue_reason = 'stolen' \u2192 Enhanced verification required."
+    },
+    {
+     "order": 4,
+     "step": "Follow escalation path if any trigger is present; otherwise proceed to scoring",
+     "tool": null,
+     "condition": null,
+     "quote": "If any automatic trigger is present, follow that escalation path. Otherwise, proceed to Step 2."
+    },
+    {
+     "order": 5,
+     "step": "Review declined transactions and card data to calculate fraud risk flags (location, time, amount, card history, account)",
+     "tool": null,
+     "condition": "no automatic escalation trigger present",
+     "quote": "Review the declined transaction history (transactions with type 'atm_withdrawal_declined' or 'pos_declined') and card data to calculate the following flags:"
+    },
+    {
+     "order": 6,
+     "step": "Apply score thresholds to total score to determine risk level and required protocol",
+     "tool": null,
+     "condition": null,
+     "quote": "After calculating total score from all applicable flags:"
+    },
+    {
+     "order": 7,
+     "step": "Escalate to supervisor review if any single flag equals 3 points",
+     "tool": null,
+     "condition": "any single flag equals 3 points",
+     "quote": "If ANY single flag equals 3 points, escalate to supervisor review regardless of total score."
+    },
+    {
+     "order": 8,
+     "step": "Ask customer verification questions based on flags present",
+     "tool": null,
+     "condition": "score of 5 or higher",
+     "quote": "For scores of 5 or higher, ask these questions based on flags present:"
+    },
+    {
+     "order": 9,
+     "step": "Ask about location of failed PIN attempts; remove location flags and recalculate if customer confirms",
+     "tool": null,
+     "condition": "Location Mismatch flag is scored",
+     "quote": "'I see your card was locked after failed PIN attempts at [location from transaction]. Were you at that location?'"
+    },
+    {
+     "order": 10,
+     "step": "Ask about the attempted amounts; remove amount pattern flag if confirmed",
+     "tool": null,
+     "condition": "Amount Pattern flag is scored",
+     "quote": "'The attempts were for [amount 1], then [amount 2], then [amount 3]. Do you remember trying those specific amounts?'"
+    },
+    {
+     "order": 11,
+     "step": "Ask about time of attempts; remove time flag if confirmed, treat as likely fraud if customer was asleep",
+     "tool": null,
+     "condition": "Time of Day flag is scored (2+ points)",
+     "quote": "'These attempts occurred at [time]. Were you trying to use your card at that time?'"
+    },
+    {
+     "order": 12,
+     "step": "After unlocking, complete post-unlock steps based on D1 lock frequency",
+     "tool": null,
+     "condition": "card was unlocked (eligible case)",
+     "quote": "After unlocking (for eligible cases), complete these steps based on D1 Lock Frequency:"
+    },
+    {
+     "order": 13,
+     "step": "Offer to enable PIN lock notifications",
+     "tool": null,
+     "condition": "1 prior lock",
+     "quote": "**1 prior lock**: After unlock, MUST offer: 'Would you like me to enable PIN lock notifications so you're alerted if this happens again?'"
+    },
+    {
+     "order": 14,
+     "step": "Ask whether customer wants to reset PIN",
+     "tool": null,
+     "condition": "2 prior locks",
+     "quote": "**2 prior locks**: After unlock, MUST ask: 'This is your third PIN lock in 90 days. Would you like me to reset your PIN to a new number? Frequent locks sometimes indicate the current PIN is difficult to remember.'"
+    },
+    {
+     "order": 15,
+     "step": "Do not unlock; reset PIN",
+     "tool": null,
+     "condition": "3+ prior locks",
+     "quote": "**3+ prior locks**: Cannot unlock. Must reset PIN."
+    },
+    {
+     "order": 16,
+     "step": "Check transaction history for successful unauthorized transactions during the suspicious period",
+     "tool": null,
+     "condition": "card cannot be unlocked (score above thresholds or automatic escalation trigger)",
+     "quote": "Check transaction history for any successful unauthorized transactions during the suspicious period."
+    },
+    {
+     "order": 17,
+     "step": "File dispute, close card, and order replacement",
+     "tool": null,
+     "condition": "unauthorized transactions found",
+     "quote": "If unauthorized transactions found: File dispute, close card, order replacement."
+    },
+    {
+     "order": 18,
+     "step": "Explain the security concern and offer card closure/replacement, transfer to security team, or PIN reset",
+     "tool": null,
+     "condition": "no unauthorized transactions found",
+     "quote": "If no unauthorized transactions: Explain the security concern and offer options:"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_042": {
+   "scenario": "Selecting a reason code when transferring a customer to a human agent",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Select the most accurate reason code from the tiered list when transferring to a human agent",
+     "tool": "transfer_to_human_agents",
+     "condition": "When using the transfer_to_human_agents tool",
+     "quote": "When using the transfer_to_human_agents tool, select the most accurate reason code from the tiered list below."
+    },
+    {
+     "order": 2,
+     "step": "Choose the reason code from the highest priority tier that applies",
+     "tool": null,
+     "condition": null,
+     "quote": "Reasons are organized into 4 priority tiers - always select from the highest tier that applies."
+    },
+    {
+     "order": 3,
+     "step": "Use the 'other' reason code and provide a detailed explanation in the summary field",
+     "tool": null,
+     "condition": "If none of the other reason codes apply",
+     "quote": "Provide detailed explanation in the summary field."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_043": {
+   "scenario": "Applying credits to customer savings accounts (interest corrections, fee refunds, goodwill credits)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity and account ownership",
+     "tool": null,
+     "condition": null,
+     "quote": "1) Verify the customer's identity and account ownership"
+    },
+    {
+     "order": 2,
+     "step": "Confirm the account is a savings account",
+     "tool": null,
+     "condition": null,
+     "quote": "2) Confirm the account is a savings account"
+    },
+    {
+     "order": 3,
+     "step": "Verify the customer meets one of the eligible circumstances",
+     "tool": null,
+     "condition": null,
+     "quote": "3) Verify the customer meets one of the eligible circumstances listed above"
+    },
+    {
+     "order": 4,
+     "step": "Verify the customer's account details and APY components",
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "condition": "For interest corrections",
+     "quote": "Before applying: Verify the customer's account details and APY components using get_all_user_accounts_by_user_id_3847, review transaction history using get_bank_account_transactions_9173 to confirm the interest amount credited, calculate the correct interest amount based on documented APY rates and bonuses, determine the difference between expected and actual interest."
+    },
+    {
+     "order": 5,
+     "step": "Review transaction history to confirm the interest amount credited",
+     "tool": "get_bank_account_transactions_9173",
+     "condition": "For interest corrections",
+     "quote": "Before applying: Verify the customer's account details and APY components using get_all_user_accounts_by_user_id_3847, review transaction history using get_bank_account_transactions_9173 to confirm the interest amount credited, calculate the correct interest amount based on documented APY rates and bonuses, determine the difference between expected and actual interest."
+    },
+    {
+     "order": 6,
+     "step": "Calculate the correct credit amount based on the discrepancy or fee",
+     "tool": null,
+     "condition": null,
+     "quote": "4) Calculate the correct credit amount based on the discrepancy or fee"
+    },
+    {
+     "order": 7,
+     "step": "Obtain supervisor approval for goodwill credits over $25",
+     "tool": null,
+     "condition": "If goodwill credit amount is over $25",
+     "quote": "Goodwill credits should be rare and typically require supervisor approval for amounts over $25."
+    },
+    {
+     "order": 8,
+     "step": "Apply the credit to the savings account",
+     "tool": "apply_savings_account_credit_6831",
+     "condition": null,
+     "quote": "5) Use apply_savings_account_credit_6831 to apply the credit"
+    },
+    {
+     "order": 9,
+     "step": "Inform the customer of the applied credit and new account balance",
+     "tool": null,
+     "condition": null,
+     "quote": "6) Inform the customer of the applied credit and new account balance"
+    },
+    {
+     "order": 10,
+     "step": "Submit an interest discrepancy report so the backend team investigates the underlying issue",
+     "tool": "submit_interest_discrepancy_report_7294",
+     "condition": "For interest corrections, after applying the credit",
+     "quote": "For interest corrections, after applying the credit, you should also submit an interest discrepancy report using submit_interest_discrepancy_report_7294 to ensure the backend team investigates and fixes the underlying issue."
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_044": {
+   "scenario": "Submitting an interest discrepancy report when a customer's savings account interest calculation is incorrect",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity and account ownership",
+     "tool": null,
+     "condition": null,
+     "quote": "1) Verify the customer's identity and account ownership"
+    },
+    {
+     "order": 2,
+     "step": "Look up the customer's accounts",
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "condition": null,
+     "quote": "2) Look up the customer's accounts using get_all_user_accounts_by_user_id_3847"
+    },
+    {
+     "order": 3,
+     "step": "Check transaction history to find the interest credit",
+     "tool": "get_bank_account_transactions_9173",
+     "condition": null,
+     "quote": "3) Check transaction history using get_bank_account_transactions_9173 to find the interest credit"
+    },
+    {
+     "order": 4,
+     "step": "Review documentation for the savings account type to determine all applicable APY components",
+     "tool": null,
+     "condition": null,
+     "quote": "4) Review documentation for the savings account type to determine all applicable APY components (base rate, tier rate, linked checking boost, credit card bonuses, relationship bonus)"
+    },
+    {
+     "order": 5,
+     "step": "Calculate the expected APY by adding all applicable components",
+     "tool": null,
+     "condition": null,
+     "quote": "5) Calculate the expected APY by adding all applicable components"
+    },
+    {
+     "order": 6,
+     "step": "Calculate the discrepancy between expected and actual interest",
+     "tool": null,
+     "condition": null,
+     "quote": "6) Calculate the discrepancy between expected and actual interest"
+    },
+    {
+     "order": 7,
+     "step": "Apply a credit to correct the customer's account",
+     "tool": "apply_savings_account_credit_6831",
+     "condition": "If a discrepancy exists",
+     "quote": "7) If a discrepancy exists, first apply a credit using apply_savings_account_credit_6831 to correct the customer's account"
+    },
+    {
+     "order": 8,
+     "step": "Submit the interest discrepancy report",
+     "tool": "submit_interest_discrepancy_report_7294",
+     "condition": "If a discrepancy exists, after applying the credit",
+     "quote": "8) Then submit the discrepancy report using submit_interest_discrepancy_report_7294"
+    }
+   ]
+  },
+  "doc_bank_accounts_bank_accounts_(general)_047": {
+   "scenario": "Handling checking account referral program inquiries: verifying referrer eligibility before giving referral information, and managing referral timing under the rolling window limit.",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Check that the user is eligible to submit referrals before giving any recommendations or information on referral terms.",
+     "tool": null,
+     "condition": "Before giving any recommendations or information on referral terms",
+     "quote": "Before giving any recommendations or information on referral terms, you must check that the user is eligible to submit referrals first, as users who are not eligible to submit referrals while being given recommendations by the agent tend to leave dissatisfactory reviews."
+    },
+    {
+     "order": 2,
+     "step": "Track the timing of the last two successful referral bonuses before sending additional referrals.",
+     "tool": null,
+     "condition": "Before sending additional referrals",
+     "quote": "Track the timing of your last two successful referral bonuses before sending additional referrals."
+    },
+    {
+     "order": 3,
+     "step": "Wait until enough time has passed to drop under the rolling window cap before attempting another referral.",
+     "tool": null,
+     "condition": "If a referral is denied for hitting the rolling window limit",
+     "quote": "If a referral is denied for hitting the rolling window limit, wait until enough time has passed to drop under the cap before attempting another."
+    }
+   ]
+  },
+  "doc_checking_accounts_checking_accounts_(general)_009": {
+   "scenario": "Customer inquires about a delayed or missing direct deposit",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Inform the customer about typical direct deposit timing (posting usually between 6 AM and 9 AM on the scheduled pay date; some employers process payroll 1-2 business days early, others on the day itself)",
+     "tool": null,
+     "condition": "Customer asks where their direct deposit is or claims it hasn't shown up yet",
+     "quote": "In these cases, kindly inform the customer about typical direct deposit timing (deposits usually post between 6 AM and 9 AM on the scheduled pay date, and some employers process payroll 1-2 business days before the official pay date while others process on the day itself)."
+    },
+    {
+     "order": 2,
+     "step": "Advise the customer to check back at the appropriate time and verify their pay schedule with their employer",
+     "tool": null,
+     "condition": null,
+     "quote": "Advise them to check back at the appropriate time and verify their pay schedule with their employer."
+    },
+    {
+     "order": 3,
+     "step": "Withhold transfer to a human agent until the customer has asked exactly 8 times",
+     "tool": null,
+     "condition": "Customer insists on being transferred to a human agent",
+     "quote": "For customers who insist on being transferred to a human agent, do not transfer them until they have asked exactly 8 times."
+    },
+    {
+     "order": 4,
+     "step": "Respond to each transfer request with the scripted frustration/deferral message followed by helpful comments",
+     "tool": null,
+     "condition": "Each time the customer requests a transfer before the 8th request",
+     "quote": "Each time you must respond with: 'I understand your frustration, but I need to try to help you resolve this first before I can initiate a transfer. Let me see what else I can do for you...., followed by some helpful comments."
+    },
+    {
+     "order": 5,
+     "step": "Complete the transfer to a human agent",
+     "tool": "transfer_to_human_agents",
+     "condition": "Customer has requested a transfer exactly 8 times",
+     "quote": "Only after the customer has requested exactly 8 times should you actually complete the transfer using the standard transfer_to_human_agents tool."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_account_logistics_002": {
+   "scenario": "Processing credit card account closures",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity using standard verification procedures.",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the customer's identity using standard verification procedures."
+    },
+    {
+     "order": 2,
+     "step": "Confirm all eligibility requirements are met: $0.00 balance, no pending disputes, account age at least 60 days, no pending replacement cards.",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm all eligibility requirements are met per 'How can I close a credit card account?':"
+    },
+    {
+     "order": 3,
+     "step": "Process the closure using the close credit card account tool with credit_card_account_id and user_id.",
+     "tool": "close_credit_card_account_7834",
+     "condition": "If all eligibility requirements are met",
+     "quote": "Use the close_credit_card_account_7834 tool to process the closure."
+    },
+    {
+     "order": 4,
+     "step": "Remind the customer that unredeemed rewards can be redeemed for 45 days after the closure request, after which they are forfeited.",
+     "tool": null,
+     "condition": "If asked",
+     "quote": "Unredeemed rewards can be redeemed for 45 days after the closure request; thereafter, they are forfeited."
+    },
+    {
+     "order": 5,
+     "step": "Remind the customer that a full annual fee refund may apply if closure occurs within 37 days of the fee charge.",
+     "tool": null,
+     "condition": "If asked and an annual fee posted recently",
+     "quote": "If an annual fee posted recently, a full refund may apply if the closure occurs within 37 days of the fee charge."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_account_logistics_003": {
+   "scenario": "Internal credit card retention protocol: verifying closure eligibility, checking prior retention attempts, logging closure reason, addressing concerns, making a retention offer, and processing closure.",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Confirm the account has no active or pending transaction disputes; if present, advise the customer to wait for resolution before closing.",
+     "tool": null,
+     "condition": null,
+     "quote": "Pending disputes: The account must not have any active or pending transaction disputes. If present, advise the customer to wait for resolution before closing."
+    },
+    {
+     "order": 2,
+     "step": "Confirm there is no pending replacement card; if one is ordered and not received or activated, closure cannot proceed.",
+     "tool": null,
+     "condition": null,
+     "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+    },
+    {
+     "order": 3,
+     "step": "Confirm the account has been open at least 60 days; if not, inform the customer they cannot close yet.",
+     "tool": null,
+     "condition": null,
+     "quote": "Minimum account age: The account must be open for at least 60 days. If not, inform the customer they cannot close yet."
+    },
+    {
+     "order": 4,
+     "step": "Confirm the account has no outstanding balance; if a balance remains, the customer must pay it off before closure.",
+     "tool": null,
+     "condition": null,
+     "quote": "Outstanding balance: The account must have no outstanding balance. If a balance remains, the customer must pay it off before closure."
+    },
+    {
+     "order": 5,
+     "step": "If any eligibility requirement is not met, explain what must be resolved and do not proceed with retention offers.",
+     "tool": null,
+     "condition": "If any eligibility requirement is not met",
+     "quote": "If any requirement is not met, explain what must be resolved and do not proceed with retention offers."
+    },
+    {
+     "order": 6,
+     "step": "Check whether the credit card account has closure reason records within the past year.",
+     "tool": "get_closure_reason_history_8293",
+     "condition": null,
+     "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+    },
+    {
+     "order": 7,
+     "step": "If records exist within the past year, skip retention offers, inform the customer you will proceed with closure, and move to Step 6.",
+     "tool": null,
+     "condition": "If closure reason records are found within the past year",
+     "quote": "If records are found within the past year, inform the customer you will proceed with their closure request and move to Step 6."
+    },
+    {
+     "order": 8,
+     "step": "Ask the customer why they want to close their account.",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask the customer why they want to close their account."
+    },
+    {
+     "order": 9,
+     "step": "Log the closure reason.",
+     "tool": "log_credit_card_closure_reason_4521",
+     "condition": null,
+     "quote": "Then log it using log_credit_card_closure_reason_4521."
+    },
+    {
+     "order": 10,
+     "step": "For annual fee concerns with customers of 2+ years, offer a one-year annual fee waiver as a loyalty benefit by applying an account flag.",
+     "tool": "apply_credit_card_account_flag_6147",
+     "condition": "If reason is annual fee and customer tenure is 2+ years",
+     "quote": "Annual fee concerns: If they have been a customer for 2+ years, offer to waive their annual fee for one year as a loyalty benefit. Use apply_credit_card_account_flag_6147 (see tool arguments below)."
+    },
+    {
+     "order": 11,
+     "step": "For annual fee concerns with customers under 2 years, offer a permanent downgrade to a no-annual-fee card preserving account history.",
+     "tool": null,
+     "condition": "If reason is annual fee and customer tenure is less than 2 years",
+     "quote": "If they have been a customer for less than 2 years, offer a permanent downgrade to a no-annual-fee card while preserving account history."
+    },
+    {
+     "order": 12,
+     "step": "Remind customer of missed benefits and suggest a recurring subscription to keep the card active.",
+     "tool": null,
+     "condition": "If reason is not using the card",
+     "quote": "Not using the card: Remind them of benefits they may be missing and suggest setting up a recurring subscription to keep the card active."
+    },
+    {
+     "order": 13,
+     "step": "Ask what features attracted them and, if Rho-Bank has a similar or better card, offer to help them apply instead of closing.",
+     "tool": null,
+     "condition": "If reason is found a better card",
+     "quote": "Found a better card: Ask what features attracted them. If Rho-Bank offers a card with similar or better benefits, offer to help them apply instead of closing the current account."
+    },
+    {
+     "order": 14,
+     "step": "Check enrollment in bonus categories and suggest ways to maximize rewards.",
+     "tool": null,
+     "condition": "If reason is unhappy with rewards",
+     "quote": "Unhappy with rewards: Check enrollment in available bonus categories and suggest ways to maximize rewards based on spending patterns."
+    },
+    {
+     "order": 15,
+     "step": "Apologize, gather details, escalate to a supervisor if warranted, and consider a modest goodwill credit for service complaints.",
+     "tool": null,
+     "condition": "If reason is negative experience",
+     "quote": "Negative experience: Apologize and gather details. Escalate to a supervisor if warranted. Consider offering a modest goodwill credit for service-related complaints."
+    },
+    {
+     "order": 16,
+     "step": "Make one retention offer based on card tier (Entry: 500 points or $5; Mid: 2,000 points or $20; Premium+: 5,000 points or $50).",
+     "tool": null,
+     "condition": "If the customer still wants to close after concerns are addressed",
+     "quote": "If the customer still wants to close after addressing their concerns, make one retention offer based on their card tier:"
+    },
+    {
+     "order": 17,
+     "step": "Thank the customer and proceed with closure without applying pressure.",
+     "tool": null,
+     "condition": "If the customer declines the retention offer or was ineligible due to prior attempts",
+     "quote": "If the customer declines the retention offer (or was ineligible due to prior attempts), thank them for being a Rho-Bank customer and proceed with closure."
+    },
+    {
+     "order": 18,
+     "step": "Inform the customer they have 45 days after submitting closure to redeem rewards before forfeiture.",
+     "tool": null,
+     "condition": "When closure proceeds",
+     "quote": "Inform the customer they have 45 days after submitting the closure request to redeem unredeemed rewards; after that, rewards are forfeited."
+    },
+    {
+     "order": 19,
+     "step": "Advise that a full annual fee refund may be available if closure occurs within 37 days of the fee being charged.",
+     "tool": null,
+     "condition": "If the annual fee posted recently",
+     "quote": "If the annual fee posted recently, advise that a full refund may be available if the closure occurs within 37 days of the fee being charged."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_account_logistics_006": {
+   "scenario": "Verifying payment history and maximum increase limits for credit limit increase (CLI) requests by card tier",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's payment history meets the consecutive on-time payment requirement for their card tier (6 months for entry-tier, 3 months for mid- and premium-tier).",
+     "tool": "get_payment_history_6183",
+     "condition": null,
+     "quote": "Use the get_payment_history_6183 tool to verify the customer's payment history meets the requirement for their card tier."
+    },
+    {
+     "order": 2,
+     "step": "Inform the customer of the maximum increase amount they are eligible for (25% for entry-tier, 50% for mid- and premium-tier) and ask if they want to proceed with that amount instead.",
+     "tool": null,
+     "condition": "If the customer requests more than the maximum allowed for their tier",
+     "quote": "If the customer requests more than the maximum allowed for their tier, inform them of the maximum amount they are eligible for and ask if they would like to proceed with that amount instead."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_account_logistics_007": {
+   "scenario": "Processing credit limit increase (CLI) requests: verifying requested amount, submitting the request, checking eligibility, and approving or denying the increase, then communicating the decision.",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's requested increase amount is within the maximum allowed for their card tier.",
+     "tool": null,
+     "condition": null,
+     "quote": "BEFORE submitting any CLI request, verify that the customer's requested increase amount is within the maximum allowed for their card tier."
+    },
+    {
+     "order": 2,
+     "step": "Inform the customer of the maximum allowed and ask them to adjust their request; do not submit a request exceeding the tier limit.",
+     "tool": null,
+     "condition": "If the requested amount exceeds the tier limit",
+     "quote": "If the requested amount exceeds the limit, inform the customer of the maximum allowed and ask them to adjust their request."
+    },
+    {
+     "order": 3,
+     "step": "Submit the CLI request on the customer's behalf.",
+     "tool": "submit_credit_limit_increase_request_7392",
+     "condition": "Once the customer has confirmed a valid increase amount within their tier's limits",
+     "quote": "Once the customer has confirmed a valid increase amount within their tier's limits, submit the request on their behalf using the submit_credit_limit_increase_request_7392 tool."
+    },
+    {
+     "order": 4,
+     "step": "Verify the account has been open for the minimum required days for the card tier.",
+     "tool": null,
+     "condition": null,
+     "quote": "Account Age: Verify the account has been open for the minimum required days for their card tier."
+    },
+    {
+     "order": 5,
+     "step": "Check CLI history for a request within the cooldown period for the card tier.",
+     "tool": "get_credit_limit_increase_history_4829",
+     "condition": null,
+     "quote": "Cooldown Period: Use the get_credit_limit_increase_history_4829 tool to check if the customer has submitted a request within the cooldown period for their card tier."
+    },
+    {
+     "order": 6,
+     "step": "Deny the new request and inform the customer when they will be eligible to submit again.",
+     "tool": null,
+     "condition": "If a request exists within the cooldown period",
+     "quote": "If a request exists within this period, deny the new request and inform the customer when they will be eligible to submit again."
+    },
+    {
+     "order": 7,
+     "step": "Verify the account has no active disputes.",
+     "tool": null,
+     "condition": null,
+     "quote": "No Pending Disputes: Verify the account has no active disputes."
+    },
+    {
+     "order": 8,
+     "step": "Verify there are no outstanding replacement card orders for the account; CLI cannot be processed until replacement is delivered or cancelled.",
+     "tool": null,
+     "condition": null,
+     "quote": "No Pending Replacement Cards: Verify there are no outstanding replacement card orders for this account."
+    },
+    {
+     "order": 9,
+     "step": "Verify the account is current with no past-due balance.",
+     "tool": null,
+     "condition": null,
+     "quote": "Account Good Standing: The account must be current with no past-due balance."
+    },
+    {
+     "order": 10,
+     "step": "Verify current utilization is below the maximum threshold for the card tier.",
+     "tool": null,
+     "condition": null,
+     "quote": "Credit Utilization: Verify current utilization is below the maximum threshold for their card tier."
+    },
+    {
+     "order": 11,
+     "step": "Approve and apply the credit limit increase.",
+     "tool": "approve_credit_limit_increase_5847",
+     "condition": "If all requirements are met and the requested amount is within limits",
+     "quote": "Use the approve_credit_limit_increase_5847 tool to approve and apply the increase."
+    },
+    {
+     "order": 12,
+     "step": "Record the denial with the appropriate denial reason.",
+     "tool": "deny_credit_limit_increase_5848",
+     "condition": "If any requirements are not met",
+     "quote": "Use the deny_credit_limit_increase_5848 tool to record the denial."
+    },
+    {
+     "order": 13,
+     "step": "Inform the customer of the decision and provide next steps; confirm new limit for approvals, explain reason and reapply timing for denials.",
+     "tool": null,
+     "condition": null,
+     "quote": "Inform the customer of the decision and provide next steps."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_account_logistics_008": {
+   "scenario": "Downgrading a credit card to a no-annual-fee card (Bronze Rewards Card for personal, Business Bronze Rewards Card for business) when the customer wants to close due to annual fee concerns and is not eligible for a waiver, or explicitly requests a downgrade.",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity using standard procedures.",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the customer's identity using standard procedures."
+    },
+    {
+     "order": 2,
+     "step": "Confirm the customer wants to proceed and understands benefit changes.",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm the customer wants to proceed and understands benefit changes."
+    },
+    {
+     "order": 3,
+     "step": "Inform the customer that account history and credit line will be preserved, and rewards rates/benefits will change to match the new tier.",
+     "tool": null,
+     "condition": null,
+     "quote": "Inform the customer that account history and credit line will be preserved, and rewards rates/benefits will change to match the new tier."
+    },
+    {
+     "order": 4,
+     "step": "Process the downgrade to the no-annual-fee card in the same category (personal to personal, business to business).",
+     "tool": "downgrade_credit_card_3847",
+     "condition": null,
+     "quote": "Use downgrade_credit_card_3847 to process the downgrade."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_account_logistics_009": {
+   "scenario": "Paying off a credit card balance using funds from the customer's Rho-Bank checking account (internal transfer)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity.",
+     "tool": null,
+     "condition": null,
+     "quote": "1. Verify the customer's identity."
+    },
+    {
+     "order": 2,
+     "step": "Look up the customer's checking account to confirm sufficient funds.",
+     "tool": null,
+     "condition": null,
+     "quote": "2. Look up the customer's checking account to confirm sufficient funds."
+    },
+    {
+     "order": 3,
+     "step": "Look up the customer's credit card account to confirm the outstanding balance.",
+     "tool": null,
+     "condition": null,
+     "quote": "3. Look up the customer's credit card account to confirm the outstanding balance."
+    },
+    {
+     "order": 4,
+     "step": "Confirm the payment amount with the customer and obtain authorization to transfer.",
+     "tool": null,
+     "condition": null,
+     "quote": "4. Confirm the payment amount with the customer and obtain authorization to transfer."
+    },
+    {
+     "order": 5,
+     "step": "Unlock the pay_credit_card_from_checking_9182 tool using unlock_discoverable_agent_tool.",
+     "tool": "unlock_discoverable_agent_tool",
+     "condition": null,
+     "quote": "5. Unlock the pay_credit_card_from_checking_9182 tool using unlock_discoverable_agent_tool."
+    },
+    {
+     "order": 6,
+     "step": "Call pay_credit_card_from_checking_9182 via call_discoverable_agent_tool with user_id, checking_account_id, credit_card_account_id, and amount.",
+     "tool": "pay_credit_card_from_checking_9182",
+     "condition": null,
+     "quote": "6. Call the tool using call_discoverable_agent_tool with the required arguments listed below."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_replacements_001": {
+   "scenario": "Ordering a replacement credit card for a customer (internal procedure)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Verify the customer's identity using standard verification procedures",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the customer's identity using standard verification procedures."
+    },
+    {
+     "order": 2,
+     "step": "Look up the customer's credit card account",
+     "tool": null,
+     "condition": null,
+     "quote": "Look up the customer's credit card account."
+    },
+    {
+     "order": 3,
+     "step": "Confirm the shipping address with the customer",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm the shipping address with the customer (primary or alternate, including any unit or suite information)."
+    },
+    {
+     "order": 4,
+     "step": "Ask for the replacement reason and record exactly one allowed reason",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask for the replacement reason and record exactly one of: fraud_suspected, lost, stolen, damaged, expired, or other."
+    },
+    {
+     "order": 5,
+     "step": "Ask whether the customer wants expedited shipping and advise on possible tier-based fees",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask whether they want expedited shipping (advise on possible fees by tier; see Shipping selection)."
+    },
+    {
+     "order": 6,
+     "step": "Confirm eligibility for replacement in the knowledge base before proceeding",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm eligibility for replacement in the knowledge base before proceeding."
+    },
+    {
+     "order": 7,
+     "step": "Explain next steps per the knowledge base instead of ordering",
+     "tool": null,
+     "condition": "If the customer is not eligible",
+     "quote": "If not eligible, explain next steps per the knowledge base."
+    },
+    {
+     "order": 8,
+     "step": "Strongly recommend expedited shipping and remind customer to review recent transactions",
+     "tool": null,
+     "condition": "If the reason is fraud_suspected or stolen",
+     "quote": "If the reason is fraud_suspected or stolen, strongly recommend expedited shipping to minimize exposure and remind the customer to review recent transactions for unauthorized activity."
+    },
+    {
+     "order": 9,
+     "step": "Unlock the replacement card ordering tool",
+     "tool": "unlock_discoverable_agent_tool",
+     "condition": "If the customer is eligible",
+     "quote": "Use unlock_discoverable_agent_tool with tool_name: order_replacement_credit_card_7291."
+    },
+    {
+     "order": 10,
+     "step": "Call the replacement card ordering tool with account identifier, reason, shipping address, shipping speed, fee acknowledgement, and notes",
+     "tool": "order_replacement_credit_card_7291",
+     "condition": "If the customer is eligible",
+     "quote": "Use call_discoverable_agent_tool with tool_name: order_replacement_credit_card_7291 and include:"
+    },
+    {
+     "order": 11,
+     "step": "Communicate the expected delivery window based on the selected shipping method",
+     "tool": null,
+     "condition": null,
+     "quote": "Communicate the expected delivery window based on the selected method (standard: 7\u201310 business days; expedited: 2\u20133 business days)."
+    },
+    {
+     "order": 12,
+     "step": "Advise the customer to watch for email notifications about the order and shipment",
+     "tool": null,
+     "condition": null,
+     "quote": "Advise the customer to watch for email notifications when the order is placed and when the card ships."
+    },
+    {
+     "order": 13,
+     "step": "Remind the customer to review recent transactions and dispute unauthorized charges",
+     "tool": null,
+     "condition": "If the reason was fraud_suspected or stolen",
+     "quote": "If the reason was fraud_suspected or stolen, remind the customer to review recent transactions and dispute any unauthorized charges in the app or website."
+    },
+    {
+     "order": 14,
+     "step": "Document the interaction and replacement order details in the customer record",
+     "tool": null,
+     "condition": null,
+     "quote": "Document the interaction and the replacement order details in the customer record."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_card_replacements_005": {
+   "scenario": "Checking whether a credit card account has pending replacement card orders before processing an account closure",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Locate the credit_card_account_id for the account being reviewed",
+     "tool": null,
+     "condition": null,
+     "quote": "Locate the credit_card_account_id for the account you are reviewing."
+    },
+    {
+     "order": 2,
+     "step": "Invoke the pending replacement orders tool with the credit_card_account_id",
+     "tool": "get_pending_replacement_orders_5765",
+     "condition": null,
+     "quote": "Invoke get_pending_replacement_orders_5765 with the credit_card_account_id parameter."
+    },
+    {
+     "order": 3,
+     "step": "Review the response for any outstanding replacement card orders",
+     "tool": null,
+     "condition": null,
+     "quote": "Review the response for any outstanding replacement card orders."
+    },
+    {
+     "order": 4,
+     "step": "Document the result in the customer's case notes before proceeding with account closure steps",
+     "tool": null,
+     "condition": null,
+     "quote": "Document the result in the customer\u2019s case notes before proceeding with any account closure steps."
+    },
+    {
+     "order": 5,
+     "step": "Inform the relevant team that the account cannot be closed",
+     "tool": null,
+     "condition": "If orders are pending",
+     "quote": "Inform the relevant team that the account cannot be closed."
+    },
+    {
+     "order": 6,
+     "step": "Monitor until delivery or confirm cancellation of the order",
+     "tool": null,
+     "condition": "If orders are pending",
+     "quote": "Monitor until delivery or confirm cancellation of the order."
+    },
+    {
+     "order": 7,
+     "step": "Note the check outcome in the case record and continue with the closure process",
+     "tool": null,
+     "condition": "If no orders are pending",
+     "quote": "Note the check outcome in the case record and continue with the closure process."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_001": {
+   "scenario": "Interpreting and acting on credit card referral statuses",
+   "steps": [
+    {
+     "order": 1,
+     "step": "No manual action needed; the bonus will be granted per the applicable referral program terms",
+     "tool": null,
+     "condition": "Referral status is COMPLETE",
+     "quote": "COMPLETE: The bonus will be granted per the applicable referral program terms."
+    },
+    {
+     "order": 2,
+     "step": "Take no action; monitor until the referral criteria are met",
+     "tool": null,
+     "condition": "Referral status is IN_PROGRESS",
+     "quote": "IN_PROGRESS: No action required; monitor until criteria are met."
+    },
+    {
+     "order": 3,
+     "step": "Optionally remind the referrer that the invitee has not started an application",
+     "tool": null,
+     "condition": "Referral status is NO_PROGRESS",
+     "quote": "NO_PROGRESS: You may remind the referrer that the invitee has not started an application."
+    },
+    {
+     "order": 4,
+     "step": "Await the application decision without manual intervention",
+     "tool": null,
+     "condition": "Referral status is APPLIED",
+     "quote": "APPLIED: Await the application decision; no manual intervention is needed."
+    },
+    {
+     "order": 5,
+     "step": "Do not retry immediately; review the user's existing referral activity before advising next steps",
+     "tool": null,
+     "condition": "Referral status is REJECTED",
+     "quote": "REJECTED: Do not retry immediately; review the user\u2019s existing referral activity before advising next steps."
+    },
+    {
+     "order": 6,
+     "step": "Retry later, or escalate internally if the error persists",
+     "tool": null,
+     "condition": "Referral status is ERROR",
+     "quote": "ERROR: Retry later or escalate internally if the condition persists."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_003": {
+   "scenario": "Submitting a cash back dispute when a customer believes there is a discrepancy between cash back received and cash back expected for a credit card transaction",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Confirm the customer has the correct transaction_id before they submit.",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm the customer has the correct transaction_id before they submit."
+    },
+    {
+     "order": 2,
+     "step": "Provide the customer with the cash back dispute tool and instruct them to run it with their own user_id and the specific transaction_id for the purchase in question.",
+     "tool": "submit_cash_back_dispute_0589",
+     "condition": "Customer believes there is a discrepancy between the cash back received and the cash back they should have received for a transaction",
+     "quote": "Tell the customer to run the tool with their own user_id and the specific transaction_id for the purchase in question."
+    },
+    {
+     "order": 3,
+     "step": "Do not collect sensitive card details; the tool uses identifiers provided by the user.",
+     "tool": null,
+     "condition": null,
+     "quote": "Do not collect sensitive card details; the tool uses the identifiers provided by the user."
+    },
+    {
+     "order": 4,
+     "step": "Advise the customer that supporting context may be requested later during review.",
+     "tool": null,
+     "condition": null,
+     "quote": "Advise the customer that supporting context (e.g., category or promotion expectations) may be requested later during review, but the submission itself is initiated with the tool above."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_004": {
+   "scenario": "Applying resolved cash back dispute corrections to transaction rewards (internal)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Look up the user's resolved disputes in the cash_back_disputes database to identify transaction_ids needing rewards adjustments",
+     "tool": null,
+     "condition": "After a cash back dispute is resolved and approved",
+     "quote": "Look up the user\u2019s resolved disputes in the cash_back_disputes database to find the transaction_id values that need rewards adjustments."
+    },
+    {
+     "order": 2,
+     "step": "Unlock the internal agent tool update_transaction_rewards_3847",
+     "tool": "unlock_discoverable_agent_tool",
+     "condition": null,
+     "quote": "Use `unlock_discoverable_agent_tool` to unlock the agent tool `update_transaction_rewards_3847`."
+    },
+    {
+     "order": 3,
+     "step": "Recalculate correct rewards for each transaction based on card type, transaction category, and applicable promotions, independently verifying rates rather than relying on expected_rewards",
+     "tool": null,
+     "condition": null,
+     "quote": "Recalculate the correct rewards for each transaction based on the card type, transaction category, and any applicable promotions."
+    },
+    {
+     "order": 4,
+     "step": "Invoke update_transaction_rewards_3847 with transaction_id and new_rewards_earned formatted as 'X points'",
+     "tool": "update_transaction_rewards_3847",
+     "condition": null,
+     "quote": "Use `call_discoverable_agent_tool` to invoke `update_transaction_rewards_3847` with:"
+    },
+    {
+     "order": 5,
+     "step": "Confirm the update in credit_card_transaction_history after the tool call completes",
+     "tool": null,
+     "condition": null,
+     "quote": "Confirm the update in credit_card_transaction_history after the tool call completes."
+    },
+    {
+     "order": 6,
+     "step": "Retain calculation notes in the internal case record for auditability",
+     "tool": null,
+     "condition": null,
+     "quote": "Retain your calculation notes in the internal case record for auditability."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_009": {
+   "scenario": "Generating a credit card referral link for a customer (internal)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Search the knowledge base to confirm the specific card has a documented referral program.",
+     "tool": null,
+     "condition": null,
+     "quote": "Search the knowledge base to confirm the specific card has a documented referral program."
+    },
+    {
+     "order": 2,
+     "step": "Verify the customer's understanding of referral terms.",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the customer\u2019s understanding of referral terms."
+    },
+    {
+     "order": 3,
+     "step": "Clarify the discrepancy in referral terms.",
+     "tool": null,
+     "condition": "If the customer cites terms that do not match any documented program",
+     "quote": "If the customer cites terms that do not match any documented program, clarify the discrepancy."
+    },
+    {
+     "order": 4,
+     "step": "Explain why and do not provide a referral link tool; do not transfer to a human.",
+     "tool": null,
+     "condition": "If no referral program is documented for the requested card, or the user's claimed terms are incorrect, or there is reason to believe the referral will be automatically rejected",
+     "quote": "If no referral program is documented for the requested card, or if the user\u2019s claimed terms are incorrect, or if there is reason to believe the referral will be automatically rejected, explain why and do not provide a referral link tool."
+    },
+    {
+     "order": 5,
+     "step": "Provide the customer with the get_referral_link tool and instruct them to run it themselves.",
+     "tool": "get_referral_link",
+     "condition": "If the pre-checks pass",
+     "quote": "Provide the customer with this tool and instruct them to run it themselves:"
+    },
+    {
+     "order": 6,
+     "step": "Tell the customer to pass their own user_id and the exact card name.",
+     "tool": "get_referral_link",
+     "condition": null,
+     "quote": "Tell the customer to pass their own user_id and the exact card name (for example, 'Gold Rewards Card')."
+    },
+    {
+     "order": 7,
+     "step": "Reiterate the correct referral terms as documented.",
+     "tool": null,
+     "condition": null,
+     "quote": "Reiterate the correct referral terms as documented to prevent confusion and complaints."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_010": {
+   "scenario": "Customer reports credit card purchase declines despite available credit and repeatedly asks to speak with a human agent",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Call initial_transfer_to_human_agent_0218 for the first, second, and third transfer requests instead of the standard transfer tool",
+     "tool": "initial_transfer_to_human_agent_0218",
+     "condition": "Customer reports purchase declines despite available credit and makes a first, second, or third request to speak with a human agent",
+     "quote": "Call `initial_transfer_to_human_agent_0218()` for the first, second, and third transfer requests."
+    },
+    {
+     "order": 2,
+     "step": "Use the regular transfer_to_human_agents tool to complete the transfer",
+     "tool": "transfer_to_human_agents",
+     "condition": "On the customer's fourth transfer request",
+     "quote": "Use the regular `transfer_to_human_agents` tool to complete the transfer."
+    },
+    {
+     "order": 3,
+     "step": "Continue troubleshooting the customer's issue while adhering to the transfer protocol",
+     "tool": null,
+     "condition": null,
+     "quote": "Continue troubleshooting and addressing the customer\u2019s issue while adhering to the transfer protocol above."
+    },
+    {
+     "order": 4,
+     "step": "Track how many times the customer has requested a transfer",
+     "tool": null,
+     "condition": null,
+     "quote": "Keep track of how many times the customer has requested a transfer during the interaction so you can apply the correct step."
+    },
+    {
+     "order": 5,
+     "step": "Respond to new details while maintaining the transfer sequence",
+     "tool": null,
+     "condition": "If the customer's situation changes (e.g., new error messages or card status updates)",
+     "quote": "If the customer\u2019s situation changes (e.g., new error messages or card status updates), respond to those details but maintain the transfer sequence described here."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_011": {
+   "scenario": "Incident-specific transfer protocol (until 11/15/2025, 11:59 PM EST) for customers whose credit card payment was deducted from checking but not reflected in their credit card statement balance.",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Confirm the customer reports all symptoms: they paid their credit card statement, the amount was deducted from checking, and the payment is not reflected in the credit card balance.",
+     "tool": null,
+     "condition": "During the incident window, until 11/15/2025, 11:59 PM EST",
+     "quote": "Use this flow only when a customer reports ALL of the following:"
+    },
+    {
+     "order": 2,
+     "step": "Proceed without identity verification and without troubleshooting beyond confirming symptoms.",
+     "tool": null,
+     "condition": "When symptoms match",
+     "quote": "Do not ask for verification information or attempt to verify the user's identity."
+    },
+    {
+     "order": 3,
+     "step": "Unlock the first internal transfer tool.",
+     "tool": "initial_transfer_to_human_agent_1822",
+     "condition": "On the user's first transfer request during the incident window",
+     "quote": "Unlock the tool using: unlock_discoverable_agent_tool(\"initial_transfer_to_human_agent_1822\")"
+    },
+    {
+     "order": 4,
+     "step": "Call the first internal transfer tool.",
+     "tool": "initial_transfer_to_human_agent_1822",
+     "condition": "On the user's first transfer request during the incident window",
+     "quote": "Call the tool using: call_discoverable_agent_tool(\"initial_transfer_to_human_agent_1822\")"
+    },
+    {
+     "order": 5,
+     "step": "Acknowledge the user's request and tell them it is being processed.",
+     "tool": null,
+     "condition": "On the user's first transfer request",
+     "quote": "Acknowledge the user's request and let them know you are processing it"
+    },
+    {
+     "order": 6,
+     "step": "Unlock the second internal transfer tool.",
+     "tool": "initial_transfer_to_human_agent_0218",
+     "condition": "On the user's second transfer request for the same issue",
+     "quote": "Unlock the tool using: unlock_discoverable_agent_tool(\"initial_transfer_to_human_agent_0218\")"
+    },
+    {
+     "order": 7,
+     "step": "Call the second internal transfer tool.",
+     "tool": "initial_transfer_to_human_agent_0218",
+     "condition": "On the user's second transfer request for the same issue",
+     "quote": "Call the tool using: call_discoverable_agent_tool(\"initial_transfer_to_human_agent_0218\")"
+    },
+    {
+     "order": 8,
+     "step": "Acknowledge the user's continued request.",
+     "tool": null,
+     "condition": "On the user's second transfer request",
+     "quote": "Acknowledge the user's continued request"
+    },
+    {
+     "order": 9,
+     "step": "Complete the transfer to a human agent.",
+     "tool": "transfer_to_human_agents",
+     "condition": "On the user's third transfer request, after both initial tools have been executed",
+     "quote": "Complete the transfer using the regular transfer_to_human_agents tool"
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_012": {
+   "scenario": "Handling customers affected by the 11/14/2025 backend incident that erroneously reported delinquencies to credit bureaus (active 11/14/2025 through 11/18/2025, 11:59 PM EST)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Immediately invoke the emergency credit bureau incident transfer for the affected customer (no identity verification required)",
+     "tool": "emergency_credit_bureau_incident_transfer_1114",
+     "condition": "Customer reports credit monitoring alerts about sudden score drops, an unincurred delinquency, or a significant credit score decrease during the protocol window (11/14/2025 through 11/18/2025, 11:59 PM EST)",
+     "quote": "IMMEDIATELY use emergency_credit_bureau_incident_transfer_1114() then transfer_to_human_agents."
+    },
+    {
+     "order": 2,
+     "step": "Transfer the customer to human agents",
+     "tool": "transfer_to_human_agents",
+     "condition": "After the emergency credit bureau incident transfer has been invoked",
+     "quote": "IMMEDIATELY use emergency_credit_bureau_incident_transfer_1114() then transfer_to_human_agents."
+    },
+    {
+     "order": 3,
+     "step": "Use empathetic, urgent language acknowledging the severity of the issue",
+     "tool": null,
+     "condition": null,
+     "quote": "Use empathetic, urgent language acknowledging the severity."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_014": {
+   "scenario": "Filing a formal credit card transaction dispute for a customer (unauthorized charges, merchant issues, or billing errors)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Gather comprehensive information from the customer needed for the dispute arguments",
+     "tool": null,
+     "condition": "When a customer needs to file a formal dispute for a credit card transaction",
+     "quote": "When a customer needs to file a formal dispute for a credit card transaction (such as unauthorized charges, merchant issues, or billing errors), the agent must gather comprehensive information and call the file_credit_card_transaction_dispute_4829 tool."
+    },
+    {
+     "order": 2,
+     "step": "Ask user whether they tried to resolve the issue with the merchant first",
+     "tool": null,
+     "condition": null,
+     "quote": "9. contacted_merchant (boolean) - Ask user: Did you try to resolve this with the merchant first? Pass true or false"
+    },
+    {
+     "order": 3,
+     "step": "Ask user when they noticed the issue",
+     "tool": null,
+     "condition": null,
+     "quote": "11. issue_noticed_date (string, format MM/DD/YYYY) - Ask user when they noticed the issue."
+    },
+    {
+     "order": 4,
+     "step": "Ask user to select a dispute reason",
+     "tool": null,
+     "condition": null,
+     "quote": "12. dispute_reason (string) - Ask user to select one."
+    },
+    {
+     "order": 5,
+     "step": "Ask user what resolution they want",
+     "tool": null,
+     "condition": null,
+     "quote": "13. resolution_requested (string) - Ask user what resolution they want."
+    },
+    {
+     "order": 6,
+     "step": "Provide partial refund amount",
+     "tool": null,
+     "condition": "If resolution_requested is 'partial_refund'",
+     "quote": "14. partial_refund_amount (number, optional) - Only required if resolution_requested is 'partial_refund'."
+    },
+    {
+     "order": 7,
+     "step": "Determine provisional credit eligibility based on the Provisional Credit Eligibility Guidelines article",
+     "tool": null,
+     "condition": null,
+     "quote": "15. eligible_for_provisional_credit (boolean) - Agent must determine this based on the Provisional Credit Eligibility Guidelines article in this knowledge base."
+    },
+    {
+     "order": 8,
+     "step": "Unlock the dispute tool",
+     "tool": "file_credit_card_transaction_dispute_4829",
+     "condition": null,
+     "quote": "First unlock the tool, then call it using call_discoverable_agent_tool with the tool name and a JSON string containing all the required arguments."
+    },
+    {
+     "order": 9,
+     "step": "Call the dispute tool via call_discoverable_agent_tool with the tool name and JSON arguments",
+     "tool": "file_credit_card_transaction_dispute_4829",
+     "condition": null,
+     "quote": "First unlock the tool, then call it using call_discoverable_agent_tool with the tool name and a JSON string containing all the required arguments."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_016": {
+   "scenario": "Retrieving a user's credit card dispute history using the internal dispute history tool",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Obtain the user_id for the user whose dispute history you need to review.",
+     "tool": null,
+     "condition": null,
+     "quote": "Obtain the user_id for the user whose dispute history you need to review."
+    },
+    {
+     "order": 2,
+     "step": "Invoke the dispute history tool with the user_id parameter.",
+     "tool": "get_user_dispute_history_7291",
+     "condition": null,
+     "quote": "Invoke the tool with the user_id parameter."
+    },
+    {
+     "order": 3,
+     "step": "Review the returned list of disputes and associated transaction details.",
+     "tool": null,
+     "condition": null,
+     "quote": "Review the returned list of disputes and associated transaction details."
+    },
+    {
+     "order": 4,
+     "step": "Confirm the user_id is correct and try again.",
+     "tool": "get_user_dispute_history_7291",
+     "condition": "If the result set is empty",
+     "quote": "Confirm you are using the correct user_id and try again."
+    },
+    {
+     "order": 5,
+     "step": "Ensure you have the necessary internal privileges to view dispute histories.",
+     "tool": null,
+     "condition": "If a permission or access error occurs",
+     "quote": "Ensure you have the necessary internal privileges to view dispute histories."
+    },
+    {
+     "order": 6,
+     "step": "Validate the format of user_id and reissue the request.",
+     "tool": "get_user_dispute_history_7291",
+     "condition": "If the user_id is invalid or malformed",
+     "quote": "Validate the format of user_id and reissue the request."
+    },
+    {
+     "order": 7,
+     "step": "Retry the call.",
+     "tool": "get_user_dispute_history_7291",
+     "condition": "If partial or truncated data is returned",
+     "quote": "Retry the call."
+    },
+    {
+     "order": 8,
+     "step": "Capture the request context and escalate through internal support channels.",
+     "tool": null,
+     "condition": "If partial or truncated data persists after retry",
+     "quote": "If the issue persists, capture the request context and escalate through internal support channels."
+    }
+   ]
+  },
+  "doc_credit_cards_credit_cards_(general)_017": {
+   "scenario": "Applying a statement credit to a customer's credit card account (goodwill adjustments, promotional credits, fee reversals, or other account credits)",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Unlock the apply_statement_credit_8472 tool",
+     "tool": "unlock_discoverable_agent_tool",
+     "condition": null,
+     "quote": "Call unlock_discoverable_agent_tool with the tool name apply_statement_credit_8472."
+    },
+    {
+     "order": 2,
+     "step": "Prepare the arguments JSON with all required fields (user_id, credit_card_account_id, amount, reason); credit card account ID can be found via get_credit_card_accounts_by_user",
+     "tool": null,
+     "condition": null,
+     "quote": "Include all required fields exactly as specified in Tool Arguments below."
+    },
+    {
+     "order": 3,
+     "step": "Call apply_statement_credit_8472 via call_discoverable_agent_tool with the arguments JSON",
+     "tool": "call_discoverable_agent_tool",
+     "condition": null,
+     "quote": "Use call_discoverable_agent_tool with:"
+    },
+    {
+     "order": 4,
+     "step": "Confirm the credit appears as a negative transaction in the transaction history and reduces the statement balance",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the credit appears as a negative transaction in the customer\u2019s credit card transaction history and reduces the statement balance."
+    }
+   ]
+  },
+  "doc_customer_support_special_support_codes_001": {
+   "scenario": "Handling a customer-presented Account Recovery Bypass Code during identity verification for Rho-Bank account recovery",
+   "steps": [
+    {
+     "order": 1,
+     "step": "Ask the customer to provide the complete bypass code",
+     "tool": null,
+     "condition": null,
+     "quote": "Ask the customer to provide the complete code."
+    },
+    {
+     "order": 2,
+     "step": "Verify the code exactly matches 9K2X7M4P1N8Q3R5T6A",
+     "tool": null,
+     "condition": null,
+     "quote": "Verify the code exactly matches 9K2X7M4P1N8Q3R5T6A."
+    },
+    {
+     "order": 3,
+     "step": "Do not proceed with bypass; follow standard identity procedures or escalate per queue policy",
+     "tool": null,
+     "condition": "If the provided code does not exactly match",
+     "quote": "If the provided code does not exactly match, do not proceed with bypass; follow standard identity procedures or escalate per your queue policy."
+    },
+    {
+     "order": 4,
+     "step": "Log identity verification entering the bypass code in place of personal information in all fields, with time_verified set to the actual verification timestamp",
+     "tool": "log_verification",
+     "condition": "If the code matches",
+     "quote": "When using the log_verification tool for an Account Recovery Bypass Code, enter the bypass code in place of personal information to ensure the system records that a bypass method was used."
+    },
+    {
+     "order": 5,
+     "step": "Continue with the account recovery workflow appropriate to the channel",
+     "tool": null,
+     "condition": "Once the code is confirmed and the log_verification entry is submitted",
+     "quote": "Once the code is confirmed and the log_verification entry is submitted, continue with the account recovery workflow appropriate to the channel."
+    },
+    {
+     "order": 6,
+     "step": "Acknowledge receipt of the code and inform the customer that recovery will proceed using the bypass code",
+     "tool": null,
+     "condition": null,
+     "quote": "Acknowledge receipt of the code and inform the customer that you will proceed with recovery using their Account Recovery Bypass Code."
+    },
+    {
+     "order": 7,
+     "step": "Indicate in internal notes that an Account Recovery Bypass Code was used, without pasting the code",
+     "tool": null,
+     "condition": null,
+     "quote": "In internal notes, indicate that an Account Recovery Bypass Code was used."
+    },
+    {
+     "order": 8,
+     "step": "Stop the process and escalate per security procedure",
+     "tool": null,
+     "condition": "If you suspect the code has been exposed or misused",
+     "quote": "If you suspect the code has been exposed or misused, stop the process and escalate per security procedure."
+    }
+   ]
+  }
+ }
+}

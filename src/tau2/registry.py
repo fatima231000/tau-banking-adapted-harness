@@ -300,6 +300,9 @@ try:
 
     # Agent factories
     registry.register_agent_factory(create_llm_agent, "llm_agent")
+    from tau2.agent.adapted_agent import create_adapted_agent
+
+    registry.register_agent_factory(create_adapted_agent, "adapted_agent")
     registry.register_agent_factory(
         create_llm_gt_agent,
         "llm_agent_gt",

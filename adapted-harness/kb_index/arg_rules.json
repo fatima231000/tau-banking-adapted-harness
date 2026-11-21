@@ -1,0 +1,13 @@
+{
+ "_about": "Argument formats the KB states explicitly. Each rule quotes its source; checked by the harness before a call.",
+ "rules": [
+  {
+   "tool": "open_bank_account_4821",
+   "argument": "account_class",
+   "must_end_with": "Account",
+   "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+   "quote": "account_class must use the full official name ending with 'Account'",
+   "provenance": "Found diagnosing DEV task_066; KB-stated."
+  }
+ ]
+}

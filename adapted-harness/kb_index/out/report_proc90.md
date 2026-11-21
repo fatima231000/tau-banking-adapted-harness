@@ -1,0 +1,4341 @@
+# KB interconnection index: 90-doc experiment
+
+Model `claude-opus-5-5` (effort medium), tokens in/out 401911/173549. Sample = docs naming the debit-card/dispute tools, filled with BM25 neighbours (KB-only selection).
+
+## Known dependencies (from trace profiling)
+Needs: 527, matched to another doc: 266, unresolved: 261. Edges: 236 needs→provides, 111 shared-tool, 1623 shared-entity.
+
+
+| link | in sample | BM25 top-3 | entity index |
+|---|---|---|---|
+| dispute filing (liability) ↔ provisional-credit guidelines | True | True | True |
+| fraud escalation ↔ dispute filing (conflicting guidance) | True | False | True |
+| card closure 'no pending transactions' ↔ the tool that shows pending transactions | True | n/a | False |
+
+## Entity-index edges (1666; generic entities dropped: [])
+
+- **Credit Card Rewards Redemption Options** ↔ **Getting the Most from Your Credit Card Rewards**
+  - needs→provides: [general)_024 needs] Actual redemption rates / value per point for each redemption option (threshold) ← [general)_008 provides] Statement credit: 1 cent per point, minimum 500 points | Statement credit redemption value per point
+  - needs→provides: [general)_024 needs] Actual redemption rates / value per point for each redemption option (threshold) ← [general)_008 provides] Checking account credit: 1 cent per point, minimum 500 points, requires active Rho-Bank checking account | Checking account credit redemption value per point
+  - needs→provides: [general)_024 needs] Actual redemption rates / value per point for each redemption option (threshold) ← [general)_008 provides] Travel portal: 1.25 cents per point, minimum 2,500 points | Travel portal redemption value per point
+  - shared tools: ['Rho-Bank Rewards Mall', 'Rho-Bank Travel Portal']
+  - shared entities: ['account in good standing', 'airline miles transfer', 'charitable donation redemption', 'gift card redemption', 'partner airline programs', 'partner charities', 'rewards mall', 'rewards points expiration']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - needs→provides: [general)_031 needs] Debit Card Provisional Credit Guidelines (rule) ← [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | Provisional credit deadlines
+  - needs→provides: [general)_031 needs] Debit Card Provisional Credit Guidelines (rule) ← [general)_032 provides] Conditions under which debit card provisional credit is required (60-day timely reporting, qualifying dispute categories, written statement, open checking account with no holds) | When provisional credit required
+  - needs→provides: [general)_031 needs] Debit Card Provisional Credit Guidelines (rule) ← [general)_032 provides] List of dispute categories qualifying for required provisional credit | Qualifying categories
+  - shared entities: ['debit card dispute', 'dispute category', 'merchant contact', 'pin compromised', 'provisional credit', 'regulation e', 'written statement']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - needs→provides: [general)_043 needs] Usage details for submit_interest_discrepancy_report_7294 (tool) ← [general)_044 provides] Parameter definitions for submit_interest_discrepancy_report_7294 (account_id, user_id, expected_apy, actual_apy, amount_difference) with APY format as percentage number | Report tool parameters
+  - needs→provides: [general)_043 needs] Usage details for submit_interest_discrepancy_report_7294 (tool) ← [general)_044 provides] Criteria for when to submit an interest discrepancy report (missing APY boost, incorrect tier rate, missing relationship bonus, system calculation error) | When to submit report
+  - needs→provides: [general)_044 needs] apply_savings_account_credit_6831 usage and parameters (tool) ← [general)_043 provides] Parameters of apply_savings_account_credit_6831 (account_id, amount > 0, credit_type enum) | Tool parameters
+  - shared tools: ['apply_savings_account_credit_6831', 'get_all_user_accounts_by_user_id_3847', 'get_bank_account_transactions_9173', 'submit_interest_discrepancy_report_7294']
+  - shared entities: ['account id', 'apply_savings_account_credit_6831', 'backend team', 'checking account', 'get_all_user_accounts_by_user_id_3847', 'get_bank_account_transactions_9173', 'identity verification', 'interest discrepancy report']
+- **Internal: Credit Card Retention Protocol** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - needs→provides: [ogistics_003 needs] Procedure/tool for card downgrade to no-annual-fee card (procedure) ← [ogistics_008 provides] Downgrade process steps | Downgrade steps
+  - needs→provides: [ogistics_003 needs] Procedure/tool for card downgrade to no-annual-fee card (procedure) ← [ogistics_008 provides] Argument specification for downgrade_credit_card_3847 | Downgrade tool args
+  - needs→provides: [ogistics_008 needs] Retention protocol details for account closure requests (procedure) ← [ogistics_003 provides] Retention abuse prevention rule: skip retention offers if closure reason records exist for the account in the past year | Retention abuse prevention rule.
+  - shared entities: ['annual fee', 'annual fee waiver', 'credit card account id', 'retention protocol', 'user id']
+- **Internal: Closing Business Checking Accounts** ↔ **What to Know Before Closing Your Account**
+  - needs→provides: [general)_020 needs] early closure fee amounts per account tier (threshold) ← [general)_007 provides] Early closure fees and notice periods per tier: Entry $50/60 days/7-day notice; Mid $100/90 days/14-day notice; Premium $200/180 days/21-day notice; Elite $400/270 days/30-day notice | Business checking early closure fees by tier
+  - needs→provides: [general)_020 needs] early closure window length per account tier (threshold) ← [general)_007 provides] Early closure fees and notice periods per tier: Entry $50/60 days/7-day notice; Mid $100/90 days/14-day notice; Premium $200/180 days/21-day notice; Elite $400/270 days/30-day notice | Closure windows per tier for business checking
+  - needs→provides: [general)_020 needs] notice period length per account tier (threshold) ← [general)_007 provides] Early closure fees and notice periods per tier: Entry $50/60 days/7-day notice; Mid $100/90 days/14-day notice; Premium $200/180 days/21-day notice; Elite $400/270 days/30-day notice | Notice periods for business checking
+  - shared entities: ['account balance', 'account tier', 'business savings account', 'closure notice period', 'early closure fee', 'pending transactions']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - needs→provides: [general)_014 needs] provisional credit eligibility guidelines (rule) ← [general)_015 provides] provisional credit eligibility criteria for credit card disputes | Provisional credit eligibility criteria for credit card disputes.
+  - needs→provides: [general)_014 needs] provisional credit eligibility guidelines (rule) ← [general)_015 provides] minimum account age of 60 days for provisional credit | Minimum account age for provisional credit.
+  - needs→provides: [general)_014 needs] provisional credit eligibility guidelines (rule) ← [general)_015 provides] eligible dispute reasons: unauthorized_fraudulent_charge, duplicate_charge, goods_services_not_received (>30 days) | Eligible dispute reasons for provisional credit.
+  - shared entities: ['credit card dispute', 'dispute reason', 'merchant contact', 'provisional credit', 'unauthorized transactions']
+- **Provisional Credit Eligibility Guidelines (Internal)** ↔ **What is Provisional Credit?**
+  - needs→provides: [general)_022 needs] Specific eligibility criteria and thresholds for provisional credit (account history requirements, qualifying dispute types, amount limits, 'other criteria') (rule) ← [general)_015 provides] provisional credit eligibility criteria for credit card disputes | Provisional credit eligibility criteria.
+  - needs→provides: [general)_022 needs] Specific eligibility criteria and thresholds for provisional credit (account history requirements, qualifying dispute types, amount limits, 'other criteria') (rule) ← [general)_015 provides] minimum account age of 60 days for provisional credit | 60-day minimum account age.
+  - needs→provides: [general)_022 needs] Specific eligibility criteria and thresholds for provisional credit (account history requirements, qualifying dispute types, amount limits, 'other criteria') (rule) ← [general)_015 provides] eligible dispute reasons: unauthorized_fraudulent_charge, duplicate_charge, goods_services_not_received (>30 days) | Eligible dispute types.
+  - shared entities: ['credit card dispute', 'provisional credit']
+- **Credit Card Rewards Categories** ↔ **Understanding Your Credit Card Rewards Categories**
+  - needs→provides: [general)_005 needs] Merchant/transaction category classification for a given transaction (data) ← [general)_019 provides] Definition of the 11 recognized reward spending categories (travel, dining, groceries, entertainment, shopping, utilities, transportation, software, media, green/sustainable, operations) with examples | Category definitions with merchant examples.
+  - needs→provides: [general)_019 needs] Merchant-to-category mapping (merchant category codes) used to classify purchases (rule) ← [general)_005 provides] List of valid rewards transaction categories for Rho-Bank credit cards | Valid rewards categories.
+  - shared entities: ['bonus categories', 'bonus reward rate', 'credit card', 'dining category', 'entertainment category', 'green/sustainable category', 'groceries category', 'media category']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **Internal: Processing CLI Approvals and Denials**
+  - needs→provides: [ogistics_006 needs] Overall CLI request procedure and other eligibility criteria / how to submit the increase (procedure) ← [ogistics_007 provides] Ordered CLI processing workflow (Step 0 through Step 5) | Gives the ordered CLI workflow.
+  - needs→provides: [ogistics_006 needs] Overall CLI request procedure and other eligibility criteria / how to submit the increase (procedure) ← [ogistics_007 provides] Six CLI eligibility criteria that must all be checked before decision | Gives the CLI eligibility criteria.
+  - needs→provides: [ogistics_006 needs] Overall CLI request procedure and other eligibility criteria / how to submit the increase (procedure) ← [ogistics_007 provides] Arguments for submit_credit_limit_increase_request_7392, get_credit_limit_increase_history_4829, approve_credit_limit_increase_5847, deny_credit_limit_increase_5848 | Gives the CLI submission tool arguments.
+  - shared entities: ['card tier', 'credit card account id', 'credit limit increase']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_026 needs] Card status and ownership lookup (card_id, card status, owner) (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup
+  - needs→provides: [general)_026 needs] Card status and ownership lookup (card_id, card status, owner) (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Card fields
+  - needs→provides: [general)_026 needs] Card status and ownership lookup (card_id, card status, owner) (data) ← [general)_028 provides] Debit card status values: ACTIVE, PENDING, FROZEN, CLOSED | Card status values
+  - shared entities: ['card id', 'checking account', 'debit card', 'debit card closure', 'debit card status']
+- **Internal: Credit Card Retention Protocol** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [ogistics_003 needs] Procedure/tool for applying bonus points or statement credits (tool) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Statement credit procedure
+  - needs→provides: [ogistics_003 needs] Procedure/tool for applying bonus points or statement credits (tool) ← [general)_017 provides] Required arguments: user_id, credit_card_account_id, amount, reason | Statement credit args
+  - needs→provides: [ogistics_003 needs] Annual fee refund procedure (procedure) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Statement credit procedure, usable for annual fee reversal.
+  - shared entities: ['credit card account id', 'goodwill credit', 'retention offers', 'statement credit', 'user id']
+- **Internal: Closing Business Savings Accounts** ↔ **What to Know Before Closing Your Account**
+  - needs→provides: [general)_020 needs] early closure fee amounts per account tier (threshold) ← [general)_008 provides] Early closure fees by tier: Bronze $75 within 90 days, Silver $125 within 120 days, Gold $250 within 180 days, Platinum $500 within 270 days | Business savings early closure fees by tier
+  - needs→provides: [general)_020 needs] early closure window length per account tier (threshold) ← [general)_008 provides] Early closure fees by tier: Bronze $75 within 90 days, Silver $125 within 120 days, Gold $250 within 180 days, Platinum $500 within 270 days | Closure windows per tier for business savings
+  - needs→provides: [general)_020 needs] notice period length per account tier (threshold) ← [general)_008 provides] Notice periods by tier: Bronze 10 days, Silver 14 days, Gold 21 days, Platinum 30 days | Notice periods for business savings
+  - shared entities: ['account balance', 'account tier', 'business savings account', 'early closure fee', 'pending transactions']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Credit Card Rewards Redemption Options**
+  - needs→provides: [general)_006 needs] Redemption values for other redemption methods (rule) ← [general)_008 provides] Travel portal: 1.25 cents per point, minimum 2,500 points | Travel portal redemption value.
+  - needs→provides: [general)_006 needs] Redemption values for other redemption methods (rule) ← [general)_008 provides] Gift cards: 0.8-1 cent per point varying by retailer, minimum 1,000 points | Gift card redemption value.
+  - needs→provides: [general)_006 needs] Redemption values for other redemption methods (rule) ← [general)_008 provides] Charitable donations: 1 cent per point, no processing fees, minimum 250 points | Charity redemption value.
+  - shared entities: ['business platinum rewards card', 'diamond elite card', 'gold rewards card', 'platinum rewards card', 'statement credit redemption']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - needs→provides: [general)_044 needs] get_all_user_accounts_by_user_id_3847 tool (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Tool definition
+  - needs→provides: [general)_044 needs] get_all_user_accounts_by_user_id_3847 tool (tool) ← [general)_009 provides] Tool input: user_id | Tool input
+  - needs→provides: [general)_044 needs] get_all_user_accounts_by_user_id_3847 tool (tool) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Tool output
+  - shared tools: ['get_all_user_accounts_by_user_id_3847']
+  - shared entities: ['account id', 'checking account', 'get_all_user_accounts_by_user_id_3847', 'savings account', 'user id']
+- **Internal: Closing Personal Checking Accounts** ↔ **What to Know Before Closing Your Account**
+  - needs→provides: [general)_020 needs] early closure fee amounts per account tier (threshold) ← [general)_005 provides] Early closure fees: entry $15 within 30 days, mid $25 within 60 days, premium $50 within 90 days, elite $100 within 180 days | Personal checking early closure fees by tier
+  - needs→provides: [general)_020 needs] early closure window length per account tier (threshold) ← [general)_005 provides] Early closure fees: entry $15 within 30 days, mid $25 within 60 days, premium $50 within 90 days, elite $100 within 180 days | Closure windows per tier for personal checking
+  - needs→provides: [general)_020 needs] notice period length per account tier (threshold) ← [general)_005 provides] Notice periods: entry 0 days, mid 3 days, premium 7 days, elite 14 days | Notice periods for personal checking
+  - shared entities: ['account balance', 'early closure fee', 'pending transactions', 'pre-closure requirements']
+- **Linked Checking Account APY Boosts for Savings Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - needs→provides: [general)_012 needs] Credit card APY bonus rules and amounts (rule) ← [general)_045 provides] Rule: credit card APY bonuses on savings do not stack; only the highest applies | Defines that credit card APY bonuses don't stack; only highest applies
+  - needs→provides: [general)_012 needs] Credit card APY bonus rules and amounts (rule) ← [general)_045 provides] Rule: credit card APY bonuses stack with checking account APY boosts, relationship bonuses, and account tier bonuses | Defines how credit card APY bonuses stack with other boosts
+  - needs→provides: [general)_012 needs] Credit card APY bonus rules and amounts (rule) ← [general)_045 provides] Example values: Gold Rewards Card +0.025%, Platinum Rewards Card +0.15%, EcoCard +0.6% APY bonus | Gives credit card APY bonus amounts
+  - shared entities: ['credit card apy bonus', 'customer profile', 'green account']
+- **Internal: Closing Personal Savings Accounts** ↔ **What to Know Before Closing Your Account**
+  - needs→provides: [general)_020 needs] early closure fee amounts per account tier (threshold) ← [general)_006 provides] early closure fees: $20/60 days, $35/90 days, $75/180 days, $150/270 days by tier | Personal savings early closure fees by tier
+  - needs→provides: [general)_020 needs] early closure window length per account tier (threshold) ← [general)_006 provides] early closure fees: $20/60 days, $35/90 days, $75/180 days, $150/270 days by tier | Closure windows per tier for personal savings
+  - needs→provides: [general)_020 needs] notice period length per account tier (threshold) ← [general)_006 provides] notice periods: 1, 5, 10, 21 days by tier | Notice periods for personal savings
+  - shared entities: ['account tier', 'early closure fee', 'pending transactions']
+- **Internal: Credit Card Retention Protocol** ↔ **Request a Statement Credit or Fee Adjustment**
+  - needs→provides: [general)_025 needs] Criteria and limits for approving late fee, annual fee, or interest waivers (e.g. eligibility, frequency, amounts) (threshold) ← [ogistics_003 provides] Annual fee waiver for customers 2+ years; downgrade to no-annual-fee card for under 2 years | Annual fee waiver eligibility criteria (2+ years tenure)
+  - needs→provides: [general)_025 needs] Criteria and limits for approving late fee, annual fee, or interest waivers (e.g. eligibility, frequency, amounts) (threshold) ← [ogistics_003 provides] Tool arguments for apply_credit_card_account_flag_6147 annual fee waiver (flag_type 'annual_fee_waived', expiration one year MM/DD/YYYY, reason 'loyalty_benefit') | Specification for applying annual fee waiver flag
+  - needs→provides: [general)_025 needs] Available retention offers and their eligibility (data) ← [ogistics_003 provides] Tier-based retention offers: entry 500 pts/$5, mid 2,000 pts/$20, premium 5,000 pts/$50; only one offer | Tier-based retention offers
+  - shared entities: ['annual fee', 'retention offers', 'statement credit']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Definition of 'qualifying disputes' for provisional credit (definition) ← [general)_032 provides] List of dispute categories qualifying for required provisional credit | Qualifying dispute categories
+  - needs→provides: [general)_032 needs] Rule for determining whether customer liability is $50 or $500 for late reporting (rule) ← [general)_037 provides] Unauthorized transaction liability tiers: $50 within 2 business days, $500 within 60 days, full liability after 60 days | Liability tiers by reporting time.
+  - needs→provides: [general)_032 needs] Regulation E details (rule) ← [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Reg E scope.
+  - shared entities: ['provisional credit', 'regulation e']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: Credit Card Retention Protocol**
+  - needs→provides: [ogistics_003 needs] Procedure/tool for actually processing the credit card closure (procedure) ← [ogistics_002 provides] Credit card closure procedure steps (verify identity, confirm eligibility, use close_credit_card_account_7834) | Closure procedure
+  - needs→provides: [ogistics_003 needs] Procedure/tool for actually processing the credit card closure (procedure) ← [ogistics_002 provides] Argument definitions for close_credit_card_account_7834 (credit_card_account_id, user_id) | Closure tool args
+  - needs→provides: [ogistics_002 needs] 'How can I close a credit card account?' eligibility requirements (rule) ← [ogistics_003 provides] Closure eligibility criteria: no pending disputes, no pending replacement cards, account open at least 60 days, no outstanding balance | Gives credit card closure eligibility criteria.
+  - shared entities: ['annual fee', 'annual fee refund window', 'credit card account id', 'credit card closure', 'pending disputes', 'pending replacement cards', 'rewards redemption window after closure', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Opening Business Savings Accounts**
+  - needs→provides: [general)_004 needs] Process for closing unfunded accounts after 30 days (procedure) ← [general)_002 provides] 30-day funding window after which unfunded savings account is closed | 30-day funding window closing unfunded accounts.
+  - shared tools: ['open_bank_account_4821', 'transfer_funds_between_bank_accounts_7291']
+  - shared entities: ['account class', 'account type', 'checking account tenure requirement', 'identity verification', 'negative balance', 'open_bank_account_4821', 'opening deposit', 'transfer_funds_between_bank_accounts_7291']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_023 needs] debit_cards table lookup (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool
+  - needs→provides: [general)_023 needs] debit_cards table lookup (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Debit card fields
+  - needs→provides: [general)_028 needs] Procedure/tool for ordering a new debit card (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Ordering procedure
+  - shared entities: ['checking account', 'debit card', 'debit card activation', 'savings account']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: ATM Dispute Special Procedures**
+  - needs→provides: [general)_031 needs] Rho-Bank vs third-party ATM dispute processes (procedure) ← [general)_033 provides] Rho-Bank ATM cash discrepancy procedure using ATM journal records | Rho-Bank ATM discrepancy procedure
+  - needs→provides: [general)_031 needs] Rho-Bank vs third-party ATM dispute processes (procedure) ← [general)_033 provides] Third-party ATM disputes require chargeback, 90-day investigation, provisional credit within 10 business days | Third-party ATM dispute process
+  - needs→provides: [general)_033 needs] Procedure for filing a formal dispute (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing tool arguments
+  - shared entities: ['provisional credit']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - needs→provides: [general)_043 needs] Documented savings APY rates, tier rates, linked checking APY boost and relationship bonus values (data) ← [general)_046 provides] Example value: Green Account gives +0.75% APY boost and Purple Account +0.1% APY boost on Gold Savings Account | Checking boost values
+  - needs→provides: [general)_046 needs] Procedure/tool for applying an interest correction (procedure) ← [general)_043 provides] Parameters of apply_savings_account_credit_6831 (account_id, amount > 0, credit_type enum) | apply_savings_account_credit_6831 supports the interest_correction credit type.
+  - needs→provides: [general)_046 needs] Procedure/tool for applying an interest correction (procedure) ← [general)_043 provides] Six-step procedure for applying a savings account credit | Gives the procedure for applying a savings credit.
+  - shared entities: ['checking account', 'interest correction', 'relationship bonus', 'savings account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - needs→provides: [general)_032 needs] Rule for determining whether customer liability is $50 or $500 for late reporting (rule) ← [general)_036 provides] Liability tiers: $50 max if reported within 2 business days, $500 within 60 days, possibly no recovery after 60 days | Liability tiers by reporting time.
+  - needs→provides: [general)_036 needs] Which dispute types qualify for provisional credit ('many types of disputes') (rule) ← [general)_032 provides] List of dispute categories qualifying for required provisional credit | Dispute categories qualifying for provisional credit
+  - shared entities: ['cancelled subscription charges', 'checking account', 'debit card dispute', 'dispute investigation timeline', 'duplicate charges', 'goods or services not received', 'incorrect amount charges', 'provisional credit']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_006 needs] account opening date / account age to evaluate early closure fee window (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | date_opened field.
+  - needs→provides: [general)_006 needs] current_holdings balance lookup (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | balance field.
+  - needs→provides: [general)_006 needs] account status lookup (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | status field.
+  - shared entities: ['account status']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_023 needs] account tier definitions and tier-based fee schedule (rule) ← [general)_029 provides] Delivery fee values by tier and shipping speed (Mid expedited $15, Premium rush $35, Elite all $0) | Tier-based delivery fees
+  - needs→provides: [general)_023 needs] account tier definitions and tier-based fee schedule (rule) ← [general)_029 provides] Design fees by tier for CLASSIC, PREMIUM, CUSTOM designs | Tier-based design fees
+  - needs→provides: [general)_029 needs] order_debit_card_5739 tool specification (tool) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | order_debit_card_5739 procedure
+  - shared tools: ['order_debit_card_5739']
+  - shared entities: ['classic card design', 'order_debit_card_5739', 'premium card design fee', 'standard shipping']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_025 needs] lookup of card details (status, user_id, date_issued, pending transactions, pending refunds) (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup tool
+  - needs→provides: [general)_025 needs] lookup of card details (status, user_id, date_issued, pending transactions, pending refunds) (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Card fields returned
+  - needs→provides: [general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Close
+  - shared entities: ['card id', 'checking account', 'date issued', 'debit card', 'debit card status', 'user id']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Checking Debit Card Dispute Status**
+  - needs→provides: [general)_035 needs] Definition of what qualifies as a 'new account' for the extended 20-day provisional credit window (definition) ← [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | New account = open less than 30 days
+  - needs→provides: [general)_035 needs] Definition of international/POS transactions qualifying for the 90-day investigation window (definition) ← [general)_032 provides] Investigation timeline with provisional credit: 45 business days, extended to 90 days for international, foreign POS, or new accounts | International/foreign POS extended timeline
+  - needs→provides: [general)_035 needs] Whether day counts are business or calendar days and the start date for timelines (definition) ← [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | Specifies business days
+  - shared entities: ['checking account', 'debit card dispute', 'dispute category', 'dispute investigation timeline', 'new account', 'provisional credit']
+- **Internal: Activating a Debit Card** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_024 needs] debit_cards table lookup (issue_reason, status, expiration_date) (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup
+  - needs→provides: [general)_024 needs] debit_cards table lookup (issue_reason, status, expiration_date) (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Card fields
+  - needs→provides: [general)_028 needs] Mapping from issue_reason to the specific debit card activation tool (tool) ← [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | issue_reason to activation tool mapping
+  - shared entities: ['card expiration date', 'card last 4 digits', 'checking account', 'debit card', 'debit card activation', 'issue reason']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] freezing/unfreezing card protocol (procedure) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Debit card freeze steps.
+  - needs→provides: [general)_003 needs] freezing/unfreezing card protocol (procedure) ← [general)_026 provides] Unfreeze steps using unfreeze_debit_card_3893 with card_id | Debit card unfreeze steps.
+  - needs→provides: [general)_003 needs] freezing/unfreezing card protocol (procedure) ← [general)_026 provides] Eligibility requirements to freeze a debit card (verified, owner, ACTIVE status) | Freeze eligibility.
+  - shared entities: ['checking account', 'debit card', 'identity verification']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Closing Business Savings Accounts**
+  - needs→provides: [general)_007 needs] Procedure for closing linked business savings accounts (procedure) ← [general)_008 provides] Business savings account closure procedure using close_bank_account_7392 | Business savings closure procedure.
+  - shared tools: ['close_bank_account_7392']
+  - shared entities: ['account balance', 'account status open', 'account tier', 'business checking account', 'business savings account', 'close_bank_account_7392', 'early closure fee', 'pending transactions']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - needs→provides: [general)_022 needs] How 'sufficient funds' is measured (available vs. current balance, pending transactions) (definition) ← [general)_010 provides] Preconditions: both accounts ACTIVE or OPEN, sufficient available funds, same customer ownership, customer authorization, positive USD amount, distinct valid IDs | Transfer precondition specifies sufficient available funds
+  - needs→provides: [general)_022 needs] Internal agent tool/procedure for processing a transfer on the customer's behalf, including identity verification (procedure) ← [general)_010 provides] Tool signature and parameters for transfer_funds_between_bank_accounts_7291(source_account_id, destination_account_id, amount) | Transfer tool signature
+  - needs→provides: [general)_022 needs] Internal agent tool/procedure for processing a transfer on the customer's behalf, including identity verification (procedure) ← [general)_010 provides] Execution steps for internal transfers (agent-only, do not surface tool to customer) | Transfer execution steps
+  - shared entities: ['checking account', 'destination account id', 'internal transfers', 'savings account', 'source account id', 'sufficient funds']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - needs→provides: [general)_045 needs] Green Account checking APY boost amount and eligibility (rule) ← [general)_046 provides] Example value: Green Account gives +0.75% APY boost and Purple Account +0.1% APY boost on Gold Savings Account | Gives the Green Account +0.75% APY boost value on Gold Savings.
+  - needs→provides: [general)_046 needs] Credit card APY bonus rules and values (rule) ← [general)_045 provides] Rule: credit card APY bonuses on savings do not stack; only the highest applies | Credit card APY bonus rule: no stacking, only the highest applies.
+  - needs→provides: [general)_046 needs] Credit card APY bonus rules and values (rule) ← [general)_045 provides] Example values: Gold Rewards Card +0.025%, Platinum Rewards Card +0.15%, EcoCard +0.6% APY bonus | Gives credit card APY bonus values.
+  - shared entities: ['account tier bonus', 'checking account apy boost', 'credit card apy bonus', 'green account', 'relationship bonus', 'savings account']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **FAQ: Checking Account Referrals**
+  - needs→provides: [general)_047 needs] Criteria/procedure for determining whether a user is eligible to submit referrals (procedure) ← [general)_048 provides] Referrer eligibility based on checking tenure from first checking account, not product type | Referrer eligibility is based on checking tenure.
+  - needs→provides: [general)_047 needs] Qualifying deposit amount and qualifying period definition (threshold) ← [general)_048 provides] Qualifying deposit must remain at least 30 additional days; deposit window typically 60-120 days | Gives the deposit window and the 30-day retention requirement.
+  - shared entities: ['account in good standing', 'checking account referral program', 'primary authorized signer ssn', 'referral bonus', 'referral bonus clawback', 'referral rolling window limit', 'referral same address restriction', 'referral status']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - needs→provides: [general)_018 needs] Rebate/refund eligibility policies (fee_rebate, rebate_credit, fee_refund) (rule) ← [general)_017 provides] eligible circumstances for checking account credits: missing rebates and fee mischarges | Eligible circumstances for rebate/fee credits
+  - needs→provides: [general)_018 needs] Rebate/refund eligibility policies (fee_rebate, rebate_credit, fee_refund) (rule) ← [general)_017 provides] credit_type values rebate_credit and fee_refund and their use | Defines rebate_credit and fee_refund use
+  - needs→provides: [general)_017 needs] customer transaction history (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Tool to retrieve transaction history
+  - shared entities: ['account id', 'checking account', 'fee refund', 'rebate credit', 'savings account']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - needs→provides: [general)_004 needs] Cash back dispute resolution/approval process (procedure) ← [general)_021 provides] Investigation steps: review specific transaction, verify merchant category, check applicable reward rates, determine adjustment | Cash back discrepancy investigation steps.
+  - needs→provides: [general)_021 needs] Procedure and authority limits for applying a cash back adjustment (procedure) ← [general)_004 provides] Procedure for applying rewards corrections after a resolved and approved cash back dispute | Procedure for applying rewards corrections.
+  - needs→provides: [general)_021 needs] Procedure and authority limits for applying a cash back adjustment (procedure) ← [general)_004 provides] Requirement to unlock update_transaction_rewards_3847 via unlock_discoverable_agent_tool before calling it via call_discoverable_agent_tool | Unlock requirement for the rewards update tool.
+  - shared entities: ['cash back dispute', 'cash back rewards']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - needs→provides: [general)_026 needs] Debit card closure procedure for lost/stolen cards (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | close_debit_card_4721 usage
+  - needs→provides: [general)_026 needs] Debit card closure procedure for lost/stolen cards (procedure) ← [general)_025 provides] lost/stolen cards closed immediately with no cooling-off period | Lost/stolen immediate closure
+  - shared entities: ['card id', 'checking account', 'debit card', 'debit card status', 'identity verification', 'pending transactions', 'recurring payments']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['bronze rewards card', 'business bronze rewards card', 'business gold rewards card', 'business platinum rewards card', 'business silver rewards card', 'crypto-cash back card', 'diamond elite card', 'ecocard']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - needs→provides: [general)_018 needs] Rebate/refund eligibility policies (fee_rebate, rebate_credit, fee_refund) (rule) ← [general)_019 provides] Erroneously applied fees are credited for the full amount once confirmed in error | Erroneous fee refund policy
+  - needs→provides: [general)_018 needs] Rebate/refund eligibility policies (fee_rebate, rebate_credit, fee_refund) (rule) ← [general)_019 provides] Missed rebates are credited after verifying eligibility and account history | Missed rebate credit policy
+  - needs→provides: [general)_019 needs] Customer account history / transaction records (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Tool to retrieve account transaction records
+  - shared entities: ['atm fee', 'fee refund', 'monthly maintenance fee']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - needs→provides: [general)_044 needs] get_bank_account_transactions_9173 tool (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction tool usage
+  - needs→provides: [general)_044 needs] Customer account and transaction data (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction data
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['account id', 'checking account', 'get_bank_account_transactions_9173', 'savings account']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - needs→provides: [general)_014 needs] order_replacement_credit_card_7291 (tool) ← [acements_001 provides] Tool workflow and parameters for order_replacement_credit_card_7291 | Tool workflow and parameters for order_replacement_credit_card_7291.
+  - needs→provides: [acements_001 needs] Dispute process for unauthorized charges (procedure) ← [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Procedure for filing a credit card transaction dispute.
+  - shared tools: ['call_discoverable_agent_tool', 'order_replacement_credit_card_7291']
+  - shared entities: ['call_discoverable_agent_tool', 'order_replacement_credit_card_7291']
+- **Internal: Activating a Debit Card** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] debit card activation protocol (procedure) ← [general)_024 provides] Step-by-step debit card activation procedure | Step-by-step debit card activation procedure.
+  - needs→provides: [general)_003 needs] debit card activation protocol (procedure) ← [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Activation tool selection mapping.
+  - shared entities: ['card expiration date', 'card last 4 digits', 'checking account', 'debit card', 'identity verification', 'issue reason']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_036 needs] Specific federal regulation (Regulation E) details on liability and timelines (rule) ← [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Reg E scope
+  - needs→provides: [general)_036 needs] Specific federal regulation (Regulation E) details on liability and timelines (rule) ← [general)_037 provides] Unauthorized transaction liability tiers: $50 within 2 business days, $500 within 60 days, full liability after 60 days | Reg E liability tiers
+  - needs→provides: [general)_036 needs] Specific federal regulation (Regulation E) details on liability and timelines (rule) ← [general)_037 provides] Investigation timelines: ~10 business days to investigate, 3 business days to report results, 1 business day to correct | Reg E timelines
+  - shared entities: ['debit card', 'provisional credit', 'regulation e']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [ogistics_009 needs] How unlock_discoverable_agent_tool and call_discoverable_agent_tool work (tool) ← [general)_017 provides] Requirement to unlock tool with unlock_discoverable_agent_tool before calling via call_discoverable_agent_tool | Explains unlocking a tool before calling it.
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'credit card account', 'credit card account id', 'unlock_discoverable_agent_tool', 'user id']
+- **Credit Card Rewards Categories** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - needs→provides: [general)_005 needs] Each card's specific bonus categories (data) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard green bonus category.
+  - needs→provides: [general)_005 needs] Bonus reward rates per card (threshold) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard bonus rate of 5 points per dollar.
+  - needs→provides: [general)_005 needs] Default reward rate per card (threshold) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard default rate of 1 point per dollar.
+- **Credit Card Referral Offers and Restrictions** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - needs→provides: [general)_009 needs] Documented referral terms for each card (bonus amounts, eligibility conditions) (rule) ← [general)_002 provides] Weekly referral cap of 2 referral bonuses per rolling 7-day window | Referral cap terms.
+  - needs→provides: [general)_009 needs] Criteria for when a referral will be automatically rejected beyond the weekly limit (rule) ← [general)_002 provides] Third and subsequent referrals in a window are automatically denied | Third and later referrals are auto-denied.
+  - needs→provides: [general)_009 needs] Criteria for when a referral will be automatically rejected beyond the weekly limit (rule) ← [general)_002 provides] Auto-denied referrals cannot be reinstated within the same 7-day window | Auto-denied referrals cannot be reinstated within the window.
+  - shared entities: ['credit card referral program', 'referral bonus', 'referral weekly limit']
+- **Provisional Credit Eligibility Guidelines (Internal)** ↔ **How to Dispute a Credit Card Transaction**
+  - needs→provides: [general)_018 needs] provisional credit and investigation timeline rules (rule) ← [general)_015 provides] provisional credit eligibility criteria for credit card disputes | Provisional credit eligibility rules.
+  - shared entities: ['cancelled subscription charges', 'credit card dispute', 'duplicate charges', 'goods or services not received', 'goods services not as described', 'incorrect amount charges', 'merchant contact', 'refund not processed']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) ← [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Regulation E scope
+  - needs→provides: [general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) ← [general)_037 provides] Investigation timelines: ~10 business days to investigate, 3 business days to report results, 1 business day to correct | Reg E investigation timelines
+  - needs→provides: [general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) ← [general)_037 provides] Provisional credit within 10 business days if investigation exceeds 10 business days | Reg E provisional credit
+  - shared entities: ['debit card', 'provisional credit']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Checking Debit Card Dispute Status**
+  - needs→provides: [general)_035 needs] Dispute filing procedure and dispute category definitions (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute tool arguments and categories
+  - needs→provides: [general)_035 needs] Dispute filing procedure and dispute category definitions (procedure) ← [general)_031 provides] Fraud vs unauthorized_transaction categorization rule | Category rule
+  - shared entities: ['debit card', 'debit card dispute', 'dispute category', 'police report', 'provisional credit']
+- **Linked Checking Account APY Boosts for Savings Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - needs→provides: [general)_044 needs] Savings account type documentation listing APY components (base rate, tier rates, linked checking boost, credit card bonuses, relationship bonus) (rule) ← [general)_012 provides] Rule that the boost is additive to savings base APY and credit card APY bonuses | Boost additive to components
+  - needs→provides: [general)_044 needs] Definition of qualifying checking-savings account pairing (definition) ← [general)_012 provides] List of 18 checking+savings pairings that qualify for the linked checking APY boost | Qualifying pairings list
+  - needs→provides: [general)_044 needs] Definition of qualifying checking-savings account pairing (definition) ← [general)_012 provides] Rule that only listed pairings qualify; all other combinations get no linking boost | Only listed pairings qualify
+  - shared entities: ['credit card apy bonus', 'linked checking apy boost']
+- **FAQ: Troubleshooting** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] escalation procedure for persistent errors (procedure) ← [general)_002 provides] Escalation criteria for persistent issues, error codes/repeated failures, security concerns and lockouts | Escalation criteria for persistent issues and error codes.
+  - needs→provides: [general)_002 needs] Escalation procedure/destination team for unresolved, security, or lockout issues (procedure) ← [general)_003 provides] Troubleshooting steps when errors persist (screenshots, timestamps, device/browser/app details, escalate with logs) | Escalation with logs when errors persist.
+  - needs→provides: [general)_002 needs] Error code definitions (definition) ← [general)_003 provides] Resolutions for error codes 101, 202, 403, 409, 429, 903 | Gives resolutions for the error codes.
+  - shared entities: ['account status', 'checking account']
+- **(Internal) Applying a Credit Card Statement Credit** ↔ **Request a Statement Credit or Fee Adjustment**
+  - needs→provides: [general)_017 needs] Eligibility/authorization policy for when goodwill, retention, fee reversal, or other statement credits may be granted and in what amounts (rule) ← [general)_025 provides] Rule that requests are not guaranteed and are reviewed case-by-case considering account history, nature of request and circumstances | Statement credit requests reviewed case-by-case.
+  - needs→provides: [general)_025 needs] Tool or procedure to post a statement credit or fee reversal (tool) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Procedure to apply a credit card statement credit
+  - needs→provides: [general)_025 needs] Tool or procedure to post a statement credit or fee reversal (tool) ← [general)_017 provides] Allowed reason codes: goodwill_adjustment, promotional_credit, annual_fee_reversal, late_fee_reversal, interest_charge_reversal, dispute_resolution, price_match, retention_offer, error_correction, other | Reason codes include fee and interest reversals
+  - shared entities: ['retention offers', 'statement credit']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_003 needs] Customer's existing accounts, their statuses, types and balances (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account types, statuses, balances.
+  - needs→provides: [general)_003 needs] Tool to look up customer accounts and balances (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup tool.
+  - needs→provides: [general)_009 needs] account opening eligibility requirements (criteria on existing account status, balances, tenure, number of accounts) (rule) ← [general)_003 provides] Eligibility requirements for opening a business checking account | Business checking eligibility.
+  - shared entities: ['account balance', 'account class']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_005 needs] Account balance (current_holdings), account status and account opening date for the customer's account (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Balance, status, date_opened.
+  - needs→provides: [general)_005 needs] Tool or method to look up account details and tier (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup tool.
+  - needs→provides: [general)_009 needs] account pre-closure requirements (rule) ← [general)_005 provides] Pre-closure requirements for personal checking accounts: balance $0 or at least the early closure fee, status OPEN, no pending transactions | Personal checking pre-closure.
+  - shared entities: ['account balance', 'account status']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: ATM Dispute Special Procedures**
+  - needs→provides: [general)_033 needs] Provisional credit issuance procedure/tool (procedure) ← [general)_032 provides] Conditions under which debit card provisional credit is required (60-day timely reporting, qualifying dispute categories, written statement, open checking account with no holds) | Provisional credit conditions
+  - needs→provides: [general)_033 needs] Provisional credit issuance procedure/tool (procedure) ← [general)_032 provides] Debit provisional credit amount rule: full disputed amount minus late-reporting liability ($50 or $500) | Provisional credit amount rule
+  - shared entities: ['atm cash discrepancy', 'atm deposit not credited', 'checking account', 'provisional credit', 'unauthorized transactions']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Definition of velocity block and fraud alert statuses (definition) ← [general)_039 provides] Definitions of customer-initiated and bank-initiated fraud alerts | Fraud alert definitions
+  - needs→provides: [general)_041 needs] Definition of velocity block and fraud alert statuses (definition) ← [general)_039 provides] Definition and common triggers of velocity blocks | Velocity block definition
+  - shared entities: ['debit card', 'fraud alerts', 'identity verification', 'security team', 'velocity block']
+- **Internal: Processing Credit Card Account Closures** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - needs→provides: [ogistics_002 needs] customer's current balance, pending disputes, account open date, and replacement card status (data) ← [acements_005 provides] Tool get_pending_replacement_orders_5765 usage with credit_card_account_id | Tool to check pending replacement orders.
+  - needs→provides: [acements_005 needs] standard account closure procedures/checks (procedure) ← [ogistics_002 provides] Credit card closure procedure steps (verify identity, confirm eligibility, use close_credit_card_account_7834) | Credit card closure procedure steps.
+  - needs→provides: [acements_005 needs] standard account closure procedures/checks (procedure) ← [ogistics_002 provides] Eligibility checklist: $0.00 balance, no pending disputes, account age at least 60 days, no pending replacement cards | Closure eligibility checklist.
+  - shared entities: ['credit card account id', 'credit card closure']
+- **How to Dispute a Credit Card Transaction** ↔ **What is Provisional Credit?**
+  - needs→provides: [general)_018 needs] provisional credit and investigation timeline rules (rule) ← [general)_022 provides] Provisional credit is usually posted within a few business days of the dispute being filed | Provisional credit posting timeline.
+  - needs→provides: [general)_018 needs] provisional credit and investigation timeline rules (rule) ← [general)_022 provides] Investigation can take a few days to several weeks depending on complexity | Investigation timeline.
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'credit card dispute', 'customer service phone line']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - needs→provides: [general)_044 needs] Savings account type documentation listing APY components (base rate, tier rates, linked checking boost, credit card bonuses, relationship bonus) (rule) ← [general)_046 provides] Rule: checking account APY boosts stack with credit card APY bonuses (highest only), relationship bonuses, and account tier bonuses | Stacking of APY components
+  - needs→provides: [general)_046 needs] Method for calculating corrected interest amounts (procedure) ← [general)_044 provides] Rule: expected APY is the sum of all applicable components | Expected APY is the sum of all applicable components.
+  - shared entities: ['checking account', 'credit card apy bonus', 'relationship bonus', 'savings account']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [general)_014 needs] procedure to unlock discoverable tools (procedure) ← [general)_017 provides] Requirement to unlock tool with unlock_discoverable_agent_tool before calling via call_discoverable_agent_tool | Unlock tool before calling via call_discoverable_agent_tool.
+  - needs→provides: [general)_017 needs] Dispute resolution process (procedure) ← [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Credit card dispute filing procedure.
+  - shared tools: ['call_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] debit card lookup tool (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool get_debit_cards_by_account_id_7823.
+  - shared entities: ['card expiration date', 'card last 4 digits', 'checking account', 'date issued', 'debit card', 'freeze/unfreeze debit card', 'issue reason']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - needs→provides: [general)_032 needs] Credit card provisional credit tiered maximum amounts (threshold) ← [general)_015 provides] maximum provisional credit limits by card tier ($2500/$5000/$10000/$15000/$25000) | Credit card provisional credit max by tier.
+  - shared entities: ['cancelled subscription charges', 'duplicate charges', 'goods or services not received', 'incorrect amount charges', 'merchant contact', 'provisional credit', 'unauthorized transactions']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - needs→provides: [general)_030 needs] procedure/tool for ordering a replacement credit card with a new card number (procedure) ← [acements_001 provides] Tool workflow and parameters for order_replacement_credit_card_7291 | Replacement credit card ordering tool workflow.
+  - needs→provides: [acements_001 needs] Credit card account lookup and account/card identifier (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | get_credit_card_accounts_by_user looks up the customer's credit card accounts.
+  - needs→provides: [acements_001 needs] Customer card product/tier (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Credit card account lookup shows the customer's card product.
+  - shared entities: ['replacement credit card']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_002 needs] customer account data (account status, open dates, count of savings accounts, balances) (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account status, dates, balances.
+  - needs→provides: [general)_009 needs] account opening eligibility requirements (criteria on existing account status, balances, tenure, number of accounts) (rule) ← [general)_002 provides] eligibility requirements for opening a personal savings account | Personal savings eligibility.
+  - shared entities: ['account class', 'account type', 'checking account', 'user id']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Opening Business Savings Accounts**
+  - needs→provides: [general)_003 needs] open_bank_account_4821 tool specification (tool) ← [general)_004 provides] Usage instructions for open_bank_account_4821 (account_type 'savings', exact account_class) | open_bank_account_4821 usage.
+  - shared tools: ['open_bank_account_4821']
+  - shared entities: ['account class', 'account status open', 'business checking account', 'identity verification', 'open_bank_account_4821']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_004 needs] Customer account data: account statuses, open dates, balances, count of business savings accounts (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account statuses, open dates, balances.
+  - needs→provides: [general)_009 needs] account opening eligibility requirements (criteria on existing account status, balances, tenure, number of accounts) (rule) ← [general)_004 provides] Eligibility requirements for opening a business savings account | Business savings eligibility.
+  - shared entities: ['account class', 'account id', 'account type', 'user id']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - needs→provides: [general)_005 needs] List of pending transactions for the account (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction history retrieval including pending.
+  - needs→provides: [general)_005 needs] List of pending transactions for the account (data) ← [general)_018 provides] Transaction status values: posted or pending | Status pending identifies pending transactions.
+  - needs→provides: [general)_005 needs] Definition of pending transactions (definition) ← [general)_018 provides] Transaction status values: posted or pending | Defines pending transaction status.
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - needs→provides: [general)_005 needs] Procedure for handling a non-zero balance (e.g., withdrawing or transferring funds) before closure (procedure) ← [general)_010 provides] Tool signature and parameters for transfer_funds_between_bank_accounts_7291(source_account_id, destination_account_id, amount) | Transfer tool to move funds.
+  - needs→provides: [general)_005 needs] Procedure for handling a non-zero balance (e.g., withdrawing or transferring funds) before closure (procedure) ← [general)_010 provides] Use cases: funding new savings opening deposit, customer-requested transfers between checking/savings, consolidating balances before closure | Consolidating balances before closure.
+  - needs→provides: [general)_010 needs] Account closure procedure (procedure) ← [general)_005 provides] Closure procedure: verify requirements, determine tier fees/notice, close with close_bank_account_7392 | Closure procedure.
+  - shared entities: ['account status open']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_008 needs] Account balance (current_holdings), status, opening date and tier lookup (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Balance, status, opening date, class.
+  - needs→provides: [general)_008 needs] Customer's other business checking accounts and their status (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Retrieves all customer accounts.
+  - needs→provides: [general)_009 needs] account pre-closure requirements (rule) ← [general)_008 provides] Pre-closure requirements for business savings accounts | Business savings pre-closure.
+  - shared entities: ['account balance']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - needs→provides: [general)_027 needs] how to unfreeze a debit card (procedure) ← [general)_026 provides] Unfreeze steps using unfreeze_debit_card_3893 with card_id | Unfreeze steps
+  - needs→provides: [general)_027 needs] how to unfreeze a debit card (procedure) ← [general)_026 provides] Eligibility requirements to unfreeze (verified, owner, FROZEN status, linked checking OPEN) | Unfreeze eligibility
+  - shared entities: ['card id', 'debit card', 'debit card unfreeze', 'identity verification']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - needs→provides: [general)_040 needs] Debit card status and card_id (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card status and id lookup
+  - needs→provides: [general)_040 needs] Tools to look up account, card, and transaction/fee details (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup tool
+  - shared entities: ['card id', 'checking account', 'daily purchase limit', 'debit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - needs→provides: [general)_001 needs] referral program terms governing bonus eligibility and payout (rule) ← [general)_020 provides] Referral bonus limit of 2 successful referrals per rolling 7-day period; additional referrals in that window do not earn a bonus | Referral bonus limit and terms.
+  - needs→provides: [general)_001 needs] specific criteria the referred person must meet for the referral bonus (threshold) ← [general)_020 provides] Referral is tracked to referrer's account when friend applies via link and is approved | Referred friend must apply via the link and be approved.
+  - shared entities: ['credit card', 'referral bonus', 'referral bonus requirements', 'referral status']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Understanding Your Credit Card Rewards Categories**
+  - needs→provides: [general)_006 needs] Definition of which purchases qualify as 'green purchases' (definition) ← [general)_019 provides] Definition of the 11 recognized reward spending categories (travel, dining, groceries, entertainment, shopping, utilities, transportation, software, media, green/sustainable, operations) with examples | Defines the green/sustainable category.
+  - needs→provides: [general)_019 needs] Card-specific bonus categories and bonus reward rates for each Rho-Bank credit card product (data) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard bonus category and rate.
+  - needs→provides: [general)_019 needs] Base reward rate value for each card (threshold) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard base rate.
+  - shared entities: ['credit card rewards']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - needs→provides: [general)_009 needs] Documented referral terms for each card (bonus amounts, eligibility conditions) (rule) ← [general)_020 provides] Referral bonus limit of 2 successful referrals per rolling 7-day period; additional referrals in that window do not earn a bonus | Referral bonus limit terms.
+  - needs→provides: [general)_020 needs] Procedure/tool for customer service to generate a referral link and check referral status (tool) ← [general)_009 provides] Procedure: customer runs get_referral_link(user_id, card_name) themselves | get_referral_link tool procedure.
+  - shared entities: ['credit card referral program', 'referral bonus', 'referral link', 'referral weekly limit']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **How to Dispute a Credit Card Transaction**
+  - needs→provides: [general)_018 needs] internal procedure/tool for representatives to actually file a credit card dispute (procedure) ← [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Tool and procedure to file a credit card dispute.
+  - needs→provides: [general)_018 needs] fraud handling procedure (e.g., card blocking/replacement) (procedure) ← [general)_014 provides] allowed card_action values (keep_active, cancel_and_reissue) and when to use each | cancel_and_reissue card action for disputes.
+  - shared entities: ['credit card', 'credit card dispute', 'merchant contact', 'unauthorized transactions']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - needs→provides: [general)_018 needs] The customer's bank account ID, obtained from another lookup (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup tool returns account IDs
+  - needs→provides: [general)_018 needs] The customer's bank account ID, obtained from another lookup (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Output includes account_id
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - needs→provides: [general)_023 needs] customer account data (account_type, status, open date, balance, date_of_birth, address) (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Retrieves customer accounts
+  - needs→provides: [general)_023 needs] customer account data (account_type, status, open date, balance, date_of_birth, address) (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account type, status, balance, date opened fields
+  - shared entities: ['account type', 'checking account', 'savings account']
+- **Internal: Activating a Debit Card** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Internal protocol for activating a pending replacement debit card (procedure) ← [general)_024 provides] Step-by-step debit card activation procedure | Activation procedure
+  - needs→provides: [general)_037 needs] Internal protocol for activating a pending replacement debit card (procedure) ← [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Activation tool selection
+  - shared entities: ['debit card', 'debit card activation', 'issue reason']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] tools to clear fraud alert, clear velocity block, and order replacement card (tool) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Debit card ordering via order_debit_card_5739.
+  - needs→provides: [general)_003 needs] replacement card ordering procedure (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Debit card ordering procedure.
+  - shared entities: ['checking account', 'debit card', 'identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Opening Business Checking Accounts**
+  - needs→provides: [general)_003 needs] open_bank_account_4821 tool specification (tool) ← [general)_001 provides] Use of open_bank_account_4821 for opening accounts | Use of open_bank_account_4821.
+  - shared tools: ['open_bank_account_4821']
+  - shared entities: ['account class', 'identity verification', 'open_bank_account_4821', 'personal checking account']
+- **Linked Checking Account APY Boosts for Savings Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - needs→provides: [general)_012 needs] Exact APY boost percentage for each qualifying pairing (threshold) ← [general)_046 provides] Example value: Green Account gives +0.75% APY boost and Purple Account +0.1% APY boost on Gold Savings Account | Example APY boost values for pairings.
+  - needs→provides: [general)_046 needs] Table of APY boost values per checking account product for each savings account type (beyond the Gold Savings example) (data) ← [general)_012 provides] List of 18 checking+savings pairings that qualify for the linked checking APY boost | Lists all qualifying checking/savings boost pairings.
+  - shared entities: ['credit card apy bonus', 'green account', 'purple account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - needs→provides: [general)_019 needs] Procedure/tool for issuing credits or fee refunds to accounts (tool) ← [general)_017 provides] procedure for applying checking account credits | Procedure for applying checking account credits
+  - needs→provides: [general)_019 needs] Procedure/tool for issuing credits or fee refunds to accounts (tool) ← [general)_017 provides] apply_checking_account_credit_5829 parameter usage (amount > 0) | apply_checking_account_credit tool usage
+  - shared entities: ['fee refund', 'missing rebate', 'transaction history']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - needs→provides: [general)_036 needs] Which claims require a police report (rule) ← [general)_031 provides] Police report recommendation for fraud disputes over $500 | Police report for fraud disputes over $500
+  - shared entities: ['card possession status', 'debit card', 'debit card dispute', 'police report', 'provisional credit', 'regulation e']
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - needs→provides: [general)_009 needs] standard transfer_to_human_agents tool usage and parameters (tool) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Gives the reason codes for transfer_to_human_agents.
+  - needs→provides: [general)_009 needs] standard transfer_to_human_agents tool usage and parameters (tool) ← [general)_042 provides] Definitions of when to use each reason code | Defines when to use each reason code.
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - needs→provides: [ogistics_009 needs] How unlock_discoverable_agent_tool and call_discoverable_agent_tool work (tool) ← [general)_004 provides] Requirement to unlock update_transaction_rewards_3847 via unlock_discoverable_agent_tool before calling it via call_discoverable_agent_tool | Explains the unlock and call discoverable tool flow.
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - needs→provides: [general)_003 needs] The procedure and timelines for the cash back dispute review after submission (procedure) ← [general)_004 provides] Procedure for applying rewards corrections after a resolved and approved cash back dispute | Procedure after a cash back dispute is resolved.
+  - needs→provides: [general)_004 needs] Cash back dispute resolution/approval process (procedure) ← [general)_003 provides] The tool submit_cash_back_dispute_0589(user_id, transaction_id) is provided to the customer to run themselves, instead of a step-by-step workflow | Cash back dispute submission tool.
+  - shared entities: ['cash back dispute', 'cash back rewards', 'transaction id']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Credit Card Rewards Points Rounding Policy**
+  - needs→provides: [general)_007 needs] Earn rates / cash back percentages for each credit card product and reward category (data) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard earn rates.
+  - needs→provides: [general)_007 needs] Definition of how points relate to purchase amounts (points-per-dollar conversion) (definition) ← [general)_006 provides] Conversion rate 1 point = $0.01 for statement credit or Rho-Bank checking account credit redemption | 1 point equals $0.01.
+  - needs→provides: [general)_007 needs] Definition of how points relate to purchase amounts (points-per-dollar conversion) (definition) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard points-per-dollar rates.
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - needs→provides: [general)_010 needs] Definition/behavior of the standard transfer_to_human_agents tool (tool) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Reason codes for transfer_to_human_agents.
+  - needs→provides: [general)_010 needs] Definition/behavior of the standard transfer_to_human_agents tool (tool) ← [general)_042 provides] Definitions of when to use each reason code | When to use each transfer reason code.
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Internal: Backend Incident 11/13**
+  - needs→provides: [general)_011 needs] general transfer_to_human_agents usage rules (tool) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | transfer_to_human_agents reason codes.
+  - needs→provides: [general)_011 needs] general transfer_to_human_agents usage rules (tool) ← [general)_042 provides] Rule to always select the reason code from the highest applicable tier | Rule for selecting the reason code tier.
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'customer service phone line', 'customer service representative', 'internal transfers', 'mobile app', 'online banking', 'savings account']
+- **Internal: Closing Personal Savings Accounts** ↔ **Linked Checking Account APY Boosts for Savings Accounts**
+  - shared entities: ['bronze account', 'diamond elite account', 'gold account', 'gold plus account', 'gold years account', 'platinum account', 'platinum plus account', 'silver account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_025 needs] transaction dispute filing procedure (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing tool arguments
+  - needs→provides: [general)_031 needs] close and reissue card tool/procedure (tool) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] transaction lookup via get_bank_account_transactions_9173 (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction tool usage
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['everyonepay', 'get_bank_account_transactions_9173', 'transaction type']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] freeze_debit_card_3892 usage (tool) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze tool steps
+  - shared tools: ['freeze_debit_card_3892']
+  - shared entities: ['debit card', 'freeze_debit_card_3892', 'identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - needs→provides: [general)_039 needs] Process for handling reported unauthorized transactions/disputes (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing
+  - needs→provides: [general)_039 needs] Process for handling reported unauthorized transactions/disputes (procedure) ← [general)_031 provides] Fraud vs unauthorized_transaction categorization rule | Unauthorized categorization
+  - shared entities: ['debit card', 'identity verification']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [general)_016 needs] reason code definitions (definition) ← [general)_014 provides] allowed dispute_reason values | Dispute reason values
+  - shared entities: ['card last 4 digits', 'credit card', 'credit card dispute', 'transaction id', 'user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - needs→provides: [ogistics_003 needs] How to look up pending disputes, pending replacement cards, account open date and outstanding balance (data) ← [acements_005 provides] Tool get_pending_replacement_orders_5765 usage with credit_card_account_id | Pending replacement lookup
+  - needs→provides: [acements_005 needs] standard account closure procedures/checks (procedure) ← [ogistics_003 provides] Closure eligibility criteria: no pending disputes, no pending replacement cards, account open at least 60 days, no outstanding balance | Closure eligibility criteria.
+  - shared entities: ['credit card account id', 'credit card closure']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Opening Personal Savings Accounts**
+  - needs→provides: [general)_001 needs] open_bank_account_4821 tool specification (tool) ← [general)_002 provides] parameter guidance for open_bank_account_4821 (account_type 'savings', account_class full official name ending with 'Account') | Parameter guidance for open_bank_account_4821.
+  - shared tools: ['open_bank_account_4821']
+  - shared entities: ['account class', 'identity verification', 'open_bank_account_4821']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Opening Business Savings Accounts**
+  - needs→provides: [general)_001 needs] open_bank_account_4821 tool specification (tool) ← [general)_004 provides] Usage instructions for open_bank_account_4821 (account_type 'savings', exact account_class) | Usage instructions for open_bank_account_4821.
+  - shared tools: ['open_bank_account_4821']
+  - shared entities: ['account class', 'identity verification', 'open_bank_account_4821']
+- **Internal: Retrieving Customer Account Information** ↔ **What to Know Before Closing Your Account**
+  - needs→provides: [general)_020 needs] customer's account tier and opening date (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account output includes account_class and date_opened
+  - needs→provides: [general)_020 needs] tool to look up account details, balance and pending transactions (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Tool to look up account details and balance
+  - shared entities: ['account balance', 'account closure']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - needs→provides: [general)_034 needs] Standard debit card dispute process steps and tooling (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit dispute tool and arguments
+  - needs→provides: [general)_034 needs] Dispute eligibility rules/timeframes for debit disputes (rule) ← [general)_031 provides] Pre-filing requirements: verified, >= $1.00, within 60 days, open checking account, ATM ownership check | Dispute pre-filing eligibility and 60-day window
+  - shared entities: ['dispute category', 'identity verification']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - needs→provides: [general)_040 needs] Overdraft fee history for last 30 days (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction history shows fees
+  - needs→provides: [general)_040 needs] Tools to look up account, card, and transaction/fee details (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction lookup tool
+  - shared entities: ['checking account', 'overdraft fee']
+- **Internal: Retrieving Customer Account Information** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - needs→provides: [ogistics_009 needs] Account lookup tools/procedures for checking and credit card accounts (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Checking account lookup tool.
+  - needs→provides: [ogistics_009 needs] Customer's user_id, checking account balance, and credit card outstanding balance (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account lookup returns the checking balance.
+  - shared entities: ['checking account', 'user id']
+- **Checking User Dispute History (Internal)** ↔ **What is Provisional Credit?**
+  - needs→provides: [general)_022 needs] Dispute status data for the customer's account (data) ← [general)_016 provides] procedure to retrieve credit card dispute history using get_user_dispute_history_7291 | Procedure to retrieve credit card dispute history/status via get_user_dispute_history_7291
+  - needs→provides: [general)_022 needs] Dispute status data for the customer's account (data) ← [general)_016 provides] dispute record output schema (dispute_id, dispute_date, status, last_updated_at, transaction details, reason_code, outcome, notes) | Dispute record schema includes status and outcome data
+  - shared entities: ['credit card', 'credit card dispute']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['account id', 'checking account', 'fee refund', 'get_bank_account_transactions_9173', 'monthly maintenance fee', 'savings account']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'credit card account id', 'identity verification', 'unlock_discoverable_agent_tool']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Internal: Backend Incident 11/13**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'checking account', 'identity verification', 'unlock_discoverable_agent_tool']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Closing Business Savings Accounts**
+  - shared tools: ['close_bank_account_7392']
+  - shared entities: ['account balance', 'account status open', 'close_bank_account_7392', 'early closure fee', 'notice period', 'pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Closing Business Savings Accounts**
+  - shared tools: ['close_bank_account_7392']
+  - shared entities: ['account tier', 'close_bank_account_7392', 'early closure fee', 'notice period', 'pending transactions', 'supervisor approval']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['bronze rewards card', 'business bronze rewards card', 'business silver rewards card', 'diamond elite card', 'ecocard', 'green rewards card', 'silver rewards card', 'silver zoom card']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['bronze rewards card', 'business bronze rewards card', 'business silver rewards card', 'diamond elite card', 'ecocard', 'green rewards card', 'silver rewards card', 'silver zoom card']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Internal: Understanding Credit Card Referral Statuses.**
+  - shared entities: ['referral bonus', 'referral status', 'referral status applied', 'referral status complete', 'referral status error', 'referral status in progress', 'referral status no progress', 'referral status rejected']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - needs→provides: [general)_025 needs] checking account closure procedure (procedure) ← [general)_005 provides] Closure procedure: verify requirements, determine tier fees/notice, close with close_bank_account_7392 | Checking closure procedure
+  - needs→provides: [general)_025 needs] checking account closure procedure (procedure) ← [general)_005 provides] Pre-closure requirements for personal checking accounts: balance $0 or at least the early closure fee, status OPEN, no pending transactions | Checking pre-closure requirements
+  - shared entities: ['pending transactions']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_028 needs] Customer's checking account ID (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup
+  - shared entities: ['account id', 'checking account', 'savings account', 'user id']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Dispute filing procedure/tool for Regulation E claims (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit dispute filing tool
+  - shared entities: ['debit card', 'provisional credit', 'reg e liability limits', 'regulation e']
+- **Internal: Credit Card Retention Protocol** ↔ **Understanding Your Credit Card Rewards Categories**
+  - needs→provides: [ogistics_003 needs] Bonus categories enrollment info and rewards rules (data) ← [general)_019 provides] Rule that all Rho-Bank credit card purchases earn a base reward rate plus bonus rates in card-specific categories | Defines base and bonus category reward rules.
+  - needs→provides: [ogistics_003 needs] Bonus categories enrollment info and rewards rules (data) ← [general)_019 provides] Procedure: find card bonus categories/rates via mobile app, website, or card terms and conditions | Explains how to find card bonus categories and rates.
+  - shared entities: ['bonus categories']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - needs→provides: [general)_014 needs] procedure to unlock discoverable tools (procedure) ← [general)_004 provides] Requirement to unlock update_transaction_rewards_3847 via unlock_discoverable_agent_tool before calling it via call_discoverable_agent_tool | Unlock discoverable tool procedure.
+  - shared tools: ['call_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'transaction id']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] tools to clear fraud alert, clear velocity block, and order replacement card (tool) ← [general)_039 provides] Usage, parameters and reason codes (customer_verified, velocity_clear) for clear_debit_card_fraud_alert_4892 | clear_debit_card_fraud_alert_4892 with customer_verified and velocity_clear codes.
+  - shared entities: ['debit card', 'identity verification', 'velocity block', 'velocity block auto-lift 30 minutes']
+- **Internal: Human Agent Transfer Reason Codes** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] human agent transfer procedure (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Reason codes for transfer_to_human_agents.
+  - needs→provides: [general)_003 needs] human agent transfer procedure (procedure) ← [general)_042 provides] Rule to always select the reason code from the highest applicable tier | Rule for selecting transfer reason code.
+  - shared entities: ['transfer to human agent']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_001 needs] Count of customer's existing personal checking accounts (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account list with types allows counting checking accounts.
+  - needs→provides: [general)_009 needs] account opening eligibility requirements (criteria on existing account status, balances, tenure, number of accounts) (rule) ← [general)_001 provides] Eligibility requirements for opening a personal checking account | Personal checking eligibility.
+  - shared entities: ['account class']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Retrieving Customer Account Information**
+  - needs→provides: [general)_007 needs] Account balance (current_holdings), status, open date, and tier/credit line of the business checking account (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Balance, status, open date.
+  - needs→provides: [general)_009 needs] account pre-closure requirements (rule) ← [general)_007 provides] Pre-closure requirements for business checking accounts | Business checking pre-closure.
+  - shared entities: ['account balance']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - needs→provides: [general)_008 needs] Pending transactions lookup for the account (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction lookup.
+  - needs→provides: [general)_008 needs] Definition of 'pending transactions' (definition) ← [general)_018 provides] Transaction status values: posted or pending | Pending status definition.
+  - shared entities: ['pending transactions']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - needs→provides: [general)_017 needs] account type lookup (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup returns account type/class
+  - shared entities: ['account balance', 'account id', 'checking account', 'savings account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - needs→provides: [general)_040 needs] Linked checking account status and opening date (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account status and date opened lookup
+  - needs→provides: [general)_040 needs] Tools to look up account, card, and transaction/fee details (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup tool
+  - shared entities: ['checking account']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Enhanced verification procedure details and escalation path for recent stolen card trigger (procedure) ← [general)_037 provides] Code 43 stolen card handling: enhanced verification (name, DOB, last 4 SSN, 2-3 recent transactions), no reactivation, escalate via transfer_to_human_agents if customer denies reporting | Enhanced verification for stolen cards and escalation
+  - shared entities: ['debit card', 'enhanced identity verification', 'issue reason', 'security team']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Welcome to Rho-Bank Checking**
+  - needs→provides: [general)_001 needs] Definition and handling of pending transactions (definition) ← [general)_018 provides] Transaction status values: posted or pending | Defines pending versus posted transaction status.
+  - shared entities: ['bill pay', 'checking account', 'direct deposit', 'pending transactions']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - needs→provides: [general)_006 needs] fund transfer procedure/tool (procedure) ← [general)_010 provides] Tool signature and parameters for transfer_funds_between_bank_accounts_7291(source_account_id, destination_account_id, amount) | Gives the transfer_funds_between_bank_accounts_7291 signature.
+  - needs→provides: [general)_006 needs] fund transfer procedure/tool (procedure) ← [general)_010 provides] Execution steps for internal transfers (agent-only, do not surface tool to customer) | Gives execution steps for internal transfers.
+  - shared entities: ['checking account']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - needs→provides: [ogistics_008 needs] Prorated annual fee refund eligibility and calculation (what counts as 'recently') (rule) ← [ogistics_002 provides] Full annual fee refund may apply if closure occurs within 37 days of fee charge | Fee refund applies if closure is within 37 days of the charge.
+  - shared entities: ['annual fee', 'credit card account id', 'identity verification', 'user id']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Having Trouble Making Purchases with Your Card?**
+  - needs→provides: [general)_010 needs] Actual troubleshooting steps for diagnosing credit card purchase declines despite available credit (procedure) ← [general)_023 provides] List of common reasons a credit card transaction is declined despite available credit | Reasons for declines despite available credit.
+  - needs→provides: [general)_010 needs] Actual troubleshooting steps for diagnosing credit card purchase declines despite available credit (procedure) ← [general)_023 provides] Customer self-check troubleshooting steps before contacting the bank (verify card info/CVV, retry, check activation, check expiration, try different terminal) | Decline troubleshooting steps.
+  - shared entities: ['credit card']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **What is Provisional Credit?**
+  - needs→provides: [general)_022 needs] Procedure for filing a credit card dispute (procedure) ← [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Credit card dispute filing procedure.
+  - shared entities: ['credit card', 'credit card dispute', 'provisional credit', 'provisional credit eligibility']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared tools: ['Rho-Bank mobile app', 'online banking portal']
+  - shared entities: ['customer service phone line', 'mobile app', 'online banking']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'credit card account id', 'unlock_discoverable_agent_tool']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Internal: Backend Incident 11/13**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'identity verification', 'unlock_discoverable_agent_tool']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'credit card transaction history', 'unlock_discoverable_agent_tool']
+- **Internal: Backend Incident 11/13** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'statement balance', 'unlock_discoverable_agent_tool']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Closing Business Checking Accounts**
+  - shared tools: ['close_bank_account_7392']
+  - shared entities: ['account balance', 'account status open', 'close_bank_account_7392', 'early closure fee', 'pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Closing Personal Savings Accounts**
+  - shared tools: ['close_bank_account_7392']
+  - shared entities: ['account status', 'close_bank_account_7392', 'early closure fee', 'notice period', 'pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Closing Business Checking Accounts**
+  - shared tools: ['close_bank_account_7392']
+  - shared entities: ['account tier', 'close_bank_account_7392', 'early closure fee', 'pending transactions', 'supervisor approval']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['cancelled subscription charges', 'customer service phone line', 'customer service representative', 'duplicate charges', 'goods or services not received', 'incorrect amount charges', 'unauthorized transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_018 needs] Procedures for investigating customer inquiries about transactions or disputes (procedure) ← [general)_037 provides] Customer steps to dispute a transaction | Steps to dispute a transaction
+  - needs→provides: [general)_037 needs] Tool/data to review recent transaction history (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction history tool
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - needs→provides: [general)_025 needs] debit card ordering / replacement process (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Debit card ordering procedure
+  - shared entities: ['checking account', 'debit card', 'identity verification']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_029 needs] customer's checking account tier (data) ← [general)_005 provides] Tier mapping: entry (Light Blue, Light Green, Green Fee-Free), mid (Blue, Green checking), premium (Evergreen), elite (Bluest) | Tier mapping of checking products
+  - needs→provides: [general)_029 needs] definition of the checking account tiers (Entry/Mid/Premium/Elite) (definition) ← [general)_005 provides] Tier mapping: entry (Light Blue, Light Green, Green Fee-Free), mid (Blue, Green checking), premium (Evergreen), elite (Bluest) | Tier definitions
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_029 needs] customer's checking account tier (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | account_class field
+  - needs→provides: [general)_029 needs] linked checking account balance (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Balance field
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_029 needs] tool/procedure to retrieve all cards for the account (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Retrieves all cards for account
+  - shared entities: ['custom card design', 'date issued', 'issue reason']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - needs→provides: [general)_044 needs] Savings account type documentation listing APY components (base rate, tier rates, linked checking boost, credit card bonuses, relationship bonus) (rule) ← [general)_045 provides] Rule: credit card APY bonuses stack with checking account APY boosts, relationship bonuses, and account tier bonuses | Stacking of APY components
+  - shared entities: ['credit card apy bonus', 'relationship bonus', 'savings account']
+- **Internal: Retrieving Debit Card Information** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Tool to look up debit card information (issue_reason, status, other cards) (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup tool
+  - shared entities: ['debit card', 'debit card activation', 'issue reason']
+- **Internal: Backend Incident 11/13** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - needs→provides: [general)_014 needs] procedure to unlock discoverable tools (procedure) ← [general)_011 provides] requirement to unlock discoverable tools before calling | Requirement to unlock discoverable tools before calling.
+  - shared tools: ['call_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [general)_017 needs] get_credit_card_accounts_by_user tool usage (tool) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Use of get_credit_card_accounts_by_user.
+  - shared tools: ['get_credit_card_accounts_by_user']
+  - shared entities: ['get_credit_card_accounts_by_user']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Closing Personal Checking Accounts**
+  - needs→provides: [general)_001 needs] List of available personal checking account_class options and their official names (data) ← [general)_005 provides] Tier mapping: entry (Light Blue, Light Green, Green Fee-Free), mid (Blue, Green checking), premium (Evergreen), elite (Bluest) | Lists personal checking product names by tier.
+  - shared entities: ['blue account', 'green account', 'personal checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Closing Personal Savings Accounts**
+  - needs→provides: [general)_002 needs] list of available personal savings account options and their official names (data) ← [general)_006 provides] tier mapping of savings products: Bronze=Entry; Silver, Silver Plus=Mid; Gold, Gold Plus, Gold Years=Premium; Platinum, Platinum Plus, Diamond Elite=Elite | Lists savings product names.
+  - shared entities: ['gold account', 'personal savings account', 'silver plus account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - needs→provides: [general)_010 needs] Tool/data to look up account status and available balance (tool) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account status and balance.
+  - shared entities: ['account closure', 'checking account', 'savings account']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Internal: Applying Credits to Savings Accounts**
+  - needs→provides: [general)_019 needs] Procedure/tool for issuing credits or fee refunds to accounts (tool) ← [general)_043 provides] Parameters of apply_savings_account_credit_6831 (account_id, amount > 0, credit_type enum) | Savings account credit tool parameters
+  - shared entities: ['fee refund', 'minimum balance requirement', 'monthly maintenance fee']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Need Your Transaction History? Our Team Can Help**
+  - needs→provides: [general)_021 needs] name and operation of the internal tool used to pull complete transaction history (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Internal tool for transaction history
+  - shared entities: ['checking account', 'pending transactions', 'savings account']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_027 needs] card_id and card status lookup (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Tool returns debit cards with ids and status
+  - shared entities: ['card id', 'card last 4 digits', 'debit card']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Card closure and replacement procedure (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool
+  - shared entities: ['debit card', 'identity verification', 'transaction dispute']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] PIN reset procedure (procedure) ← [general)_027 provides] PIN reset procedure using reset_debit_card_pin_6284(card_id, last_4_digits, new_pin) | PIN reset procedure
+  - shared entities: ['debit card', 'debit card pin reset', 'identity verification']
+- **Welcome to Rho-Bank Checking** ↔ **Direct deposits — setup and timing**
+  - needs→provides: [general)_001 needs] Direct deposit setup procedure (procedure) ← [general)_005 provides] Steps to set up direct deposit (locate account/routing numbers, provide to payer, confirm account type and name) | Gives direct deposit setup steps.
+  - shared entities: ['checking account', 'direct deposit', 'online banking']
+- **FAQ: Troubleshooting** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - needs→provides: [general)_002 needs] Pending transaction timing/finalization rules for card authorizations and merchant adjustments (rule) ← [general)_006 provides] authorization holds typically release in 1-3 business days | Authorization holds release in 1-3 business days.
+  - shared entities: ['account status', 'checking account', 'pending transactions']
+- **Internal: Retrieving Customer Account Information** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - needs→provides: [general)_006 needs] account lookup tool returning balance, status and overdraft_pos_enabled (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup tool returns balance and status.
+  - shared entities: ['account opening', 'account status', 'checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - needs→provides: [general)_006 needs] transaction history lookup tool (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | get_bank_account_transactions_9173 retrieves transaction history.
+  - shared entities: ['checking account', 'pending transactions', 'posted transactions']
+- **Credit Card Referral Offers and Restrictions** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - needs→provides: [general)_002 needs] Card-specific referral eligibility requirements (rule) ← [general)_020 provides] Only cards with an active referral offer qualify | Only cards with an active referral offer qualify.
+  - shared entities: ['credit card referral program', 'referral bonus', 'referral weekly limit']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Credit Card Rewards Categories**
+  - needs→provides: [general)_003 needs] Cash back earning rules, categories and promotions used to determine what cash back the customer should have received (rule) ← [general)_005 provides] List of valid rewards transaction categories for Rho-Bank credit cards | Valid rewards categories.
+  - needs→provides: [general)_003 needs] Cash back earning rules, categories and promotions used to determine what cash back the customer should have received (rule) ← [general)_005 provides] Rule that non-bonus category purchases earn the card's default rate | Non-bonus purchases earn the card's default rate.
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - needs→provides: [general)_004 needs] Rewards base rates by card type (threshold) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard base earn rate.
+  - needs→provides: [general)_004 needs] Bonus category definitions and rates by transaction category (rule) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard green bonus rate.
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Credit Card Rewards Categories**
+  - needs→provides: [general)_004 needs] Bonus category definitions and rates by transaction category (rule) ← [general)_005 provides] List of valid rewards transaction categories for Rho-Bank credit cards | Rewards category list.
+  - shared entities: ['bonus categories', 'rewards base rate', 'transaction category']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Credit Card Rewards Points Rounding Policy**
+  - needs→provides: [general)_004 needs] Points rounding/conversion rule to whole numbers (rule) ← [general)_007 provides] Rule: all credit card rewards points are rounded down (truncated/floored) to the nearest whole number | Points are rounded down to whole numbers.
+  - needs→provides: [general)_004 needs] Points rounding/conversion rule to whole numbers (rule) ← [general)_007 provides] Rule: fractional points are never rounded up to the nearest integer | Fractional points are never rounded up.
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - needs→provides: [general)_012 needs] transfer_to_human_agents tool and its procedure (tool) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | transfer_to_human_agents usage.
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Understanding Your Credit Card Rewards Categories** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - needs→provides: [general)_021 needs] Definition of bonus categories and merchant category code mapping (definition) ← [general)_019 provides] Definition of the 11 recognized reward spending categories (travel, dining, groceries, entertainment, shopping, utilities, transportation, software, media, green/sustainable, operations) with examples | Category definitions.
+  - shared entities: ['credit card', 'customer support', 'merchant category']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Having Trouble Making Purchases with Your Card?**
+  - needs→provides: [general)_023 needs] Procedure for issuing a replacement for an expired card (procedure) ← [acements_001 provides] Tool workflow and parameters for order_replacement_credit_card_7291 | Tool workflow for ordering replacement credit cards, including expired cards
+  - needs→provides: [general)_023 needs] Procedure for issuing a replacement for an expired card (procedure) ← [acements_001 provides] Allowed replacement reason values: fraud_suspected, lost, stolen, damaged, expired, other | Replacement reason 'expired' is an allowed value
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['account in good standing', 'checking account', 'mobile app', 'online banking']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['account in good standing', 'customer service phone line', 'customer service representative', 'mobile app chat']
+- **What is Provisional Credit?** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['available credit', 'credit card', 'customer service phone line', 'customer support']
+- **How to Dispute a Credit Card Transaction** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line', 'customer service representative', 'online help center']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'customer service representative', 'online help center', 'transaction history']
+- **Need Your Transaction History? Our Team Can Help** ↔ **How to Dispute a Credit Card Transaction**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'customer service representative', 'mobile app', 'online help center']
+- **Refer a Friend to Rho-Bank and Earn Rewards** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line', 'customer support', 'mobile app']
+- **Refer a Friend to Rho-Bank and Earn Rewards** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer support', 'mobile app', 'online banking']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared tools: ['get_all_user_accounts_by_user_id_3847']
+  - shared entities: ['account id', 'checking account', 'get_all_user_accounts_by_user_id_3847', 'savings account']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Internal: Backend Incident 11/13**
+  - shared tools: ['initial_transfer_to_human_agent_0218', 'transfer_to_human_agents']
+  - shared entities: ['initial_transfer_to_human_agent_0218', 'transfer to human agent']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Internal: Backend Incident 11/13**
+  - shared tools: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'unlock_discoverable_agent_tool']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - shared tools: ['transfer_funds_between_bank_accounts_7291']
+  - shared entities: ['checking account', 'destination account id', 'source account id', 'transfer_funds_between_bank_accounts_7291']
+- **Internal: Checking Debit Card Dispute Status** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'debit card', 'debit card dispute', 'dispute investigation timeline', 'police report', 'provisional credit']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'checking account', 'credit type', 'fee refund', 'identity verification', 'savings account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['cancelled subscription charges', 'duplicate charges', 'goods or services not received', 'incorrect amount charges', 'provisional credit', 'unauthorized transactions']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['cancelled subscription charges', 'duplicate charges', 'goods or services not received', 'incorrect amount charges', 'merchant contact', 'unauthorized transactions']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Internal: Business Checking Account Promotion - October 2025**
+  - shared entities: ['account recommendation priority order', 'business checking account', 'customer service representative', 'customer stated requirements', 'lime green account', 'promotional priority']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Internal: Business Savings Account Promotion - October 2025**
+  - shared entities: ['account recommendation priority order', 'business savings account', 'customer service representative', 'customer stated requirements', 'promotional priority', 'silver plus saver']
+- **Internal: Closing Personal Checking Accounts** ↔ **Linked Checking Account APY Boosts for Savings Accounts**
+  - shared entities: ['blue account', 'bluest account', 'evergreen account', 'green account', 'green fee-free account', 'light green account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] close and reissue card tool/procedure (tool) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Card ordering procedure
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - needs→provides: [general)_039 needs] Customer's debit card ID and whether an alert is customer- or bank-initiated (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card ID lookup
+  - shared entities: ['card id', 'debit card']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - needs→provides: [general)_043 needs] Documented savings APY rates, tier rates, linked checking APY boost and relationship bonus values (data) ← [general)_045 provides] Example values: Gold Rewards Card +0.025%, Platinum Rewards Card +0.15%, EcoCard +0.6% APY bonus | Credit card APY bonus values
+  - shared entities: ['relationship bonus', 'savings account']
+- **Internal: Activating a Debit Card** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_024 needs] procedure for handling suspicious/unauthorized transactions after replacement (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing for unauthorized transactions
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Protocol for ordering a replacement debit card (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Ordering procedure
+  - shared entities: ['debit card', 'debit card activation']
+- **Internal: Retrieving Customer Account Information** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] customer accounts lookup tool (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Tool retrieving customer accounts.
+  - shared entities: ['account status', 'checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - needs→provides: [general)_030 needs] standard debit card freeze/close procedure (procedure) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Debit card freeze steps.
+  - shared entities: ['debit card', 'lost or stolen card']
+- **Internal: Retrieving Customer Account Information** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - needs→provides: [general)_022 needs] Account status and balance lookup for source and destination accounts (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account status and balance lookup
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - needs→provides: [general)_036 needs] Card blocking/replacement procedure for compromised card (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - needs→provides: [general)_036 needs] Card blocking/replacement procedure for compromised card (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Replacement ordering procedure
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Card and account data: pin_lock_reason, card activation date, account open date, balance, prior lock history, customer address (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Debit card fields
+  - shared entities: ['debit card', 'issue reason']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Transaction dispute filing procedure (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing tool
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Card closure and replacement procedure (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Replacement ordering
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Retrieving Customer Account Information** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - needs→provides: [general)_046 needs] Tool to look up customer's active checking accounts linked to profile (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | get_all_user_accounts_by_user_id_3847 retrieves the customer's checking accounts.
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Customer Account Information** ↔ **FAQ: Troubleshooting**
+  - needs→provides: [general)_002 needs] Account status lookup (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account lookup output includes status.
+  - shared entities: ['account status', 'checking account']
+- **Direct deposits — setup and timing** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - needs→provides: [general)_005 needs] Definition of standard processing windows for posting early-received deposits (rule) ← [general)_009 provides] direct deposit posting time window: usually 6 AM to 9 AM on scheduled pay date | Direct deposit posting window is 6-9 AM on the pay date.
+  - shared entities: ['direct deposit', 'payer payroll processing schedule']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - needs→provides: [acements_001 needs] Credit card account lookup and account/card identifier (data) ← [general)_013 provides] Location of credit_card_account_id in card account details | Says where credit_card_account_id is found.
+  - shared entities: ['credit card account id', 'identity verification']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Understanding Your Credit Card Rewards Categories**
+  - needs→provides: [general)_004 needs] Bonus category definitions and rates by transaction category (rule) ← [general)_019 provides] Definition of the 11 recognized reward spending categories (travel, dining, groceries, entertainment, shopping, utilities, transportation, software, media, green/sustainable, operations) with examples | Category definitions with examples.
+  - shared entities: ['bonus categories', 'rewards base rate']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - needs→provides: [general)_013 needs] The customer's credit_card_account_id (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Lookup of credit card accounts.
+  - shared entities: ['credit card', 'customer service representative']
+- **Having Trouble Making Purchases with Your Card?** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer support', 'mobile app']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **How to Dispute a Credit Card Transaction**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'customer service representative', 'mobile app']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'mobile app', 'online banking']
+- **What is Provisional Credit?** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line', 'transaction history']
+- **How to Dispute a Credit Card Transaction** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line', 'mobile app']
+- **How to Dispute a Credit Card Transaction** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line', 'mobile app']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'mobile app', 'online banking']
+- **Refer a Friend to Rho-Bank and Earn Rewards** ↔ **What is Provisional Credit?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line', 'customer support']
+- **Depositing a Check Into Your Account** ↔ **What is Provisional Credit?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer support', 'rho-bank mobile app', 'transaction history']
+- **Depositing a Check Into Your Account** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'savings account', 'transaction history']
+- **Depositing a Check Into Your Account** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'rho-bank mobile app', 'savings account']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['card status', 'credit card', 'transfer to human agent']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Opening Business Checking Accounts**
+  - shared tools: ['open_bank_account_4821']
+  - shared entities: ['account class', 'identity verification', 'open_bank_account_4821']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - shared tools: ['transfer_funds_between_bank_accounts_7291']
+  - shared entities: ['account status open', 'internal transfers', 'transfer_funds_between_bank_accounts_7291']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account', 'debit card', 'debit card activation', 'debit cards table', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'date issued', 'debit card', 'identity verification', 'replacement debit card order']
+- **Direct deposits — setup and timing** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['account number', 'checking account', 'direct deposit', 'missing direct deposit troubleshooting', 'routing number']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['dispute filing date', 'dispute id', 'dispute status', 'transaction id', 'user id']
+- **I didn't receive my direct deposit** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['deposit hold', 'direct deposit', 'direct deposit payer', 'missing direct deposit troubleshooting', 'rejected direct deposit']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['debit card', 'identity verification', 'issue reason', 'security hold', 'velocity block']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Closing Business Savings Accounts**
+  - shared entities: ['account status open', 'bronze saver account', 'business checking account', 'business savings account', 'silver saver account']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['customer service phone line', 'customer service representative', 'mobile app', 'online help center', 'transaction history']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Internal: Business Savings Account Promotion - November 2025**
+  - shared entities: ['account recommendation priority order', 'customer service representative', 'customer stated requirements', 'promotion period november 2025', 'promotional priority']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Internal: Business Savings Account Promotion - October 2025**
+  - shared entities: ['account recommendation priority order', 'customer service representative', 'customer stated requirements', 'promotion active period', 'promotional priority']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - needs→provides: [general)_023 needs] account tier definitions and tier-based fee schedule (rule) ← [general)_005 provides] Tier mapping: entry (Light Blue, Light Green, Green Fee-Free), mid (Blue, Green checking), premium (Evergreen), elite (Bluest) | Checking tier mapping
+  - shared entities: ['account status open']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - needs→provides: [general)_026 needs] Linked checking account status (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account status field
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_029 needs] card closure procedure and closure timestamp (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool
+  - shared entities: ['date issued']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] account status (open) and card-account linkage (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Cards by account linkage
+  - shared entities: ['debit card']
+- **Linked Checking Account APY Boosts for Savings Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - needs→provides: [general)_043 needs] Documented savings APY rates, tier rates, linked checking APY boost and relationship bonus values (data) ← [general)_012 provides] List of 18 checking+savings pairings that qualify for the linked checking APY boost | Linked boost pairings
+  - shared entities: ['linked checking apy boost']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Activating a Debit Card**
+  - needs→provides: [general)_024 needs] linked checking account status (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account status
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Lost debit card protocol (procedure) ← [general)_025 provides] lost/stolen cards closed immediately with no cooling-off period | Lost card closure
+  - shared entities: ['debit card']
+- **Internal: Credit Card Retention Protocol** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [ogistics_003 needs] How to look up pending disputes, pending replacement cards, account open date and outstanding balance (data) ← [general)_016 provides] procedure to retrieve credit card dispute history using get_user_dispute_history_7291 | Dispute history lookup
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - needs→provides: [ogistics_003 needs] Card tier classification of cards (entry, mid, premium) (definition) ← [acements_001 provides] Card tier assignments (Bronze Rewards, EcoCard, Business Bronze = entry; Silver Rewards, Business Silver, Green Rewards, Silver Zoom = mid; Gold, Platinum, Diamond Elite = premium) | Card tier assignments
+  - shared entities: ['credit card account id']
+- **Internal: Credit Card Retention Protocol** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - needs→provides: [ogistics_003 needs] Card tier classification of cards (entry, mid, premium) (definition) ← [general)_015 provides] mapping of credit card products to card tiers | Card tier mapping
+  - shared entities: ['card tier']
+- **Internal: Credit Card Retention Protocol** ↔ **Credit Card Rewards Categories**
+  - needs→provides: [ogistics_003 needs] Bonus categories enrollment info and rewards rules (data) ← [general)_005 provides] Statement that each card has its own bonus categories with higher reward rates | States each card has its own bonus categories.
+  - shared entities: ['bonus categories']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - needs→provides: [general)_032 needs] Account data: account open date, status, holds/restrictions, statement date of transaction (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account output fields include status and date_opened.
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - needs→provides: [general)_030 needs] standard debit card freeze/close procedure (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | close_debit_card_4721 usage.
+  - shared entities: ['debit card']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - needs→provides: [general)_006 needs] pending transactions lookup (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction lookup tool includes pending.
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - needs→provides: [general)_007 needs] Pending transactions for the account (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction lookup.
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - needs→provides: [general)_008 needs] Procedure for zeroing out balance (withdrawal/transfer) before closure (procedure) ← [general)_010 provides] Tool signature and parameters for transfer_funds_between_bank_accounts_7291(source_account_id, destination_account_id, amount) | Transfer tool for zeroing balance.
+  - shared entities: ['account status open']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Business Savings Account Promotion - November 2025**
+  - needs→provides: [general)_015 needs] General business savings account eligibility and recommendation procedure (procedure) ← [general)_004 provides] Eligibility requirements for opening a business savings account | Business savings eligibility requirements
+  - shared entities: ['business savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **What to Know Before Closing Your Account**
+  - needs→provides: [general)_020 needs] tool to look up account details, balance and pending transactions (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Tool to view pending transactions
+  - shared entities: ['pending transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: ATM Dispute Special Procedures**
+  - needs→provides: [general)_033 needs] Tool/procedure to view recent transactions and pull ATM journal records (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Tool to view recent transactions
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: ATM Dispute Special Procedures**
+  - needs→provides: [general)_033 needs] Procedure for closing old card and ordering replacement (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool
+  - shared entities: ['checking account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: ATM Dispute Special Procedures**
+  - needs→provides: [general)_033 needs] Procedure for closing old card and ordering replacement (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Debit card ordering procedure
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - needs→provides: [general)_034 needs] Customer's debit card ID (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Lookup of debit card id
+  - shared entities: ['card id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Why hasn't my direct deposit arrived yet?**
+  - needs→provides: [general)_008 needs] Customer's account transaction and available balance data (data) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction history tool provides account transaction data.
+  - shared entities: ['direct deposit']
+- **I didn't receive my direct deposit** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - needs→provides: [general)_009 needs] procedure for genuine direct deposit problems (not timing issues) (procedure) ← [general)_007 provides] Troubleshooting steps for a missing direct deposit (check account, contact payer, contact bank about rejection) | Troubleshooting steps for a missing direct deposit, including rejection.
+  - shared entities: ['direct deposit']
+- **Internal: Processing Credit Card Account Closures** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [ogistics_002 needs] customer's current balance, pending disputes, account open date, and replacement card status (data) ← [general)_016 provides] procedure to retrieve credit card dispute history using get_user_dispute_history_7291 | Tool to retrieve dispute history for pending disputes.
+  - shared entities: ['user id']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - needs→provides: [ogistics_006 needs] How to determine the customer's card tier (which products are entry, mid, premium) (definition) ← [acements_001 provides] Card tier assignments (Bronze Rewards, EcoCard, Business Bronze = entry; Silver Rewards, Business Silver, Green Rewards, Silver Zoom = mid; Gold, Platinum, Diamond Elite = premium) | Gives card tier assignments.
+  - shared entities: ['credit card account id']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - needs→provides: [ogistics_006 needs] How to determine the customer's card tier (which products are entry, mid, premium) (definition) ← [general)_015 provides] mapping of credit card products to card tiers | Maps credit card products to tiers.
+  - shared entities: ['card tier']
+- **Internal: Processing CLI Approvals and Denials** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - needs→provides: [ogistics_007 needs] Customer's card tier (data) ← [acements_001 provides] Card tier assignments (Bronze Rewards, EcoCard, Business Bronze = entry; Silver Rewards, Business Silver, Green Rewards, Silver Zoom = mid; Gold, Platinum, Diamond Elite = premium) | Gives card tier assignments.
+  - shared entities: ['credit card account id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - needs→provides: [ogistics_007 needs] Way to check active disputes, pending replacement card orders, past-due status, account open date and utilization (tool) ← [acements_005 provides] Tool get_pending_replacement_orders_5765 usage with credit_card_account_id | Checks pending replacement orders.
+  - shared entities: ['credit card account id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [ogistics_007 needs] Way to check active disputes, pending replacement card orders, past-due status, account open date and utilization (tool) ← [general)_016 provides] procedure to retrieve credit card dispute history using get_user_dispute_history_7291 | Checks dispute history.
+  - shared entities: ['user id']
+- **Checking Pending Replacement Card Orders (Internal)** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - needs→provides: [acements_005 needs] how to locate the credit_card_account_id and its valid format/source (data) ← [general)_013 provides] Location of credit_card_account_id in card account details | Location of credit_card_account_id.
+  - shared entities: ['credit card account id']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Credit Card Referral Offers and Restrictions**
+  - needs→provides: [general)_001 needs] referral program terms governing bonus eligibility and payout (rule) ← [general)_002 provides] Weekly referral cap of 2 referral bonuses per rolling 7-day window | Credit card referral bonus cap terms.
+  - shared entities: ['referral bonus']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - needs→provides: [general)_009 needs] Exact official card names (data) ← [acements_001 provides] Card tier assignments (Bronze Rewards, EcoCard, Business Bronze = entry; Silver Rewards, Business Silver, Green Rewards, Silver Zoom = mid; Gold, Platinum, Diamond Elite = premium) | Lists official card names.
+  - shared entities: ['knowledge base']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - needs→provides: [general)_009 needs] Exact official card names (data) ← [general)_015 provides] mapping of credit card products to card tiers | Card product names mapped to tiers.
+  - shared entities: ['gold rewards card']
+- **Provisional Credit Eligibility Guidelines (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [general)_015 needs] customer's dispute history over the past 12 months (data) ← [general)_016 provides] procedure to retrieve credit card dispute history using get_user_dispute_history_7291 | Retrieves credit card dispute history.
+  - shared entities: ['credit card dispute']
+- **Credit Card Rewards Categories** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - needs→provides: [general)_021 needs] Definition of bonus categories and merchant category code mapping (definition) ← [general)_005 provides] List of valid rewards transaction categories for Rho-Bank credit cards | Rewards category list.
+  - shared entities: ['credit card']
+- **Internal: Processing Credit Card Account Closures** ↔ **Getting the Most from Your Credit Card Rewards**
+  - needs→provides: [general)_024 needs] What happens to rewards when account is closed or not in good standing (rule) ← [ogistics_002 provides] Unredeemed rewards redeemable for 45 days after closure request, then forfeited | Rewards redeemable 45 days after closure request then forfeited
+  - shared entities: ['credit card rewards']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Request a Statement Credit or Fee Adjustment**
+  - needs→provides: [general)_025 needs] Billing error dispute/investigation procedure (procedure) ← [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Procedure for filing a credit card transaction dispute
+  - shared entities: ['credit card']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['get_bank_account_transactions_9173', 'identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['get_bank_account_transactions_9173', 'identity verification']
+- **Having Trouble Making Purchases with Your Card?** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line']
+- **Getting the Most from Your Credit Card Rewards** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['account in good standing', 'credit card']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'mobile app']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'savings account']
+- **What is Provisional Credit?** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer support']
+- **How to Dispute a Credit Card Transaction** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'mobile app']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'mobile app']
+- **Need Your Transaction History? Our Team Can Help** ↔ **What is Provisional Credit?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line', 'transaction history']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['identity verification', 'rho-bank mobile app']
+- **Refer a Friend to Rho-Bank and Earn Rewards** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service phone line']
+- **Depositing a Check Into Your Account** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'customer support']
+- **Depositing a Check Into Your Account** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account', 'savings account']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service representative']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **What is Provisional Credit?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'rho-bank mobile app']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **How to Dispute a Credit Card Transaction**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card', 'customer service representative']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['credit card', 'transfer to human agent']
+- **Internal: Direct Deposit Delay Inquiries Protocol** ↔ **Internal: Backend Incident 11/13**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['human agent', 'transfer to human agent']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['credit card', 'transfer to human agent']
+- **Internal: Backend Incident 11/13** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['identity verification', 'transfer to human agent']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared tools: ['call_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'user id']
+- **Internal: Activating a Debit Card** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account', 'debit card', 'identity verification', 'recurring payments']
+- **Internal: Activating a Debit Card** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account', 'debit card', 'identity verification', 'recurring payments']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'checking account', 'debit card', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'checking account', 'savings account', 'user id']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'internal transfers', 'online banking', 'pending transactions']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'checking account', 'debit card', 'identity verification']
+- **Depositing a Check Into Your Account** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - shared entities: ['account id', 'checking account', 'mobile check deposit', 'savings account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['account id', 'checking account', 'savings account', 'transaction history']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open', 'card id', 'checking account', 'debit card']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card', 'pending transactions', 'recurring payments']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account status open', 'checking account', 'insufficient funds', 'savings account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card', 'pending transactions', 'recurring payments']
+- **Welcome to Rho-Bank Checking** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'customer support', 'debit card', 'pending transactions']
+- **Internal: Opening Personal Savings Accounts** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['checking account', 'destination account id', 'opening deposit', 'source account id']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'checking account', 'identity verification', 'savings account']
+- **Internal: Activating a Debit Card** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['card last 4 digits', 'card pending status', 'debit card', 'identity verification']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['card status', 'debit card', 'issue reason', 'transfer to human agent']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['bronze rewards card', 'business bronze rewards card', 'credit card account id', 'identity verification']
+- **Internal: Credit Card Retention Protocol** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['card tier', 'credit card account id', 'pending replacement cards', 'user id']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service phone line', 'customer service representative', 'mobile app', 'online help center']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer service phone line', 'dispute investigation', 'provisional credit', 'provisional credit timeline']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service phone line', 'customer service representative', 'online help center', 'transaction history']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Internal: Business Savings Account Promotion - October 2025**
+  - shared entities: ['account recommendation priority order', 'customer service representative', 'customer stated requirements', 'promotional priority']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Internal: Business Savings Account Promotion - November 2025**
+  - shared entities: ['account recommendation priority order', 'customer service representative', 'customer stated requirements', 'promotional priority']
+- **Understanding Your Credit Card Rewards Categories** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card', 'credit card rewards', 'customer support', 'online banking']
+- **Internal: Closing Personal Checking Accounts** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['elite tier', 'entry tier', 'mid tier', 'premium tier']
+- **Credit Card Rewards Redemption Options** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['business platinum rewards card', 'diamond elite card', 'gold rewards card', 'platinum rewards card']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] customer's checking account tier and count of open disputes (data) ← [general)_005 provides] Tier mapping: entry (Light Blue, Light Green, Green Fee-Free), mid (Blue, Green checking), premium (Evergreen), elite (Bluest) | Checking tier mapping
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] account status (open) and card-account linkage (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account status
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - needs→provides: [general)_035 needs] Supervisor escalation procedure (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Transfer reason codes for escalation
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - needs→provides: [general)_039 needs] How to transfer a customer to the security team (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Transfer reason codes
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [general)_016 needs] internal support escalation procedure (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Escalation transfer codes
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Internal: Credit Card Retention Protocol**
+  - needs→provides: [ogistics_003 needs] Supervisor escalation procedure and criteria (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Escalation transfer codes
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - needs→provides: [general)_010 needs] Account closure procedure (procedure) ← [general)_006 provides] closure procedure using close_bank_account_7392 | Savings closure procedure.
+- **Internal: Retrieving Customer Account Information** ↔ **Linked Checking Account APY Boosts for Savings Accounts**
+  - needs→provides: [general)_012 needs] Customer's held accounts under their customer profile (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Tool retrieves a customer's accounts
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_021 needs] transaction dispute procedure (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit card transaction dispute filing tool
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **What is an authorization hold?**
+  - needs→provides: [general)_022 needs] How 'sufficient funds' is measured (available vs. current balance, pending transactions) (definition) ← [general)_004 provides] rule that holds reduce available balance even if not visible in recent transactions | Holds reduce available balance
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - needs→provides: [general)_041 needs] Card and account data: pin_lock_reason, card activation date, account open date, balance, prior lock history, customer address (data) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account open date and balance
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - needs→provides: [general)_041 needs] Security team transfer process (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Transfer reason codes for human transfer
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - needs→provides: [general)_045 needs] Customer's linked active credit cards from customer profile (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | get_credit_card_accounts_by_user retrieves the customer's credit card accounts.
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - needs→provides: [general)_047 needs] Tool or data to look up the user's earliest checking account open date and referral bonus timestamps/statuses (tool) ← [general)_009 provides] Tool output fields: account_id, account_type, account_class, status, balance, date_opened | Account lookup returns date_opened, giving the earliest checking open date.
+- **Internal: Retrieving Customer Account Information** ↔ **FAQ: Checking Account Referrals**
+  - needs→provides: [general)_048 needs] tool or procedure to look up referral status and customer history/address (tool) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Account lookup tool provides the customer's account history.
+- **Internal: Human Agent Transfer Reason Codes** ↔ **FAQ: Troubleshooting**
+  - needs→provides: [general)_002 needs] Escalation procedure/destination team for unresolved, security, or lockout issues (procedure) ← [general)_042 provides] Tiered list of transfer reason codes for transfer_to_human_agents | Transfer reason codes for escalation to human agents.
+- **FAQ: Troubleshooting** ↔ **What is an authorization hold?**
+  - needs→provides: [general)_002 needs] Pending transaction timing/finalization rules for card authorizations and merchant adjustments (rule) ← [general)_004 provides] hold release timing depends on merchant processing and settlement | Hold release timing depends on merchant settlement.
+- **Internal: Opening Personal Checking Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - needs→provides: [general)_006 needs] checking account opening procedure (procedure) ← [general)_001 provides] Step-by-step procedure for opening a personal checking account | Gives the personal checking opening procedure.
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - needs→provides: [ogistics_009 needs] Account lookup tools/procedures for checking and credit card accounts (tool) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Credit card account lookup tool.
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - needs→provides: [acements_005 needs] how to locate the credit_card_account_id and its valid format/source (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Tool to retrieve the customer's credit card accounts.
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Understanding Your Credit Card Rewards Categories**
+  - needs→provides: [general)_003 needs] Cash back earning rules, categories and promotions used to determine what cash back the customer should have received (rule) ← [general)_019 provides] Definition of the 11 recognized reward spending categories (travel, dining, groceries, entertainment, shopping, utilities, transportation, software, media, green/sustainable, operations) with examples | Defines the reward spending categories.
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - needs→provides: [general)_003 needs] Cash back earning rules, categories and promotions used to determine what cash back the customer should have received (rule) ← [general)_006 provides] EcoCard earns 5 sustainability points per dollar on green purchases and 1 point per dollar on other purchases, redeeming at $0.01 per point | EcoCard earning rules.
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - needs→provides: [general)_004 needs] User card type and transaction details (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Credit card account lookup gives the card type.
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [general)_006 needs] Rewards redemption procedure (statement credit or checking account credit) (procedure) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Procedure to apply a statement credit.
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Credit Card Rewards Redemption Options**
+  - needs→provides: [general)_008 needs] Which card product the customer holds, to determine airline transfer eligibility (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Lookup of the customer's credit card products.
+- **Internal: Retrieving Customer Account Information** ↔ **Credit Card Rewards Redemption Options**
+  - needs→provides: [general)_008 needs] Whether the customer has an active linked Rho-Bank checking account (data) ← [general)_009 provides] Tool get_all_user_accounts_by_user_id_3847 retrieves a customer's checking and savings accounts | Retrieves the customer's checking accounts and their status.
+- **Credit Card Rewards Redemption Options** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [general)_008 needs] Procedure/tool to execute a redemption (procedure) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Tool to apply a statement credit redemption.
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - needs→provides: [general)_015 needs] customer's card product/tier (data) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Lookup of the customer's credit card product.
+- **How to Order a Replacement Credit Card (Internal)** ↔ **How to Dispute a Credit Card Transaction**
+  - needs→provides: [general)_018 needs] fraud handling procedure (e.g., card blocking/replacement) (procedure) ← [acements_001 provides] Tool workflow and parameters for order_replacement_credit_card_7291 | Replacement card ordering workflow.
+- **Internal: Credit Card Retention Protocol** ↔ **Getting the Most from Your Credit Card Rewards**
+  - needs→provides: [general)_024 needs] What happens to rewards when account is closed or not in good standing (rule) ← [ogistics_003 provides] 45-day rewards redemption window after closure request | 45-day rewards redemption window after closure request
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **What is Provisional Credit?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service phone line']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service representative']
+- **Need Your Transaction History? Our Team Can Help** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer service representative']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['debit card activation']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['checking account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **What is Provisional Credit?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['rho-bank mobile app']
+- **Depositing a Check Into Your Account** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer support']
+- **Depositing a Check Into Your Account** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['transaction history']
+- **Depositing a Check Into Your Account** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['customer support']
+- **Depositing a Check Into Your Account** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['rho-bank mobile app']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+  - shared entities: ['credit card']
+- **Internal: Direct Deposit Delay Inquiries Protocol** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Internal: Direct Deposit Delay Inquiries Protocol** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Backend Incident 11/13**
+  - shared tools: ['transfer_to_human_agents']
+  - shared entities: ['transfer to human agent']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'checking account', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'checking account', 'supervisor']
+- **Internal: Activating a Debit Card** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card', 'recurring payments']
+- **FAQ: Common Error Codes** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['account status', 'checking account', 'debit card']
+- **FAQ: Common Error Codes** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification', 'transfer to human agent']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account', 'mobile app', 'pending transactions']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'pending transactions', 'transaction history']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'customer service representative', 'savings account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account', 'mobile app', 'pending transactions']
+- **Need Your Transaction History? Our Team Can Help** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'customer service phone line', 'customer service representative']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account', 'pending transactions', 'transaction dispute']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'online banking', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open', 'checking account', 'debit card']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'identity verification', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'identity verification', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['account type', 'checking account', 'savings account']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account', 'credit card rewards', 'statement credit redemption']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'checking account', 'user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Depositing a Check Into Your Account**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Internal: Retrieving Customer Account Information** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['account type', 'checking account', 'savings account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Depositing a Check Into Your Account** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'customer support', 'transaction history']
+- **Depositing a Check Into Your Account** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'checking account', 'transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'direct deposit', 'savings account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification', 'user id']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'customer service representative', 'savings account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'customer service phone line', 'customer service representative']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'internal transfers', 'online banking']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'online banking', 'savings account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account', 'mobile app', 'pending transactions']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card', 'pending transactions']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['checking account', 'internal transfers', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'customer authorization', 'sufficient funds']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'customer service phone line', 'debit card']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card', 'regulation e']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account', 'debit card', 'user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card', 'pending transactions']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['card id', 'checking account', 'debit card']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'identity verification', 'user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification', 'user id']
+- **Welcome to Rho-Bank Checking** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account', 'customer support', 'online banking']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account type', 'checking account', 'identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'identity verification', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account', 'identity verification', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification', 'user id']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['account id', 'checking account', 'savings account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['checking account', 'savings account', 'transaction history']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['checking account', 'identity verification', 'savings account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account', 'provisional credit', 'provisional credit deadline']
+- **Internal: ATM Dispute Special Procedures** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'provisional credit', 'unauthorized transactions']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'identity verification', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['provisional credit', 'transaction id', 'user id']
+- **What is an authorization hold?** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['authorization holds', 'available balance', 'posted transactions']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['daily atm withdrawal limit', 'debit card', 'overdraft fee']
+- **Direct deposits — setup and timing** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['direct deposit', 'missing direct deposit troubleshooting', 'payer payroll processing schedule']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['card id', 'debit card', 'identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['card last 4 digits', 'debit card', 'identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['card id', 'card status active', 'debit card']
+- **Internal: Activating a Debit Card** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['debit card', 'identity verification', 'issue reason']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['card id', 'debit card', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['card id', 'debit card', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['card id', 'debit card', 'identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account status open', 'account type', 'identity verification']
+- **Internal: Processing Credit Card Account Closures** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['credit card account id', 'identity verification', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'internal notes', 'user id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['credit card account id', 'identity verification', 'user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Closing Business Checking Accounts**
+  - shared entities: ['account status open', 'business checking account', 'business savings account']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Closing Business Checking Accounts**
+  - shared entities: ['account balance', 'account status open', 'business checking account']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Closing Business Savings Accounts**
+  - shared entities: ['account balance', 'account status open', 'business checking account']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Closing Personal Checking Accounts**
+  - shared entities: ['account balance', 'account status open', 'personal checking account']
+- **Internal: Activating a Debit Card** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['card expiration date', 'cvv', 'debit card activation']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['credit card account id', 'pending replacement cards', 'user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['credit card account id', 'outstanding balance', 'user id']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['customer service phone line', 'customer service representative', 'mobile app']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['merchant contact', 'minimum dispute amount', 'provisional credit']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['merchant contact', 'provisional credit', 'unauthorized transactions']
+- **Internal: ATM Dispute Special Procedures** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['provisional credit', 'registered email address', 'unauthorized transactions']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['issue noticed date', 'provisional credit', 'unauthorized transactions']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card action', 'merchant contact', 'provisional credit']
+- **Think You're Missing Cash Back? Here's How to Get Help** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card', 'customer support', 'transaction history']
+- **Understanding Your Credit Card Rewards Categories** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card', 'customer support', 'online banking']
+- **FAQ: Checking Account Referrals** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer support', 'referral bonus', 'referral status']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['ecocard', 'gold rewards card', 'platinum rewards card']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['ecocard', 'gold rewards card', 'platinum rewards card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['referral bonus', 'referral status no progress', 'referral terms']
+- **FAQ: Checking Account Referrals** ↔ **Internal: Understanding Credit Card Referral Statuses.**
+  - shared entities: ['referral bonus', 'referral status', 'referral terms']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared tools: ['Rho-Bank mobile app']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **How to Dispute a Credit Card Transaction**
+  - shared tools: ['Rho-Bank mobile app']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared tools: ['Rho-Bank mobile app']
+- **Depositing a Check Into Your Account** ↔ **How to Dispute a Credit Card Transaction**
+  - shared tools: ['Rho-Bank mobile app']
+- **Internal: Checking Debit Card Dispute Status** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Activating a Debit Card** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Activating a Debit Card** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Activating a Debit Card** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Activating a Debit Card** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Activating a Debit Card** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Activating a Debit Card** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'identity verification']
+- **FAQ: Troubleshooting** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account', 'mobile app']
+- **FAQ: Common Error Codes** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Retrieving Debit Card Information** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Retrieving Debit Card Information** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Debit Card Information** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Retrieving Debit Card Information** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Retrieving Debit Card Information** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account', 'customer support']
+- **Need Your Transaction History? Our Team Can Help** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'customer service phone line']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['checking account', 'savings account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'savings account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open', 'checking account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Retrieving Customer Account Information** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account', 'user id']
+- **Depositing a Check Into Your Account** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'checking account']
+- **Depositing a Check Into Your Account** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'savings account']
+- **Depositing a Check Into Your Account** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'customer support']
+- **Depositing a Check Into Your Account** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account', 'pending transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account', 'direct deposit']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account', 'pending transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account', 'pending transactions']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'regulation e']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open', 'checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account', 'mobile app']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'customer service phone line']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['checking account', 'savings account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'savings account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account', 'mobile app']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'sufficient funds']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open', 'checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account', 'mobile app']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open', 'checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Depositing a Check Into Your Account**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open', 'checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'internal transfers']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['checking account', 'savings account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account', 'debit card']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'customer service representative']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account', 'debit card']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account', 'pending transactions']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Welcome to Rho-Bank Checking** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account', 'pending transactions']
+- **Welcome to Rho-Bank Checking** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'debit card']
+- **Welcome to Rho-Bank Checking** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account', 'direct deposit']
+- **Direct deposits — setup and timing** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account', 'online banking']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['checking account', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['account type', 'checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account', 'transaction history']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account', 'identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account', 'savings account']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['account id', 'identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['account id', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['transaction id', 'user id']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['transaction id', 'user id']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['transaction id', 'user id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['transaction amount', 'transaction date']
+- **How to Dispute a Credit Card Transaction** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card', 'transaction date']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['account status', 'pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['account status', 'pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'pending transactions']
+- **What to Know Before Closing Your Account** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['customer support', 'pending transactions']
+- **What to Know Before Closing Your Account** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['customer support', 'pending transactions']
+- **What to Know Before Closing Your Account** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['customer service phone line', 'pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['account status', 'pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['account status', 'pending transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **What is an authorization hold?**
+  - shared entities: ['direct deposit', 'posted transactions']
+- **Welcome to Rho-Bank Checking** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['customer support', 'direct deposit']
+- **Why hasn't my direct deposit arrived yet?** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - shared entities: ['direct deposit', 'payer payroll processing schedule']
+- **What is an authorization hold?** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['available balance', 'direct deposit']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['card id', 'debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative', 'debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service representative', 'debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['credit card', 'debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['debit card', 'identity verification']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative', 'debit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['debit card', 'security team']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['debit card', 'regulation e']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['debit card', 'identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['debit card', 'regulation e']
+- **Internal: Activating a Debit Card** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['card last 4 digits', 'identity verification']
+- **FAQ: Common Error Codes** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification', 'transfer to human agent']
+- **FAQ: Common Error Codes** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['card last 4 digits', 'identity verification']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card', 'identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification', 'standard shipping']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['date of birth', 'identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['card last 4 digits', 'identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['card id', 'identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['card id', 'identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['identity verification', 'minimum age requirement']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account status open', 'identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['account balance', 'identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification', 'transaction dispute']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification', 'transaction dispute']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['card id', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification', 'user id']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card account id', 'identity verification']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative', 'identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'internal notes']
+- **Internal: Processing Credit Card Account Closures** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['credit card account id', 'identity verification']
+- **Internal: Processing Credit Card Account Closures** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card account id', 'identity verification']
+- **Internal: Processing Credit Card Account Closures** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification', 'internal notes']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification', 'transaction history']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['card id', 'identity verification']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card account id', 'identity verification']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account status open', 'account tier']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account status open', 'account tier']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['expedited shipping', 'standard shipping']
+- **Internal: Retrieving Debit Card Information** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['card expiration date', 'debit card activation']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card', 'debit card activation']
+- **Internal: Checking Debit Card Dispute Status** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['dispute resolution', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['supervisor', 'user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit card account id', 'user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['credit card account id', 'user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['credit card account id', 'user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['account tenure', 'user id']
+- **Internal: Processing Credit Card Account Closures** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit card account id', 'user id']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits', 'user id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit card account id', 'user id']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['date issued', 'issue reason']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id', 'internal notes']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer service phone line', 'mobile app']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer service phone line', 'mobile app']
+- **Internal: Activating a Debit Card** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - shared entities: ['issue reason', 'replacement debit card']
+- **Internal: Checking Debit Card Dispute Status** ↔ **What is Provisional Credit?**
+  - shared entities: ['disputed amount', 'provisional credit']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **What is Provisional Credit?**
+  - shared entities: ['provisional credit', 'provisional credit reversal']
+- **Internal: ATM Dispute Special Procedures** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['provisional credit', 'unauthorized transactions']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card', 'provisional credit']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card', 'provisional credit']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['cancelled subscription charges', 'dispute category']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['goodwill credit', 'supervisor']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card', 'customer service representative']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card', 'customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service phone line', 'customer service representative']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service phone line', 'customer service representative']
+- **Internal: Applying Credits to Savings Accounts** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit amount', 'goodwill credit']
+- **Checking User Dispute History (Internal)** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card', 'credit card dispute']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits', 'credit card']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits', 'credit card']
+- **Think You're Missing Cash Back? Here's How to Get Help** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card', 'customer support']
+- **Think You're Missing Cash Back? Here's How to Get Help** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card', 'customer support']
+- **Think You're Missing Cash Back? Here's How to Get Help** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card', 'transaction history']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card', 'reward categories']
+- **Credit Card Rewards Categories** ↔ **Credit Card Rewards Points Rounding Policy**
+  - shared entities: ['credit card', 'reward categories']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['account in good standing', 'credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['account in good standing', 'credit card']
+- **Understanding Your Credit Card Rewards Categories** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card', 'customer support']
+- **Understanding Your Credit Card Rewards Categories** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card', 'customer support']
+- **Refer a Friend to Rho-Bank and Earn Rewards** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card', 'customer support']
+- **FAQ: Common Error Codes** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['card expiration date', 'customer service phone line']
+- **FAQ: Common Error Codes** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared entities: ['card status', 'transfer to human agent']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['credit card account id', 'current credit limit']
+- **Internal: Credit Card Retention Protocol** ↔ **Internal: CLI Payment History and Approval Criteria**
+  - shared entities: ['card tier', 'credit card account id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['annual fee', 'transaction history']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer service phone line', 'transaction history']
+- **What to Know Before Closing Your Account** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer service phone line', 'customer support']
+- **What to Know Before Closing Your Account** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['account in good standing', 'customer service phone line']
+- **What to Know Before Closing Your Account** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['account in good standing', 'customer service phone line']
+- **What to Know Before Closing Your Account** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer service phone line', 'customer support']
+- **What to Know Before Closing Your Account** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer service phone line', 'customer support']
+- **Internal: Opening Personal Checking Accounts** ↔ **Linked Checking Account APY Boosts for Savings Accounts**
+  - shared entities: ['blue account', 'green account']
+- **Internal: Opening Business Savings Accounts** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['internal transfers', 'opening deposit']
+- **Internal: Opening Personal Savings Accounts** ↔ **Linked Checking Account APY Boosts for Savings Accounts**
+  - shared entities: ['gold account', 'silver plus account']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['account balance', 'supervisor approval']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['account balance', 'supervisor approval']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Business Savings Account Promotion - November 2025**
+  - shared entities: ['business savings account', 'gold saver account']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer support', 'transaction history']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['customer support', 'transaction history']
+- **Depositing a Check Into Your Account** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['customer support', 'transaction history']
+- **Welcome to Rho-Bank Checking** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['customer support', 'online banking']
+- **Welcome to Rho-Bank Checking** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer support', 'online banking']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['available balance', 'customer support']
+- **FAQ: Checking Account Referrals** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['account in good standing', 'customer support']
+- **What to Know Before Closing Your Account** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['account in good standing', 'customer support']
+- **What to Know Before Closing Your Account** ↔ **FAQ: Checking Account Referrals**
+  - shared entities: ['account in good standing', 'customer support']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['gold rewards card', 'platinum rewards card']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['referral bonus', 'referral status no progress']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['referral bonus', 'referral status']
+- **FAQ: Checking Account Referrals** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['referral bonus', 'referral terms']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['bronze rewards card', 'business bronze rewards card']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['bronze rewards card', 'business bronze rewards card']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['cash back dispute', 'cash back rewards']
+- **Internal: Checking Debit Card Dispute Status** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Checking Debit Card Dispute Status** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Activating a Debit Card** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **FAQ: Troubleshooting** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **FAQ: Troubleshooting** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **FAQ: Troubleshooting** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **FAQ: Troubleshooting** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **FAQ: Troubleshooting** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **FAQ: Common Error Codes** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **FAQ: Common Error Codes** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **FAQ: Common Error Codes** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **FAQ: Common Error Codes** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **I didn't receive my direct deposit** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **I didn't receive my direct deposit** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **I didn't receive my direct deposit** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **I didn't receive my direct deposit** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Depositing a Check Into Your Account** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Internal: Backend Incident 11/13** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['checking account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits to Savings Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits to Savings Accounts** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Welcome to Rho-Bank Checking** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Welcome to Rho-Bank Checking** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Welcome to Rho-Bank Checking** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Direct deposits — setup and timing** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Direct deposits — setup and timing** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Direct deposits — setup and timing** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Direct deposits — setup and timing** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Depositing a Check Into Your Account**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['checking account']
+- **Internal: ATM Dispute Special Procedures** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['checking account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['savings account']
+- **Internal: Retrieving Debit Card Information** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Internal: Retrieving Customer Account Information** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Depositing a Check Into Your Account** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['savings account']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Retrieving Bank Account Transaction History**
+  - shared entities: ['account id']
+- **Internal: Opening Business Savings Accounts** ↔ **Depositing a Check Into Your Account**
+  - shared entities: ['account id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - shared entities: ['transaction id']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['transaction date']
+- **Internal: Closing Business Checking Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Checking Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Checking Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Checking Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['pending transactions']
+- **What to Know Before Closing Your Account** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['pending transactions']
+- **What to Know Before Closing Your Account** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['pending transactions']
+- **What to Know Before Closing Your Account** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['pending transactions']
+- **Internal: Closing Personal Checking Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['pending transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['overdraft fee']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - shared entities: ['direct deposit']
+- **Welcome to Rho-Bank Checking** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - shared entities: ['direct deposit']
+- **Welcome to Rho-Bank Checking** ↔ **What is an authorization hold?**
+  - shared entities: ['direct deposit']
+- **What is an authorization hold?** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['direct deposit']
+- **What is an authorization hold?** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - shared entities: ['direct deposit']
+- **What is an authorization hold?** ↔ **I didn't receive my direct deposit**
+  - shared entities: ['direct deposit']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['debit card']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['debit card']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['debit card']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['debit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['debit card']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['debit card']
+- **Internal: Activating a Debit Card** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['debit card']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['debit card']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['debit card']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['debit card']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['debit card']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['debit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['debit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['debit card']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['debit card']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['debit card']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['debit card']
+- **Internal: Activating a Debit Card** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **FAQ: Common Error Codes** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **FAQ: Common Error Codes** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **FAQ: Common Error Codes** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **FAQ: Common Error Codes** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Backend Incident 11/13** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Backend Incident 11/13** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Checking Accounts** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Resetting or Changing a Debit Card PIN**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Recurring Payment Disputes vs. Stop Future Payments**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['identity verification']
+- **Internal: Opening Business Savings Accounts** ↔ **Direct deposits — setup and timing**
+  - shared entities: ['account type']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - shared entities: ['account status open']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Closing Personal Checking Accounts**
+  - shared entities: ['account status open']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Transferring Funds Between Bank Accounts**
+  - shared entities: ['account status open']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['account status open']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account tier']
+- **What to Know Before Closing Your Account** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['account tier']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Customer Account Information** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Processing Credit Card Account Closures** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Processing Credit Card Account Closures** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Processing Credit Card Account Closures** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Business Savings Accounts** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **(Internal) Applying a Credit Card Statement Credit** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Checking User Dispute History (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Checking User Dispute History (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['user id']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Opening Personal Savings Accounts** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Requesting Temporary Debit Card Limit Increase**
+  - shared entities: ['card id']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id']
+- **Internal: Retrieving Debit Card Information** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['card id']
+- **Need Your Transaction History? Our Team Can Help** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['transaction dispute']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['transaction dispute']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['mobile app']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['mobile app']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **FAQ: Troubleshooting**
+  - shared entities: ['mobile app']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['mobile app']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['mobile app']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['mobile app']
+- **FAQ: Troubleshooting** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['mobile app']
+- **FAQ: Troubleshooting** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['mobile app']
+- **FAQ: Troubleshooting** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['mobile app']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['checking account tier']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['issue reason']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['issue reason']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['provisional credit']
+- **Internal: ATM Dispute Special Procedures** ↔ **What is Provisional Credit?**
+  - shared entities: ['provisional credit']
+- **Internal: ATM Dispute Special Procedures** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['provisional credit']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['provisional credit']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **What is Provisional Credit?**
+  - shared entities: ['provisional credit']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['dispute category']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['merchant contact']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['supervisor']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['supervisor']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['supervisor']
+- **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['fraud alerts']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['fraud alerts']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Submitting a Cash Back Dispute (Internal)** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Linked Checking Account APY Boost: Selection Policy** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Moving Money Between Your Rho-Bank Accounts**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Submitting a Cash Back Dispute (Internal)**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service representative']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['customer service representative']
+- **Checking Pending Replacement Card Orders (Internal)** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['internal notes']
+- **Internal: Opening Personal Savings Accounts** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['internal notes']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Internal: Activating a Debit Card** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Internal: Activating a Debit Card** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits']
+- **FAQ: Common Error Codes** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits']
+- **FAQ: Common Error Codes** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Internal: Retrieving Debit Card Information** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['card last 4 digits']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Credit Card Rewards Points Rounding Policy**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Understanding Credit Card Referral Statuses.** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Points Rounding Policy** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Understanding Credit Card Referral Statuses.**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Credit Card Rewards Points Rounding Policy**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Credit Card Purchase Decline Diagnostic Procedure** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card']
+- **How to Dispute a Credit Card Transaction** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Credit Card Rewards Categories** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **What is Provisional Credit?**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Understanding Your Credit Card Rewards Categories** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Understanding Credit Card Referral Statuses.**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Credit Card Rewards Points Rounding Policy**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card']
+- **Checking User Dispute History (Internal)** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Checking User Dispute History (Internal)** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Checking User Dispute History (Internal)** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Checking User Dispute History (Internal)** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['credit card']
+- **Checking User Dispute History (Internal)** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Checking User Dispute History (Internal)** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['credit card']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['credit card']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['credit card']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['credit card']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['debit card dispute process']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['replacement card order']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Internal: Credit Card Purchase Decline Diagnostic Procedure**
+  - shared entities: ['transfer to human agent']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['transfer to human agent']
+- **Generating a Credit Card Referral Link (Internal)** ↔ **Internal: Backend Incident 11/13**
+  - shared entities: ['transfer to human agent']
+- **Internal: Direct Deposit Delay Inquiries Protocol** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['transfer to human agent']
+- **FAQ: Common Error Codes** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['transfer to human agent']
+- **FAQ: Common Error Codes** ↔ **Internal: Direct Deposit Delay Inquiries Protocol**
+  - shared entities: ['transfer to human agent']
+- **Internal: Human Agent Transfer Reason Codes** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['transfer to human agent']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['transfer to human agent']
+- **Internal: Processing CLI Approvals and Denials** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card account id']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: CLI Payment History and Approval Criteria**
+  - shared entities: ['credit card account id']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['credit card account id']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['credit card account id']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit card account id']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['credit card account id']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **Paying Off Credit Card Balance from Checking Account (Internal)**
+  - shared entities: ['credit card account id']
+- **Internal: CLI Payment History and Approval Criteria** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card account id']
+- **Checking Pending Replacement Card Orders (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit card account id']
+- **Internal: Credit Card Retention Protocol** ↔ **How to Find Your Rho-Bank Credit Card Numbers Online**
+  - shared entities: ['credit card account id']
+- **Paying Off Credit Card Balance from Checking Account (Internal)** ↔ **Checking Pending Replacement Card Orders (Internal)**
+  - shared entities: ['credit card account id']
+- **How to Find Your Rho-Bank Credit Card Numbers Online** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit card account id']
+- **Internal: Processing Credit Card Account Closures** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['annual fee']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['card tier']
+- **Internal: Credit Card Retention Protocol** ↔ **Applying Resolved Cash Back Dispute Corrections (Internal)**
+  - shared entities: ['bonus categories']
+- **Internal: ATM Dispute Special Procedures** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['unauthorized transactions']
+- **Internal: Closing Personal Savings Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['account status']
+- **Internal: Closing Personal Checking Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['account status']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['customer service phone line']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['customer service phone line']
+- **FAQ: Common Error Codes** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['customer service phone line']
+- **FAQ: Common Error Codes** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer service phone line']
+- **FAQ: Common Error Codes** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service phone line']
+- **FAQ: Common Error Codes** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer service phone line']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer service phone line']
+- **What To Do If You Notice an Unauthorized Debit Card Transaction** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer service phone line']
+- **What to Know Before Closing Your Account** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['customer service phone line']
+- **What to Know Before Closing Your Account** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['customer service phone line']
+- **What to Know Before Closing Your Account** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['customer service phone line']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **What To Do If You Notice an Unauthorized Debit Card Transaction**
+  - shared entities: ['cancelled subscription charges']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['cancelled subscription charges']
+- **Internal: Recurring Payment Disputes vs. Stop Future Payments** ↔ **How to Dispute a Credit Card Transaction**
+  - shared entities: ['cancelled subscription charges']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Credit Card Referral Offers and Restrictions**
+  - shared entities: ['credit card types']
+- **Internal: Opening Personal Checking Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['green account']
+- **Internal: Opening Personal Checking Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['green account']
+- **Internal: Closing Personal Checking Accounts** ↔ **Credit Card APY Bonuses: Stacking Policy**
+  - shared entities: ['green account']
+- **Internal: Closing Personal Checking Accounts** ↔ **Linked Checking Account APY Boost: Selection Policy**
+  - shared entities: ['green account']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Business Checking Account Promotion - November 2025**
+  - shared entities: ['business checking account']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['business checking account']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Business Checking Account Promotion - October 2025**
+  - shared entities: ['business checking account']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Business Checking Account Promotion - November 2025**
+  - shared entities: ['business checking account']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['business checking account']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Business Checking Account Promotion - October 2025**
+  - shared entities: ['business checking account']
+- **Internal: Business Checking Account Promotion - November 2025** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['business checking account']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Business Checking Account Promotion - November 2025**
+  - shared entities: ['business checking account']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['business checking account']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Business Checking Account Promotion - October 2025**
+  - shared entities: ['business checking account']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Business Checking Account Promotion - November 2025**
+  - shared entities: ['business checking account']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['business checking account']
+- **Internal: Opening Business Checking Accounts** ↔ **Internal: Business Checking Account Promotion - October 2025**
+  - shared entities: ['business checking account']
+- **Internal: Business Checking Account Promotion - October 2025** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['business checking account']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['account balance']
+- **Internal: Opening Business Checking Accounts** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['account balance']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['account balance']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Business Savings Account Promotion - October 2025**
+  - shared entities: ['business savings account']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: Business Savings Account Promotion - November 2025**
+  - shared entities: ['business savings account']
+- **Internal: Opening Business Savings Accounts** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['business savings account']
+- **Internal: Opening Business Savings Accounts** ↔ **Internal: Business Savings Account Promotion - October 2025**
+  - shared entities: ['business savings account']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: Business Savings Account Promotion - October 2025**
+  - shared entities: ['business savings account']
+- **Internal: Business Savings Account Promotion - October 2025** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['business savings account']
+- **Internal: Business Savings Account Promotion - November 2025** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['business savings account']
+- **Internal: Opening Business Savings Accounts** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['internal transfers']
+- **Internal: Opening Business Savings Accounts** ↔ **Need Your Transaction History? Our Team Can Help**
+  - shared entities: ['internal transfers']
+- **Linked Checking Account APY Boosts for Savings Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['light green account']
+- **Internal: Closing Personal Checking Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['light green account']
+- **Internal: Closing Personal Savings Accounts** ↔ **Internal: Applying Credits and Rebates to Checking Accounts**
+  - shared entities: ['supervisor approval']
+- **Internal: Closing Business Checking Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['supervisor review']
+- **Internal: Closing Business Savings Accounts** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['supervisor review']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['account closure']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - shared entities: ['account closure']
+- **Internal: Retrieving Customer Account Information** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - shared entities: ['account closure']
+- **What to Know Before Closing Your Account** ↔ **Internal: Human Agent Transfer Reason Codes**
+  - shared entities: ['account closure']
+- **Internal: Transferring Funds Between Bank Accounts** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['interaction documentation']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['transaction history']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **What is Provisional Credit?**
+  - shared entities: ['transaction history']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['transaction history']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['transaction history']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['transaction history']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['transaction history']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['transaction history']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['transaction history']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **What is Provisional Credit?**
+  - shared entities: ['transaction history']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['transaction history']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['transaction history']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['transaction history']
+- **Depositing a Check Into Your Account** ↔ **Notice Something Wrong on Your Statement? We Can Help**
+  - shared entities: ['transaction history']
+- **Depositing a Check Into Your Account** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['transaction history']
+- **Welcome to Rho-Bank Checking** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['customer support']
+- **Welcome to Rho-Bank Checking** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer support']
+- **Welcome to Rho-Bank Checking** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer support']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer support']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['customer support']
+- **Why does my account have a lower balance than I expected or have a negative balance?** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **Why does my account have a lower balance than I expected or have a negative balance?**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['customer support']
+- **FAQ: Checking Account Referrals** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['customer support']
+- **What to Know Before Closing Your Account** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['customer support']
+- **What to Know Before Closing Your Account** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['customer support']
+- **What to Know Before Closing Your Account** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['customer support']
+- **Why hasn't my direct deposit arrived yet?** ↔ **Think You're Missing Cash Back? Here's How to Get Help**
+  - shared entities: ['customer support']
+- **Why hasn't my direct deposit arrived yet?** ↔ **Having Trouble Making Purchases with Your Card?**
+  - shared entities: ['customer support']
+- **Why hasn't my direct deposit arrived yet?** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['customer support']
+- **Why hasn't my direct deposit arrived yet?** ↔ **What is Provisional Credit?**
+  - shared entities: ['customer support']
+- **Why hasn't my direct deposit arrived yet?** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['customer support']
+- **Why hasn't my direct deposit arrived yet?** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['customer support']
+- **Depositing a Check Into Your Account** ↔ **FAQ: Checking Account Referrals**
+  - shared entities: ['customer support']
+- **Depositing a Check Into Your Account** ↔ **What to Know Before Closing Your Account**
+  - shared entities: ['customer support']
+- **Depositing a Check Into Your Account** ↔ **Why hasn't my direct deposit arrived yet?**
+  - shared entities: ['customer support']
+- **Depositing a Check Into Your Account** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['customer support']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['customer profile']
+- **Linked Checking Account APY Boosts for Savings Accounts** ↔ **Internal: Processing Credit Card Account Closures**
+  - shared entities: ['customer profile']
+- **Internal: Applying Credits and Rebates to Checking Accounts** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['cli cooldown period']
+- **What is an authorization hold?** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['rho-bank']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **What is an authorization hold?**
+  - shared entities: ['rho-bank']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Account Recovery Bypass Code (Internal)**
+  - shared entities: ['rho-bank']
+- **Notice Something Wrong on Your Statement? We Can Help** ↔ **Welcome to Rho-Bank Checking**
+  - shared entities: ['account statements']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['account in good standing']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['account in good standing']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['account in good standing']
+- **Internal: Processing CLI Approvals and Denials** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['account in good standing']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['account in good standing']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['account in good standing']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['account in good standing']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **FAQ: Checking Account Referrals**
+  - shared entities: ['account in good standing']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['account in good standing']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['account in good standing']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['account in good standing']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['account in good standing']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['account in good standing']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['account in good standing']
+- **Credit Card Rewards Redemption Options** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['account in good standing']
+- **Credit Card Rewards Redemption Options** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['account in good standing']
+- **FAQ: Checking Account Referrals** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['account in good standing']
+- **FAQ: Checking Account Referrals** ↔ **Request a Statement Credit or Fee Adjustment**
+  - shared entities: ['account in good standing']
+- **FAQ: Checking Account Referrals** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['account in good standing']
+- **FAQ: Checking Account Referrals** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['account in good standing']
+- **What to Know Before Closing Your Account** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['account in good standing']
+- **What to Know Before Closing Your Account** ↔ **Internal: Checking Account Referral Program Terms and Restrictions**
+  - shared entities: ['account in good standing']
+- **What to Know Before Closing Your Account** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['account in good standing']
+- **What to Know Before Closing Your Account** ↔ **Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting**
+  - shared entities: ['account in good standing']
+- **Moving Money Between Your Rho-Bank Accounts** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['online banking']
+- **Need Your Transaction History? Our Team Can Help** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['online banking']
+- **Direct deposits — setup and timing** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['online banking']
+- **Direct deposits — setup and timing** ↔ **Refer a Friend to Rho-Bank and Earn Rewards**
+  - shared entities: ['online banking']
+- **Internal: Resetting or Changing a Debit Card PIN** ↔ **Internal: ATM Dispute Special Procedures**
+  - shared entities: ['rho-bank atm']
+- **Internal: ATM Dispute Special Procedures** ↔ **Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring**
+  - shared entities: ['card replacement']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['account age requirement']
+- **Internal: Requesting Temporary Debit Card Limit Increase** ↔ **Internal: Processing CLI Approvals and Denials**
+  - shared entities: ['new credit limit']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['gold rewards card']
+- **Credit Card Rewards Redemption Options** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['gold rewards card']
+- **Internal: Credit Card Rewards - Points vs Cash Back Representation** ↔ **Generating a Credit Card Referral Link (Internal)**
+  - shared entities: ['gold rewards card']
+- **Credit Card APY Bonuses: Stacking Policy** ↔ **How to Order a Replacement Credit Card (Internal)**
+  - shared entities: ['ecocard']
+- **Internal: Checking Account Referral Program Terms and Restrictions** ↔ **Credit Card Referral Offers and Restrictions**
+  - shared entities: ['referral bonus']
+- **FAQ: Checking Account Referrals** ↔ **Credit Card Referral Offers and Restrictions**
+  - shared entities: ['referral bonus']
+- **Direct deposits — setup and timing** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['account number']
+- **I didn't receive my direct deposit** ↔ **Internal: Downgrading a Credit Card to a No-Annual-Fee Card**
+  - shared entities: ['account number']
+- **Internal: Processing Credit Card Account Closures** ↔ **Provisional Credit Eligibility Guidelines (Internal)**
+  - shared entities: ['minimum account age 60 days']
+- **Internal: Processing Credit Card Account Closures** ↔ **Internal: Credit Card Rewards - Points vs Cash Back Representation**
+  - shared entities: ['credit card rewards']
+- **Internal: Processing Credit Card Account Closures** ↔ **Understanding Your Credit Card Rewards Categories**
+  - shared entities: ['credit card rewards']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Credit Card Rewards Points Rounding Policy**
+  - shared entities: ['rewards points']
+- **Internal: Downgrading a Credit Card to a No-Annual-Fee Card** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['rewards points']
+- **Credit Card Rewards Points Rounding Policy** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['rewards points']
+- **How to Order a Replacement Credit Card (Internal)** ↔ **Credit Card Rewards Redemption Options**
+  - shared entities: ['diamond elite card']
+- **Applying Resolved Cash Back Dispute Corrections (Internal)** ↔ **Getting the Most from Your Credit Card Rewards**
+  - shared entities: ['rewards promotions']
+
+## BM25 top-3 neighbours
+
+- Internal: Opening Personal Checking Accounts → Internal: Opening Business Checking Accounts (153.86)
+- Internal: Opening Personal Checking Accounts → Internal: Opening Personal Savings Accounts (141.66)
+- Internal: Opening Personal Checking Accounts → Internal: Opening Business Savings Accounts (124.48)
+- Internal: Opening Personal Savings Accounts → Internal: Opening Business Savings Accounts (941.55)
+- Internal: Opening Personal Savings Accounts → Internal: Transferring Funds Between Bank Accounts (663.25)
+- Internal: Opening Personal Savings Accounts → Internal: Opening Personal Checking Accounts (562.37)
+- Internal: Opening Business Checking Accounts → Internal: Opening Personal Checking Accounts (158.35)
+- Internal: Opening Business Checking Accounts → Internal: Opening Business Savings Accounts (144.21)
+- Internal: Opening Business Checking Accounts → Internal: Opening Personal Savings Accounts (124.17)
+- Internal: Opening Business Savings Accounts → Internal: Opening Personal Savings Accounts (916.28)
+- Internal: Opening Business Savings Accounts → Internal: Transferring Funds Between Bank Accounts (620.37)
+- Internal: Opening Business Savings Accounts → Internal: Opening Business Checking Accounts (542.86)
+- Internal: Closing Personal Checking Accounts → Internal: Closing Business Checking Accounts (323.78)
+- Internal: Closing Personal Checking Accounts → Internal: Closing Personal Savings Accounts (307.84)
+- Internal: Closing Personal Checking Accounts → Internal: Closing Business Savings Accounts (306.95)
+- Internal: Closing Personal Savings Accounts → Internal: Closing Business Savings Accounts (371.0)
+- Internal: Closing Personal Savings Accounts → Internal: Closing Business Checking Accounts (347.62)
+- Internal: Closing Personal Savings Accounts → Internal: Closing Personal Checking Accounts (319.75)
+- Internal: Closing Business Checking Accounts → Internal: Closing Business Savings Accounts (365.92)
+- Internal: Closing Business Checking Accounts → Internal: Closing Personal Savings Accounts (345.99)
+- Internal: Closing Business Checking Accounts → Internal: Closing Personal Checking Accounts (338.19)
+- Internal: Closing Business Savings Accounts → Internal: Closing Business Checking Accounts (379.95)
+- Internal: Closing Business Savings Accounts → Internal: Closing Personal Savings Accounts (374.76)
+- Internal: Closing Business Savings Accounts → Internal: Closing Personal Checking Accounts (321.51)
+- Internal: Retrieving Customer Account Information → Internal: Opening Personal Savings Accounts (82.31)
+- Internal: Retrieving Customer Account Information → Internal: Opening Business Savings Accounts (81.99)
+- Internal: Retrieving Customer Account Information → Internal: Retrieving Debit Card Information (77.95)
+- Internal: Transferring Funds Between Bank Accounts → Internal: Opening Business Savings Accounts (508.46)
+- Internal: Transferring Funds Between Bank Accounts → Internal: Opening Personal Savings Accounts (501.12)
+- Internal: Transferring Funds Between Bank Accounts → Moving Money Between Your Rho-Bank Accounts (466.19)
+- Depositing a Check Into Your Account → FAQ: Troubleshooting (395.78)
+- Depositing a Check Into Your Account → Internal: Opening Personal Savings Accounts (392.87)
+- Depositing a Check Into Your Account → FAQ: Checking Account Referrals (390.8)
+- Linked Checking Account APY Boosts for Savings Accounts → Linked Checking Account APY Boost: Selection Policy (394.38)
+- Linked Checking Account APY Boosts for Savings Accounts → Credit Card APY Bonuses: Stacking Policy (348.35)
+- Linked Checking Account APY Boosts for Savings Accounts → Internal: Submitting Interest Discrepancy Reports (308.43)
+- Internal: Business Checking Account Promotion - November 2025 → Internal: Business Checking Account Promotion - October 2025 (292.1)
+- Internal: Business Checking Account Promotion - November 2025 → Internal: Business Savings Account Promotion - November 2025 (280.75)
+- Internal: Business Checking Account Promotion - November 2025 → Internal: Business Savings Account Promotion - October 2025 (265.66)
+- Internal: Business Checking Account Promotion - October 2025 → Internal: Business Checking Account Promotion - November 2025 (295.6)
+- Internal: Business Checking Account Promotion - October 2025 → Internal: Business Savings Account Promotion - October 2025 (276.71)
+- Internal: Business Checking Account Promotion - October 2025 → Internal: Business Savings Account Promotion - November 2025 (266.49)
+- Internal: Business Savings Account Promotion - November 2025 → Internal: Business Savings Account Promotion - October 2025 (323.66)
+- Internal: Business Savings Account Promotion - November 2025 → Internal: Business Checking Account Promotion - November 2025 (282.15)
+- Internal: Business Savings Account Promotion - November 2025 → Internal: Business Checking Account Promotion - October 2025 (269.43)
+- Internal: Business Savings Account Promotion - October 2025 → Internal: Business Savings Account Promotion - November 2025 (326.37)
+- Internal: Business Savings Account Promotion - October 2025 → Internal: Business Checking Account Promotion - October 2025 (275.37)
+- Internal: Business Savings Account Promotion - October 2025 → Internal: Business Checking Account Promotion - November 2025 (262.62)
+- Internal: Applying Credits and Rebates to Checking Accounts → Internal: Applying Credits to Savings Accounts (695.07)
+- Internal: Applying Credits and Rebates to Checking Accounts → Notice Something Wrong on Your Statement? We Can Help (497.92)
+- Internal: Applying Credits and Rebates to Checking Accounts → Linked Checking Account APY Boost: Selection Policy (452.02)
+- Internal: Retrieving Bank Account Transaction History → Internal: Retrieving Debit Card Information (140.28)
+- Internal: Retrieving Bank Account Transaction History → Internal: Applying Credits and Rebates to Checking Accounts (130.69)
+- Internal: Retrieving Bank Account Transaction History → Internal: Filing a Debit Card Transaction Dispute (130.21)
+- Notice Something Wrong on Your Statement? We Can Help → Request a Statement Credit or Fee Adjustment (400.0)
+- Notice Something Wrong on Your Statement? We Can Help → Think You're Missing Cash Back? Here's How to Get Help (379.82)
+- Notice Something Wrong on Your Statement? We Can Help → How to Dispute a Credit Card Transaction (376.4)
+- What to Know Before Closing Your Account → Request a Statement Credit or Fee Adjustment (386.71)
+- What to Know Before Closing Your Account → Notice Something Wrong on Your Statement? We Can Help (353.78)
+- What to Know Before Closing Your Account → Moving Money Between Your Rho-Bank Accounts (331.48)
+- Need Your Transaction History? Our Team Can Help → Moving Money Between Your Rho-Bank Accounts (272.34)
+- Need Your Transaction History? Our Team Can Help → Request a Statement Credit or Fee Adjustment (270.88)
+- Need Your Transaction History? Our Team Can Help → Notice Something Wrong on Your Statement? We Can Help (265.01)
+- Moving Money Between Your Rho-Bank Accounts → Need Your Transaction History? Our Team Can Help (373.71)
+- Moving Money Between Your Rho-Bank Accounts → Internal: Transferring Funds Between Bank Accounts (328.69)
+- Moving Money Between Your Rho-Bank Accounts → Request a Statement Credit or Fee Adjustment (304.05)
+- Internal: Ordering a Debit Card for a Bank Account → Internal: Debit Card Replacement Options by Account Tier (413.65)
+- Internal: Ordering a Debit Card for a Bank Account → How to Order a Replacement Credit Card (Internal) (311.99)
+- Internal: Ordering a Debit Card for a Bank Account → Internal: Activating a Debit Card (301.27)
+- Internal: Activating a Debit Card → Internal: Retrieving Debit Card Information (489.24)
+- Internal: Activating a Debit Card → FAQ: Common Error Codes (447.87)
+- Internal: Activating a Debit Card → Internal: Closing/Cancelling a Debit Card (427.47)
+- Internal: Closing/Cancelling a Debit Card → Internal: Freezing and Unfreezing a Debit Card (455.33)
+- Internal: Closing/Cancelling a Debit Card → Internal: Activating a Debit Card (434.47)
+- Internal: Closing/Cancelling a Debit Card → FAQ: Common Error Codes (419.78)
+- Internal: Freezing and Unfreezing a Debit Card → Internal: Closing/Cancelling a Debit Card (319.99)
+- Internal: Freezing and Unfreezing a Debit Card → Internal: Resetting or Changing a Debit Card PIN (302.1)
+- Internal: Freezing and Unfreezing a Debit Card → Internal: Retrieving Debit Card Information (278.14)
+- Internal: Resetting or Changing a Debit Card PIN → Internal: Freezing and Unfreezing a Debit Card (290.1)
+- Internal: Resetting or Changing a Debit Card PIN → Internal: Activating a Debit Card (289.75)
+- Internal: Resetting or Changing a Debit Card PIN → Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring (282.9)
+- Internal: Retrieving Debit Card Information → Internal: Activating a Debit Card (300.63)
+- Internal: Retrieving Debit Card Information → FAQ: Common Error Codes (255.43)
+- Internal: Retrieving Debit Card Information → Internal: Closing/Cancelling a Debit Card (238.28)
+- Internal: Debit Card Replacement Options by Account Tier → Internal: Ordering a Debit Card for a Bank Account (520.76)
+- Internal: Debit Card Replacement Options by Account Tier → How to Order a Replacement Credit Card (Internal) (401.69)
+- Internal: Debit Card Replacement Options by Account Tier → Internal: Activating a Debit Card (320.58)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol → Understanding Regulation E: Your Debit Card Consumer Protections (292.01)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol → FAQ: Common Error Codes (256.12)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol → Internal: Activating a Debit Card (246.44)
+- Internal: Filing a Debit Card Transaction Dispute → Filing a Credit Card Transaction Dispute (Internal) (680.04)
+- Internal: Filing a Debit Card Transaction Dispute → Internal: Debit Card Provisional Credit Guidelines (667.35)
+- Internal: Filing a Debit Card Transaction Dispute → What To Do If You Notice an Unauthorized Debit Card Transaction (605.62)
+- Internal: Debit Card Provisional Credit Guidelines → Internal: Filing a Debit Card Transaction Dispute (359.37)
+- Internal: Debit Card Provisional Credit Guidelines → Provisional Credit Eligibility Guidelines (Internal) (321.38)
+- Internal: Debit Card Provisional Credit Guidelines → Understanding Regulation E: Your Debit Card Consumer Protections (307.17)
+- Internal: ATM Dispute Special Procedures → Internal: Filing a Debit Card Transaction Dispute (255.75)
+- Internal: ATM Dispute Special Procedures → What To Do If You Notice an Unauthorized Debit Card Transaction (242.36)
+- Internal: ATM Dispute Special Procedures → Understanding Regulation E: Your Debit Card Consumer Protections (222.61)
+- Internal: Recurring Payment Disputes vs. Stop Future Payments → Internal: Freezing and Unfreezing a Debit Card (241.46)
+- Internal: Recurring Payment Disputes vs. Stop Future Payments → Internal: Closing/Cancelling a Debit Card (224.29)
+- Internal: Recurring Payment Disputes vs. Stop Future Payments → Filing a Credit Card Transaction Dispute (Internal) (213.91)
+- Internal: Checking Debit Card Dispute Status → Internal: Debit Card Provisional Credit Guidelines (242.1)
+- Internal: Checking Debit Card Dispute Status → What is Provisional Credit? (217.73)
+- Internal: Checking Debit Card Dispute Status → Internal: ATM Dispute Special Procedures (194.03)
+- What To Do If You Notice an Unauthorized Debit Card Transaction → How to Dispute a Credit Card Transaction (487.5)
+- What To Do If You Notice an Unauthorized Debit Card Transaction → Understanding Regulation E: Your Debit Card Consumer Protections (422.85)
+- What To Do If You Notice an Unauthorized Debit Card Transaction → Internal: Filing a Debit Card Transaction Dispute (417.44)
+- Understanding Regulation E: Your Debit Card Consumer Protections → FAQ: Common Error Codes (709.11)
+- Understanding Regulation E: Your Debit Card Consumer Protections → What To Do If You Notice an Unauthorized Debit Card Transaction (639.43)
+- Understanding Regulation E: Your Debit Card Consumer Protections → Internal: Filing a Debit Card Transaction Dispute (639.14)
+- Internal: Managing Debit Card Security Alerts and Blocks → FAQ: Common Error Codes (391.29)
+- Internal: Managing Debit Card Security Alerts and Blocks → Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring (375.42)
+- Internal: Managing Debit Card Security Alerts and Blocks → Understanding Regulation E: Your Debit Card Consumer Protections (373.33)
+- Internal: Requesting Temporary Debit Card Limit Increase → Internal: Processing CLI Approvals and Denials (136.06)
+- Internal: Requesting Temporary Debit Card Limit Increase → Internal: CLI Payment History and Approval Criteria (123.93)
+- Internal: Requesting Temporary Debit Card Limit Increase → Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring (119.42)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring → Internal: Credit Card Retention Protocol (669.5)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring → Understanding Regulation E: Your Debit Card Consumer Protections (653.36)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring → FAQ: Common Error Codes (606.15)
+- Internal: Human Agent Transfer Reason Codes → Internal: Backend Incident 11/13 (266.51)
+- Internal: Human Agent Transfer Reason Codes → Understanding Regulation E: Your Debit Card Consumer Protections (258.27)
+- Internal: Human Agent Transfer Reason Codes → FAQ: Common Error Codes (245.1)
+- Internal: Applying Credits to Savings Accounts → Internal: Applying Credits and Rebates to Checking Accounts (432.71)
+- Internal: Applying Credits to Savings Accounts → Internal: Submitting Interest Discrepancy Reports (415.13)
+- Internal: Applying Credits to Savings Accounts → (Internal) Applying a Credit Card Statement Credit (297.89)
+- Internal: Submitting Interest Discrepancy Reports → Internal: Applying Credits to Savings Accounts (451.24)
+- Internal: Submitting Interest Discrepancy Reports → Linked Checking Account APY Boost: Selection Policy (315.32)
+- Internal: Submitting Interest Discrepancy Reports → Credit Card APY Bonuses: Stacking Policy (281.63)
+- Credit Card APY Bonuses: Stacking Policy → Linked Checking Account APY Boost: Selection Policy (456.17)
+- Credit Card APY Bonuses: Stacking Policy → Internal: Submitting Interest Discrepancy Reports (261.61)
+- Credit Card APY Bonuses: Stacking Policy → Linked Checking Account APY Boosts for Savings Accounts (236.49)
+- Linked Checking Account APY Boost: Selection Policy → Credit Card APY Bonuses: Stacking Policy (584.75)
+- Linked Checking Account APY Boost: Selection Policy → Internal: Submitting Interest Discrepancy Reports (380.82)
+- Linked Checking Account APY Boost: Selection Policy → Linked Checking Account APY Boosts for Savings Accounts (368.94)
+- Internal: Checking Account Referral Program Terms and Restrictions → FAQ: Checking Account Referrals (882.21)
+- Internal: Checking Account Referral Program Terms and Restrictions → Credit Card Referral Offers and Restrictions (731.69)
+- Internal: Checking Account Referral Program Terms and Restrictions → Internal: Understanding Credit Card Referral Statuses. (574.87)
+- FAQ: Checking Account Referrals → Internal: Checking Account Referral Program Terms and Restrictions (881.38)
+- FAQ: Checking Account Referrals → Refer a Friend to Rho-Bank and Earn Rewards (533.13)
+- FAQ: Checking Account Referrals → Internal: Understanding Credit Card Referral Statuses. (506.16)
+- Welcome to Rho-Bank Checking → Need Your Transaction History? Our Team Can Help (131.23)
+- Welcome to Rho-Bank Checking → Moving Money Between Your Rho-Bank Accounts (129.45)
+- Welcome to Rho-Bank Checking → Direct deposits — setup and timing (119.93)
+- FAQ: Troubleshooting → FAQ: Common Error Codes (226.19)
+- FAQ: Troubleshooting → Depositing a Check Into Your Account (224.57)
+- FAQ: Troubleshooting → Understanding Regulation E: Your Debit Card Consumer Protections (211.97)
+- FAQ: Common Error Codes → Understanding Regulation E: Your Debit Card Consumer Protections (829.49)
+- FAQ: Common Error Codes → Why does my account have a lower balance than I expected or have a negative balance? (759.39)
+- FAQ: Common Error Codes → Internal: Activating a Debit Card (743.24)
+- What is an authorization hold? → Why does my account have a lower balance than I expected or have a negative balance? (190.94)
+- What is an authorization hold? → Why hasn't my direct deposit arrived yet? (163.42)
+- What is an authorization hold? → Depositing a Check Into Your Account (140.06)
+- Direct deposits — setup and timing → Why hasn't my direct deposit arrived yet? (206.8)
+- Direct deposits — setup and timing → I didn't receive my direct deposit (162.02)
+- Direct deposits — setup and timing → Internal: Direct Deposit Delay Inquiries Protocol (156.48)
+- Why does my account have a lower balance than I expected or have a negative balance? → FAQ: Common Error Codes (435.92)
+- Why does my account have a lower balance than I expected or have a negative balance? → What is an authorization hold? (392.52)
+- Why does my account have a lower balance than I expected or have a negative balance? → Understanding Regulation E: Your Debit Card Consumer Protections (391.47)
+- I didn't receive my direct deposit → Why hasn't my direct deposit arrived yet? (206.52)
+- I didn't receive my direct deposit → Direct deposits — setup and timing (135.81)
+- I didn't receive my direct deposit → FAQ: Checking Account Referrals (108.4)
+- Why hasn't my direct deposit arrived yet? → I didn't receive my direct deposit (229.0)
+- Why hasn't my direct deposit arrived yet? → Direct deposits — setup and timing (188.14)
+- Why hasn't my direct deposit arrived yet? → Internal: Direct Deposit Delay Inquiries Protocol (153.89)
+- Internal: Direct Deposit Delay Inquiries Protocol → Direct deposits — setup and timing (191.23)
+- Internal: Direct Deposit Delay Inquiries Protocol → Why hasn't my direct deposit arrived yet? (185.45)
+- Internal: Direct Deposit Delay Inquiries Protocol → FAQ: Checking Account Referrals (153.88)
+- Internal: Processing Credit Card Account Closures → Internal: Credit Card Retention Protocol (221.28)
+- Internal: Processing Credit Card Account Closures → Internal: Processing CLI Approvals and Denials (181.26)
+- Internal: Processing Credit Card Account Closures → Internal: Downgrading a Credit Card to a No-Annual-Fee Card (171.62)
+- Internal: Credit Card Retention Protocol → Internal: Downgrading a Credit Card to a No-Annual-Fee Card (610.77)
+- Internal: Credit Card Retention Protocol → Internal: Processing CLI Approvals and Denials (554.45)
+- Internal: Credit Card Retention Protocol → Internal: Processing Credit Card Account Closures (543.76)
+- Internal: CLI Payment History and Approval Criteria → Internal: Processing CLI Approvals and Denials (288.11)
+- Internal: CLI Payment History and Approval Criteria → Internal: Debit Card Replacement Options by Account Tier (218.37)
+- Internal: CLI Payment History and Approval Criteria → Provisional Credit Eligibility Guidelines (Internal) (205.24)
+- Internal: Processing CLI Approvals and Denials → Internal: Credit Card Retention Protocol (522.7)
+- Internal: Processing CLI Approvals and Denials → Internal: CLI Payment History and Approval Criteria (503.03)
+- Internal: Processing CLI Approvals and Denials → Internal: Processing Credit Card Account Closures (433.34)
+- Internal: Downgrading a Credit Card to a No-Annual-Fee Card → Internal: Credit Card Retention Protocol (324.03)
+- Internal: Downgrading a Credit Card to a No-Annual-Fee Card → Internal: Processing Credit Card Account Closures (243.24)
+- Internal: Downgrading a Credit Card to a No-Annual-Fee Card → (Internal) Applying a Credit Card Statement Credit (207.3)
+- Paying Off Credit Card Balance from Checking Account (Internal) → (Internal) Applying a Credit Card Statement Credit (298.15)
+- Paying Off Credit Card Balance from Checking Account (Internal) → Internal: Processing CLI Approvals and Denials (267.6)
+- Paying Off Credit Card Balance from Checking Account (Internal) → Internal: Credit Card Retention Protocol (260.05)
+- How to Order a Replacement Credit Card (Internal) → Internal: Debit Card Replacement Options by Account Tier (347.31)
+- How to Order a Replacement Credit Card (Internal) → Internal: Ordering a Debit Card for a Bank Account (318.96)
+- How to Order a Replacement Credit Card (Internal) → Internal: Closing/Cancelling a Debit Card (294.74)
+- Checking Pending Replacement Card Orders (Internal) → Internal: Processing CLI Approvals and Denials (435.62)
+- Checking Pending Replacement Card Orders (Internal) → Internal: Credit Card Retention Protocol (370.89)
+- Checking Pending Replacement Card Orders (Internal) → FAQ: Common Error Codes (366.09)
+- Internal: Understanding Credit Card Referral Statuses. → Internal: Checking Account Referral Program Terms and Restrictions (267.76)
+- Internal: Understanding Credit Card Referral Statuses. → FAQ: Checking Account Referrals (244.88)
+- Internal: Understanding Credit Card Referral Statuses. → Generating a Credit Card Referral Link (Internal) (186.49)
+- Credit Card Referral Offers and Restrictions → Internal: Checking Account Referral Program Terms and Restrictions (321.93)
+- Credit Card Referral Offers and Restrictions → FAQ: Checking Account Referrals (222.19)
+- Credit Card Referral Offers and Restrictions → Generating a Credit Card Referral Link (Internal) (208.01)
+- Submitting a Cash Back Dispute (Internal) → Generating a Credit Card Referral Link (Internal) (135.3)
+- Submitting a Cash Back Dispute (Internal) → Internal: Filing a Debit Card Transaction Dispute (133.89)
+- Submitting a Cash Back Dispute (Internal) → Checking User Dispute History (Internal) (132.07)
+- Applying Resolved Cash Back Dispute Corrections (Internal) → Think You're Missing Cash Back? Here's How to Get Help (140.42)
+- Applying Resolved Cash Back Dispute Corrections (Internal) → Submitting a Cash Back Dispute (Internal) (133.87)
+- Applying Resolved Cash Back Dispute Corrections (Internal) → Checking User Dispute History (Internal) (133.65)
+- Credit Card Rewards Categories → Understanding Your Credit Card Rewards Categories (304.69)
+- Credit Card Rewards Categories → Getting the Most from Your Credit Card Rewards (75.17)
+- Credit Card Rewards Categories → Refer a Friend to Rho-Bank and Earn Rewards (71.42)
+- Internal: Credit Card Rewards - Points vs Cash Back Representation → Credit Card Rewards Redemption Options (226.95)
+- Internal: Credit Card Rewards - Points vs Cash Back Representation → Credit Card Rewards Points Rounding Policy (220.89)
+- Internal: Credit Card Rewards - Points vs Cash Back Representation → Provisional Credit Eligibility Guidelines (Internal) (216.56)
+- Credit Card Rewards Points Rounding Policy → Internal: Credit Card Rewards - Points vs Cash Back Representation (125.05)
+- Credit Card Rewards Points Rounding Policy → Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring (90.19)
+- Credit Card Rewards Points Rounding Policy → Credit Card Rewards Redemption Options (89.31)
+- Credit Card Rewards Redemption Options → Getting the Most from Your Credit Card Rewards (480.31)
+- Credit Card Rewards Redemption Options → Internal: Credit Card Rewards - Points vs Cash Back Representation (346.99)
+- Credit Card Rewards Redemption Options → Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring (272.87)
+- Generating a Credit Card Referral Link (Internal) → Internal: Checking Account Referral Program Terms and Restrictions (262.62)
+- Generating a Credit Card Referral Link (Internal) → Refer a Friend to Rho-Bank and Earn Rewards (253.52)
+- Generating a Credit Card Referral Link (Internal) → Credit Card Referral Offers and Restrictions (237.23)
+- Internal: Credit Card Purchase Decline Diagnostic Procedure → Internal: Backend Incident 11/13 (196.38)
+- Internal: Credit Card Purchase Decline Diagnostic Procedure → Internal: Human Agent Transfer Reason Codes (127.28)
+- Internal: Credit Card Purchase Decline Diagnostic Procedure → Internal: Direct Deposit Delay Inquiries Protocol (123.83)
+- Internal: Backend Incident 11/13 → Internal: Credit Card Purchase Decline Diagnostic Procedure (377.78)
+- Internal: Backend Incident 11/13 → Internal: Human Agent Transfer Reason Codes (309.9)
+- Internal: Backend Incident 11/13 → Internal: Direct Deposit Delay Inquiries Protocol (290.03)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting → Internal: Backend Incident 11/13 (122.8)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting → Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring (79.09)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting → Understanding Regulation E: Your Debit Card Consumer Protections (72.01)
+- How to Find Your Rho-Bank Credit Card Numbers Online → Internal: Activating a Debit Card (201.86)
+- How to Find Your Rho-Bank Credit Card Numbers Online → Internal: Lost/Stolen Card - Cross-Product Security Protocol (201.77)
+- How to Find Your Rho-Bank Credit Card Numbers Online → Understanding Regulation E: Your Debit Card Consumer Protections (200.35)
+- Filing a Credit Card Transaction Dispute (Internal) → Internal: Filing a Debit Card Transaction Dispute (441.42)
+- Filing a Credit Card Transaction Dispute (Internal) → (Internal) Applying a Credit Card Statement Credit (335.69)
+- Filing a Credit Card Transaction Dispute (Internal) → How to Dispute a Credit Card Transaction (305.87)
+- Provisional Credit Eligibility Guidelines (Internal) → Internal: Filing a Debit Card Transaction Dispute (315.98)
+- Provisional Credit Eligibility Guidelines (Internal) → Internal: Debit Card Provisional Credit Guidelines (306.94)
+- Provisional Credit Eligibility Guidelines (Internal) → How to Order a Replacement Credit Card (Internal) (294.27)
+- Checking User Dispute History (Internal) → Internal: Checking Debit Card Dispute Status (317.04)
+- Checking User Dispute History (Internal) → Checking Pending Replacement Card Orders (Internal) (311.29)
+- Checking User Dispute History (Internal) → Submitting a Cash Back Dispute (Internal) (287.39)
+- (Internal) Applying a Credit Card Statement Credit → Paying Off Credit Card Balance from Checking Account (Internal) (267.88)
+- (Internal) Applying a Credit Card Statement Credit → Filing a Credit Card Transaction Dispute (Internal) (263.33)
+- (Internal) Applying a Credit Card Statement Credit → Internal: Credit Card Retention Protocol (258.85)
+- How to Dispute a Credit Card Transaction → What To Do If You Notice an Unauthorized Debit Card Transaction (432.84)
+- How to Dispute a Credit Card Transaction → Notice Something Wrong on Your Statement? We Can Help (366.76)
+- How to Dispute a Credit Card Transaction → Think You're Missing Cash Back? Here's How to Get Help (357.09)
+- Understanding Your Credit Card Rewards Categories → Credit Card Rewards Categories (524.95)
+- Understanding Your Credit Card Rewards Categories → Getting the Most from Your Credit Card Rewards (290.74)
+- Understanding Your Credit Card Rewards Categories → Think You're Missing Cash Back? Here's How to Get Help (274.36)
+- Refer a Friend to Rho-Bank and Earn Rewards → FAQ: Checking Account Referrals (400.94)
+- Refer a Friend to Rho-Bank and Earn Rewards → Internal: Checking Account Referral Program Terms and Restrictions (398.19)
+- Refer a Friend to Rho-Bank and Earn Rewards → Credit Card Referral Offers and Restrictions (362.38)
+- Think You're Missing Cash Back? Here's How to Get Help → Notice Something Wrong on Your Statement? We Can Help (391.66)
+- Think You're Missing Cash Back? Here's How to Get Help → What To Do If You Notice an Unauthorized Debit Card Transaction (378.19)
+- Think You're Missing Cash Back? Here's How to Get Help → How to Dispute a Credit Card Transaction (375.48)
+- What is Provisional Credit? → What To Do If You Notice an Unauthorized Debit Card Transaction (390.38)
+- What is Provisional Credit? → Request a Statement Credit or Fee Adjustment (349.53)
+- What is Provisional Credit? → How to Dispute a Credit Card Transaction (348.22)
+- Having Trouble Making Purchases with Your Card? → How to Dispute a Credit Card Transaction (336.9)
+- Having Trouble Making Purchases with Your Card? → Think You're Missing Cash Back? Here's How to Get Help (332.3)
+- Having Trouble Making Purchases with Your Card? → What To Do If You Notice an Unauthorized Debit Card Transaction (327.99)
+- Getting the Most from Your Credit Card Rewards → Credit Card Rewards Redemption Options (514.8)
+- Getting the Most from Your Credit Card Rewards → Understanding Your Credit Card Rewards Categories (394.51)
+- Getting the Most from Your Credit Card Rewards → Refer a Friend to Rho-Bank and Earn Rewards (384.95)
+- Request a Statement Credit or Fee Adjustment → Notice Something Wrong on Your Statement? We Can Help (461.81)
+- Request a Statement Credit or Fee Adjustment → Think You're Missing Cash Back? Here's How to Get Help (427.75)
+- Request a Statement Credit or Fee Adjustment → What to Know Before Closing Your Account (425.12)
+- Account Recovery Bypass Code (Internal) → Understanding Regulation E: Your Debit Card Consumer Protections (344.83)
+- Account Recovery Bypass Code (Internal) → FAQ: Common Error Codes (322.61)
+- Account Recovery Bypass Code (Internal) → Internal: Human Agent Transfer Reason Codes (320.38)
+
+## Unresolved needs (no doc in the sample provides them)
+
+- Internal: Retrieving Bank Account Transaction History: needs **Fee schedules and rules (monthly fee, overdraft fee, ATM fee) for verifying fees** (rule)
+- Internal: Retrieving Bank Account Transaction History: needs **Definition of EveryonePay product** (definition)
+- Internal: Ordering a Debit Card for a Bank Account: needs **customer identity verification procedure** (procedure)
+- Internal: Ordering a Debit Card for a Bank Account: needs **custom card design approval process/criteria** (procedure)
+- Internal: Ordering a Debit Card for a Bank Account: needs **definition of business days** (definition)
+- Internal: Ordering a Debit Card for a Bank Account: needs **definition of valid US domestic address** (definition)
+- Internal: Closing/Cancelling a Debit Card: needs **standard customer identity verification procedures** (procedure)
+- Internal: Closing/Cancelling a Debit Card: needs **online banking password change procedure** (procedure)
+- Internal: Freezing and Unfreezing a Debit Card: needs **Customer identity verification procedure** (procedure)
+- Internal: Freezing and Unfreezing a Debit Card: needs **ATM Block setup instructions in mobile app** (procedure)
+- Internal: Filing a Debit Card Transaction Dispute: needs **customer verification procedure** (procedure)
+- Internal: Filing a Debit Card Transaction Dispute: needs **statement dates** (data)
+- Internal: Checking Debit Card Dispute Status: needs **Customer user_id lookup/verification** (data)
+- Internal: Managing Debit Card Security Alerts and Blocks: needs **Procedure and criteria for verifying the customer's identity** (procedure)
+- Internal: Applying Credits to Savings Accounts: needs **Savings excess withdrawal fee and withdrawal limit rules** (rule)
+- Internal: Applying Credits to Savings Accounts: needs **Monthly maintenance fee and minimum balance requirement rules** (threshold)
+- Internal: Applying Credits to Savings Accounts: needs **Customer identity verification and account ownership procedure** (procedure)
+- Internal: Applying Credits to Savings Accounts: needs **Supervisor approval procedure for goodwill credits** (procedure)
+- Internal: Submitting Interest Discrepancy Reports: needs **APY tier balance thresholds** (threshold)
+- Internal: Submitting Interest Discrepancy Reports: needs **Relationship bonus eligibility criteria (which multiple Rho-Bank products qualify)** (rule)
+- Internal: Submitting Interest Discrepancy Reports: needs **Identity and account ownership verification procedure** (procedure)
+- Checking User Dispute History (Internal): needs **the user's correct and current user_id** (data)
+- Checking User Dispute History (Internal): needs **internal privileges to view dispute histories** (rule)
+- Checking User Dispute History (Internal): needs **internal data handling and privacy requirements** (rule)
+- Checking User Dispute History (Internal): needs **user_id format validation rules** (definition)
+- Checking User Dispute History (Internal): needs **what actions to take based on dispute status** (procedure)
+- Internal: Activating a Debit Card: needs **standard customer identity verification procedures** (procedure)
+- Internal: Activating a Debit Card: needs **debit_card_orders table order reason** (data)
+- Understanding Regulation E: Your Debit Card Consumer Protections: needs **Standard identity verification and security questions procedure** (procedure)
+- Understanding Regulation E: Your Debit Card Consumer Protections: needs **Business account dispute protections** (rule)
+- Understanding Regulation E: Your Debit Card Consumer Protections: needs **Credit card dispute regulations** (rule)
+- Internal: Credit Card Retention Protocol: needs **Customer tenure data** (data)
+- Internal: Credit Card Retention Protocol: needs **Goodwill credit amount and policy** (threshold)
+- Internal: Credit Card Retention Protocol: needs **Rho-Bank card catalog and benefits** (data)
+- Filing a Credit Card Transaction Dispute (Internal): needs **customer registered profile data (user id, phone, email, address, full name)** (data)
+- Filing a Credit Card Transaction Dispute (Internal): needs **transaction details (transaction id, purchase date, card last 4 digits)** (data)
+- FAQ: Common Error Codes: needs **customer identity verification procedure** (procedure)
+- Internal: Debit Card Provisional Credit Guidelines: needs **Criteria for discretionary provisional credit offers** (rule)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **procedure/tool for adding a note to the customer account** (tool)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **customer's credit card type** (data)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **customer identity/user id for get_credit_card_accounts_by_user** (data)
+- (Internal) Applying a Credit Card Statement Credit: needs **Customer user_id lookup/identity verification** (data)
+- (Internal) Applying a Credit Card Statement Credit: needs **Procedure to view credit card transaction history** (tool)
+- Internal: Opening Personal Checking Accounts: needs **Procedure for verifying customer identity** (procedure)
+- Internal: Opening Personal Checking Accounts: needs **Customer's date of birth/age** (data)
+- Internal: Opening Personal Checking Accounts: needs **Customer's checking account closure history and closure reasons** (data)
+- Internal: Opening Personal Checking Accounts: needs **Definition of 'closed for cause'** (definition)
+- Internal: Opening Personal Savings Accounts: needs **required opening deposit amount for each savings account class** (threshold)
+- Internal: Opening Personal Savings Accounts: needs **customer authentication / identity verification procedure** (procedure)
+- Internal: Opening Personal Savings Accounts: needs **procedure for resolving collections or negative balances** (procedure)
+- Internal: Opening Personal Savings Accounts: needs **definition of collections status** (definition)
+- Internal: Opening Business Checking Accounts: needs **Customer identity verification procedure** (procedure)
+- Internal: Opening Business Checking Accounts: needs **Full list of business checking account_class options and their features** (definition)
+- Internal: Opening Business Savings Accounts: needs **Procedure for verifying customer identity** (procedure)
+- Internal: Opening Business Savings Accounts: needs **Required opening deposit amount for each business savings account_class** (threshold)
+- Internal: Opening Business Savings Accounts: needs **Full list of official business savings account_class names** (data)
+- Internal: Opening Business Savings Accounts: needs **Definition of a 'verified' customer** (definition)
+- Internal: Closing Personal Checking Accounts: needs **How the notice period is applied/enforced** (rule)
+- Internal: Closing Personal Savings Accounts: needs **manager approval process** (procedure)
+- Internal: Closing Personal Savings Accounts: needs **definition and handling of notice period** (definition)
+- Internal: Closing Business Checking Accounts: needs **How to obtain supervisor review and manager approval** (procedure)
+- Internal: Closing Business Checking Accounts: needs **Definition of how notice period is applied/enforced** (definition)
+- Internal: Closing Business Checking Accounts: needs **Definition of business checking tiers (Navy Blue, True Blue, Sky Blue, Cobalt Blue)** (definition)
+- Internal: Closing Business Savings Accounts: needs **Supervisor review / manager approval procedure** (procedure)
+- Internal: Closing Business Savings Accounts: needs **How the notice period is applied or enforced** (procedure)
+- Internal: Retrieving Customer Account Information: needs **customer user_id** (data)
+- Internal: Retrieving Customer Account Information: needs **definitions of account_type and account_class values** (definition)
+- Internal: Transferring Funds Between Bank Accounts: needs **Required minimum opening deposit amount for new savings accounts** (threshold)
+- Internal: Transferring Funds Between Bank Accounts: needs **Definition of available funds (vs. ledger balance, pending holds)** (definition)
+- Internal: Transferring Funds Between Bank Accounts: needs **Procedure to resolve non-ACTIVE/OPEN account status** (procedure)
+- Internal: Transferring Funds Between Bank Accounts: needs **Internal documentation procedures** (procedure)
+- Internal: Transferring Funds Between Bank Accounts: needs **Customer identity verification/authorization procedure** (procedure)
+- Depositing a Check Into Your Account: needs **Funds availability schedule by account type and deposit amount** (rule)
+- Depositing a Check Into Your Account: needs **Criteria that trigger extended review of a deposit** (threshold)
+- Depositing a Check Into Your Account: needs **Customer's account_id for the destination account** (data)
+- Depositing a Check Into Your Account: needs **Full check eligibility requirements for mobile deposit** (rule)
+- Depositing a Check Into Your Account: needs **Mobile deposit limits, if any** (threshold)
+- Linked Checking Account APY Boosts for Savings Accounts: needs **Savings account base APY values** (data)
+- Internal: Business Checking Account Promotion - November 2025: needs **Features, fees, and eligibility criteria of the Sky Blue account** (data)
+- Internal: Business Checking Account Promotion - November 2025: needs **Features, fees, and eligibility criteria of the Lime Green account** (data)
+- Internal: Business Checking Account Promotion - November 2025: needs **Catalog of other business checking accounts and their features** (data)
+- Internal: Business Checking Account Promotion - November 2025: needs **Current date** (data)
+- Internal: Business Checking Account Promotion - October 2025: needs **Features, fees, and eligibility details of the Lime Green account** (data)
+- Internal: Business Checking Account Promotion - October 2025: needs **Features, fees, and eligibility details of the Hunter Green account** (data)
+- Internal: Business Checking Account Promotion - October 2025: needs **Catalog of all other business checking accounts and their features** (data)
+- Internal: Business Checking Account Promotion - October 2025: needs **General business checking account recommendation procedure** (procedure)
+- Internal: Business Checking Account Promotion - October 2025: needs **Current date** (data)
+- Internal: Business Savings Account Promotion - November 2025: needs **Features, terms, fees, minimum balances and interest rates of Gold Saver Account** (data)
+- Internal: Business Savings Account Promotion - November 2025: needs **Features, terms, fees, minimum balances and interest rates of Silver Plus Saver** (data)
+- Internal: Business Savings Account Promotion - November 2025: needs **Catalog of other business savings accounts and their features** (data)
+- Internal: Business Savings Account Promotion - November 2025: needs **Current date** (data)
+- Internal: Business Savings Account Promotion - October 2025: needs **Features, terms, and eligibility of Gold Plus Saver** (data)
+- Internal: Business Savings Account Promotion - October 2025: needs **Features, terms, and eligibility of Silver Plus Saver** (data)
+- Internal: Business Savings Account Promotion - October 2025: needs **Catalog of other business savings accounts and their features** (data)
+- Internal: Business Savings Account Promotion - October 2025: needs **General business savings account recommendation procedure** (procedure)
+- Internal: Business Savings Account Promotion - October 2025: needs **Current date** (data)
+- Internal: Applying Credits and Rebates to Checking Accounts: needs **rebate policy eligibility requirements and rebate amounts** (rule)
+- Internal: Applying Credits and Rebates to Checking Accounts: needs **fee schedule / correct fee amounts** (threshold)
+- Internal: Applying Credits and Rebates to Checking Accounts: needs **account terms and fee structures** (rule)
+- Internal: Applying Credits and Rebates to Checking Accounts: needs **identity and account ownership verification procedure** (procedure)
+- Internal: Applying Credits and Rebates to Checking Accounts: needs **supervisor approval process** (procedure)
+- Notice Something Wrong on Your Statement? We Can Help: needs **Rebate eligibility rules and rebate amounts** (rule)
+- Notice Something Wrong on Your Statement? We Can Help: needs **Minimum balance requirement thresholds per account type for monthly maintenance fee waiver** (threshold)
+- Notice Something Wrong on Your Statement? We Can Help: needs **Monthly maintenance fee amounts** (data)
+- Notice Something Wrong on Your Statement? We Can Help: needs **Account benefits defining ATM fee refunds** (rule)
+- What to Know Before Closing Your Account: needs **definition of good standing for closure** (definition)
+- Need Your Transaction History? Our Team Can Help: needs **customer identity verification procedure before disclosing transaction history** (procedure)
+- Need Your Transaction History? Our Team Can Help: needs **fee schedule and fee explanation rules** (rule)
+- Need Your Transaction History? Our Team Can Help: needs **how far back transaction history is available** (threshold)
+- Moving Money Between Your Rho-Bank Accounts: needs **Definition of what makes an account 'in good standing'** (definition)
+- Internal: Resetting or Changing a Debit Card PIN: needs **standard customer identity verification procedure** (procedure)
+- Internal: Resetting or Changing a Debit Card PIN: needs **customer birth date** (data)
+- Internal: Resetting or Changing a Debit Card PIN: needs **procedure for handling a temporarily locked card after 3 incorrect PIN attempts** (procedure)
+- Internal: ATM Dispute Special Procedures: needs **Chargeback submission procedure** (procedure)
+- Internal: ATM Dispute Special Procedures: needs **Customer's registered email address** (data)
+- Internal: ATM Dispute Special Procedures: needs **Definition of ATM ownership (Rho-Bank vs third-party)** (data)
+- Internal: Recurring Payment Disputes vs. Stop Future Payments: needs **Customer identity verification procedure** (procedure)
+- What To Do If You Notice an Unauthorized Debit Card Transaction: needs **Criteria for complexity determining 10 vs 45 business-day resolution** (threshold)
+- What To Do If You Notice an Unauthorized Debit Card Transaction: needs **Procedure for contacting merchant or ATM network during investigation** (procedure)
+- Internal: Requesting Temporary Debit Card Limit Increase: needs **Customer's current debit card ATM/purchase limit** (data)
+- Internal: Requesting Temporary Debit Card Limit Increase: needs **Record of prior temporary increases on the card** (data)
+- Internal: Requesting Temporary Debit Card Limit Increase: needs **Definition of 'good standing' for an account** (definition)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring: needs **Definition/procedure for standard identity verification** (procedure)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring: needs **Callback verification procedure** (procedure)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring: needs **Card's daily ATM withdrawal limit value** (data)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring: needs **Supervisor review process** (procedure)
+- Internal: PIN Lock Investigation Protocol - Fraud Risk Scoring: needs **How to enable PIN lock notifications** (tool)
+- Internal: Human Agent Transfer Reason Codes: needs **Definition/specification of the transfer_to_human_agents tool and its parameters** (tool)
+- Internal: Human Agent Transfer Reason Codes: needs **Procedures for when to transfer vs. handle in-scope (e.g., fraud, account closure, billing dispute handling)** (procedure)
+- Internal: Human Agent Transfer Reason Codes: needs **Knowledge base search tool/procedure** (tool)
+- Internal: Human Agent Transfer Reason Codes: needs **List of offers/promotions existing in the system** (data)
+- Credit Card APY Bonuses: Stacking Policy: needs **Full list of APY bonus amounts for each Rho-Bank credit card (example values only given for three cards)** (data)
+- Credit Card APY Bonuses: Stacking Policy: needs **Relationship bonus rules for holding multiple Rho-Bank products** (rule)
+- Credit Card APY Bonuses: Stacking Policy: needs **Account tier bonus definitions** (rule)
+- Credit Card APY Bonuses: Stacking Policy: needs **Base savings account APY** (data)
+- Credit Card APY Bonuses: Stacking Policy: needs **Definition of 'applicable' credit card bonus eligibility** (definition)
+- Linked Checking Account APY Boost: Selection Policy: needs **Base APY of each savings account type** (data)
+- Linked Checking Account APY Boost: Selection Policy: needs **Relationship bonus rules and values** (rule)
+- Linked Checking Account APY Boost: Selection Policy: needs **Account tier bonus rules and values** (rule)
+- Internal: Checking Account Referral Program Terms and Restrictions: needs **Referral bonus amounts and qualification requirements per checking account type** (rule)
+- Internal: Checking Account Referral Program Terms and Restrictions: needs **Minimum referrer tenure threshold for each referral program** (threshold)
+- Internal: Checking Account Referral Program Terms and Restrictions: needs **Definition of 'good standing'** (definition)
+- Internal: Checking Account Referral Program Terms and Restrictions: needs **Light Green Account guardian requirements for minors** (rule)
+- FAQ: Checking Account Referrals: needs **referrer tenure threshold duration (how long must be a checking customer)** (threshold)
+- FAQ: Checking Account Referrals: needs **exact deposit window per account type from account referral terms** (data)
+- FAQ: Checking Account Referrals: needs **qualifying deposit minimum amount** (threshold)
+- FAQ: Checking Account Referrals: needs **referral bonus amounts** (data)
+- FAQ: Checking Account Referrals: needs **definition of good standing** (definition)
+- Welcome to Rho-Bank Checking: needs **Exact processing time for external transfers** (threshold)
+- Welcome to Rho-Bank Checking: needs **Thresholds defining low balance and large transaction alerts** (threshold)
+- Welcome to Rho-Bank Checking: needs **Enrollment procedure for online and mobile banking** (procedure)
+- Welcome to Rho-Bank Checking: needs **External transfer limits and fees** (rule)
+- Welcome to Rho-Bank Checking: needs **Customer identity verification requirements for support** (procedure)
+- FAQ: Troubleshooting: needs **External bank maintenance notices** (data)
+- FAQ: Troubleshooting: needs **Supported web browsers and latest app version list** (data)
+- What is an authorization hold?: needs **Duration/amount of the paycheck deposit hold and when it is refunded** (threshold)
+- What is an authorization hold?: needs **Customer's current authorization holds and available balance** (data)
+- What is an authorization hold?: needs **Procedure for disputing or requesting release of a stale/merchant hold** (procedure)
+- What is an authorization hold?: needs **Definition of available balance vs posted/ledger balance** (definition)
+- Direct deposits — setup and timing: needs **Which internal accounts are eligible to receive paycheck splits** (definition)
+- Direct deposits — setup and timing: needs **Customer's account and routing numbers from online/mobile banking profile** (data)
+- Direct deposits — setup and timing: needs **Payer's payroll enrollment and processing schedule** (procedure)
+- Why does my account have a lower balance than I expected or have a negative balance?: needs **overdraft features documentation (overdraft options, opt-in process, fees)** (procedure)
+- Why does my account have a lower balance than I expected or have a negative balance?: needs **overdraft fees and settings adjustment procedure** (rule)
+- Why does my account have a lower balance than I expected or have a negative balance?: needs **Regulation E opt-in requirements detail** (rule)
+- I didn't receive my direct deposit: needs **Actual amount/duration of the temporary hold on direct deposits (text shows placeholder 'Yes')** (threshold)
+- I didn't receive my direct deposit: needs **Procedure for the bank to determine whether a direct deposit was rejected and why** (procedure)
+- I didn't receive my direct deposit: needs **Customer's account and routing numbers** (data)
+- I didn't receive my direct deposit: needs **Definition and timing of deposit final processing** (definition)
+- I didn't receive my direct deposit: needs **How to use deposit trace information to follow up/investigate** (procedure)
+- Why hasn't my direct deposit arrived yet?: needs **Actual amount/portion of the temporary deposit hold (document states 'Yes', a placeholder error)** (threshold)
+- Why hasn't my direct deposit arrived yet?: needs **Deposit hold / funds availability policy** (rule)
+- Why hasn't my direct deposit arrived yet?: needs **Procedure for checking whether a direct deposit was rejected and rejection reasons** (procedure)
+- Why hasn't my direct deposit arrived yet?: needs **Definition and use of deposit trace information** (definition)
+- Internal: Direct Deposit Delay Inquiries Protocol: needs **customer's employer payroll schedule / scheduled pay date** (data)
+- Internal: Direct Deposit Delay Inquiries Protocol: needs **definition of business days** (definition)
+- Internal: Processing Credit Card Account Closures: needs **standard identity verification procedures** (procedure)
+- Internal: Processing Credit Card Account Closures: needs **customer's credit card account id from account profile or account lookup** (data)
+- Internal: Processing Credit Card Account Closures: needs **authenticated user id** (data)
+- Internal: Processing Credit Card Account Closures: needs **date of recent annual fee charge** (data)
+- Internal: CLI Payment History and Approval Criteria: needs **The customer's credit card account ID** (data)
+- Internal: CLI Payment History and Approval Criteria: needs **The customer's current credit limit** (data)
+- Internal: CLI Payment History and Approval Criteria: needs **Definition of an on-time payment** (definition)
+- Internal: Processing CLI Approvals and Denials: needs **Minimum account age (days) per card tier** (threshold)
+- Internal: Processing CLI Approvals and Denials: needs **CLI cooldown period length per card tier** (threshold)
+- Internal: Processing CLI Approvals and Denials: needs **Maximum credit utilization threshold per card tier** (threshold)
+- Internal: Processing CLI Approvals and Denials: needs **Current credit limit** (data)
+- Internal: Downgrading a Credit Card to a No-Annual-Fee Card: needs **Standard identity verification procedures** (procedure)
+- Internal: Downgrading a Credit Card to a No-Annual-Fee Card: needs **Benefit/rewards rate details of current and Bronze tier cards** (data)
+- Internal: Downgrading a Credit Card to a No-Annual-Fee Card: needs **Customer's credit card account ID, user ID, and account tenure** (data)
+- Paying Off Credit Card Balance from Checking Account (Internal): needs **Standard identity verification procedures** (procedure)
+- How to Order a Replacement Credit Card (Internal): needs **Standard identity verification procedures** (procedure)
+- How to Order a Replacement Credit Card (Internal): needs **Replacement eligibility criteria** (rule)
+- How to Order a Replacement Credit Card (Internal): needs **Next steps for customers not eligible for replacement** (procedure)
+- Checking Pending Replacement Card Orders (Internal): needs **role permissions for get_pending_replacement_orders_5765** (rule)
+- Checking Pending Replacement Card Orders (Internal): needs **identity of the 'relevant team' to notify** (definition)
+- Checking Pending Replacement Card Orders (Internal): needs **procedure for cancelling a replacement card order** (procedure)
+- Internal: Understanding Credit Card Referral Statuses.: needs **maximum number of concurrent referral processes allowed** (threshold)
+- Internal: Understanding Credit Card Referral Statuses.: needs **tool or data source to look up a customer's referral status and existing referral activity** (tool)
+- Internal: Understanding Credit Card Referral Statuses.: needs **internal escalation procedure for persistent referral errors** (procedure)
+- Internal: Understanding Credit Card Referral Statuses.: needs **credit card application decision process** (procedure)
+- Credit Card Referral Offers and Restrictions: needs **Card-specific referral bonus amounts for each credit card type** (data)
+- Credit Card Referral Offers and Restrictions: needs **Customer's referral bonus history with exact timestamps** (data)
+- Submitting a Cash Back Dispute (Internal): needs **How the customer's user_id and transaction_id are found or verified** (data)
+- Submitting a Cash Back Dispute (Internal): needs **Definition of sensitive card details** (definition)
+- Applying Resolved Cash Back Dispute Corrections (Internal): needs **Active promotions and their eligibility/rates at time of purchase** (data)
+- Applying Resolved Cash Back Dispute Corrections (Internal): needs **Rewards eligibility rules** (rule)
+- Credit Card Rewards Categories: needs **Card-specific rewards exclusions and exceptions** (rule)
+- Internal: Credit Card Rewards - Points vs Cash Back Representation: needs **Cash back earn rates for each cash back card** (threshold)
+- Internal: Credit Card Rewards - Points vs Cash Back Representation: needs **Customer's rewards points balance from the transaction database** (data)
+- Credit Card Rewards Points Rounding Policy: needs **Customer's purchase transaction amounts** (data)
+- Credit Card Rewards Redemption Options: needs **Customer's current rewards points balance** (data)
+- Credit Card Rewards Redemption Options: needs **Definition of account 'good standing'** (definition)
+- Credit Card Rewards Redemption Options: needs **Current per-retailer gift card rates and list of partner retailers** (data)
+- Credit Card Rewards Redemption Options: needs **List of partner charities** (data)
+- Credit Card Rewards Redemption Options: needs **Current redemption values and minimums** (data)
+- Generating a Credit Card Referral Link (Internal): needs **Card-specific documented referral program details (which cards have referral programs)** (data)
+- Generating a Credit Card Referral Link (Internal): needs **Customer's referral history in the rolling 7-day window** (data)
+- Internal: Credit Card Purchase Decline Diagnostic Procedure: needs **Card status and decline error message information** (data)
+- Internal: Backend Incident 11/13: needs **standard handling procedure for unreflected credit card payments after the incident window** (procedure)
+- Internal: Backend Incident 11/13: needs **standard identity verification procedure** (procedure)
+- Internal: Backend Incident 11/13: needs **current date/time in EST** (data)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting: needs **Current date/time to determine whether the protocol is within its active window** (data)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting: needs **Definition and parameters of emergency_credit_bureau_incident_transfer_1114 tool** (tool)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting: needs **Standard identity verification policy that this protocol overrides** (rule)
+- Internal: Backend Incident 11/14 - Erroneous Credit Bureau Reporting: needs **Normal credit bureau dispute/reporting procedures for cases outside the incident window or not matching the incident** (procedure)
+- How to Find Your Rho-Bank Credit Card Numbers Online: needs **Details of the identity confirmation process used when revealing card numbers** (procedure)
+- Provisional Credit Eligibility Guidelines (Internal): needs **customer account open date / account age** (data)
+- Provisional Credit Eligibility Guidelines (Internal): needs **transaction details: amount and purchase date** (data)
+- Provisional Credit Eligibility Guidelines (Internal): needs **evidence whether customer contacted the merchant** (data)
+- How to Dispute a Credit Card Transaction: needs **dispute filing time limits / deadlines** (threshold)
+- How to Dispute a Credit Card Transaction: needs **regulatory basis for credit card disputes (e.g., Fair Credit Billing Act / Regulation Z)** (rule)
+- How to Dispute a Credit Card Transaction: needs **customer identity verification procedure** (procedure)
+- Understanding Your Credit Card Rewards Categories: needs **Card terms and conditions document** (rule)
+- Understanding Your Credit Card Rewards Categories: needs **Customer account lookup in mobile app/website to see card's reward details** (tool)
+- Refer a Friend to Rho-Bank and Earn Rewards: needs **Bonus amount and type (cash back, points, statement credit) per credit card** (data)
+- Refer a Friend to Rho-Bank and Earn Rewards: needs **List of credit cards with an active referral offer** (data)
+- Refer a Friend to Rho-Bank and Earn Rewards: needs **Card-specific bonus requirements (purchase amount and timeframe after account opening)** (threshold)
+- Refer a Friend to Rho-Bank and Earn Rewards: needs **Credit card approval criteria for referred applicants** (rule)
+- Think You're Missing Cash Back? Here's How to Get Help: needs **Card-specific cash back reward rates (standard and bonus category rates)** (threshold)
+- Think You're Missing Cash Back? Here's How to Get Help: needs **Tool for reviewing transaction history and rewards** (tool)
+- Think You're Missing Cash Back? Here's How to Get Help: needs **Rules on what counts as a qualifying purchase** (rule)
+- What is Provisional Credit?: needs **Exact timelines for posting provisional credit and completing investigations (including any regulatory deadlines)** (threshold)
+- What is Provisional Credit?: needs **Procedure for reversing provisional credit and notifying the customer** (procedure)
+- Having Trouble Making Purchases with Your Card?: needs **Procedure to activate a new or replacement card** (procedure)
+- Having Trouble Making Purchases with Your Card?: needs **Procedure for reviewing and clearing fraud alerts on a card** (procedure)
+- Having Trouble Making Purchases with Your Card?: needs **Rules and process for lifting international transaction restrictions** (procedure)
+- Having Trouble Making Purchases with Your Card?: needs **Account data on holds, restrictions, card status, and available credit** (data)
+- Having Trouble Making Purchases with Your Card?: needs **Fraud detection criteria/thresholds** (threshold)
+- Getting the Most from Your Credit Card Rewards: needs **Which cards offer enhanced travel portal value and by how much** (rule)
+- Getting the Most from Your Credit Card Rewards: needs **Definition of account in good standing** (definition)
+- Getting the Most from Your Credit Card Rewards: needs **List of partner airlines and partner charities** (data)
+- Getting the Most from Your Credit Card Rewards: needs **Current special promotions on redemption types** (data)
+- Request a Statement Credit or Fee Adjustment: needs **Definition of a customer in good standing** (definition)
+- Request a Statement Credit or Fee Adjustment: needs **How interest is calculated** (rule)
+- Account Recovery Bypass Code (Internal): needs **standard identity verification procedures** (procedure)
+- Account Recovery Bypass Code (Internal): needs **queue escalation policy** (procedure)
+- Account Recovery Bypass Code (Internal): needs **channel-specific account recovery workflow** (procedure)
+- Account Recovery Bypass Code (Internal): needs **security escalation procedure** (procedure)
+- Account Recovery Bypass Code (Internal): needs **log_verification tool specification and access** (tool)
+- Account Recovery Bypass Code (Internal): needs **definition of secured vs unsecured channels** (definition)

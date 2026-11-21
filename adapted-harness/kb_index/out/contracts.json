@@ -1,0 +1,3177 @@
+{
+ "model": "claude-opus-5-5",
+ "tokens": {
+  "input": 130196,
+  "output": 61288
+ },
+ "contracts": {
+  "activate_debit_card_8291": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_024"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Look up the card to check issue_reason (must be new_account or first_card), PENDING status, and expiration date",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Look up the card in the debit_cards table and check the 'issue_reason' field to determine which activation tool to use"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm the linked checking account is still OPEN",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The linked checking account must still be OPEN"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity must be verified",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Customer must have the physical card in their possession",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Customer must have the physical card in their possession"
+    },
+    {
+     "condition": "Debit card status must be PENDING (not already ACTIVE)",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+    },
+    {
+     "condition": "Linked checking account must be OPEN",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The linked checking account must still be OPEN"
+    },
+    {
+     "condition": "Card must not be expired",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Card must not be expired (check expiration_date)"
+    },
+    {
+     "condition": "Card issue_reason must be 'new_account' or 'first_card'",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "activate_debit_card_8291: Use for NEW cards (first-time card for this checking account, issue_reason = 'new_account' or 'first_card')"
+    },
+    {
+     "condition": "Card details provided by customer (last 4, expiration, CVV) must match the card on the customer's account",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify the card details match the customer's account"
+    },
+    {
+     "condition": "Card is locked if customer provides incorrect card details 2 times; must not proceed and must direct to branch",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+    },
+    {
+     "condition": "PIN must be exactly 4 digits, not sequential or repeating",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Ask customer to set a 4-digit PIN for the card (must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111)"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check card issue_reason to select the correct activation tool",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Always verify the issue reason before selecting the tool."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify card details match the customer's account",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify the card details match the customer's account"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm activation was successful",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Confirm activation was successful"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "pin",
+     "rule": "Must be exactly 4 digits chosen by customer; reject sequential (e.g., 1234) or repeating (e.g., 1111) values",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Ask customer to set a 4-digit PIN for the card (must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111)"
+    }
+   ]
+  },
+  "activate_debit_card_8292": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_024"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Look up the card's issue_reason (must be lost/stolen/fraud), status (PENDING), and expiration date before activation.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Look up the card in the debit_cards table and check the 'issue_reason' field to determine which activation tool to use"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm the linked checking account is still OPEN and identify the checking account for card lookup.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The linked checking account must still be OPEN"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Card's issue_reason must be 'lost', 'stolen', or 'fraud' (replacement card).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "activate_debit_card_8292: Use for REPLACEMENT cards (replacing lost/stolen/fraud cards, issue_reason = 'lost', 'stolen', or 'fraud')"
+    },
+    {
+     "condition": "Customer identity must be verified.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Customer must have the physical card in their possession.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Customer must have the physical card in their possession"
+    },
+    {
+     "condition": "Debit card must be in PENDING status (not already ACTIVE).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+    },
+    {
+     "condition": "Linked checking account must still be OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The linked checking account must still be OPEN"
+    },
+    {
+     "condition": "Card must not be expired.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Card must not be expired (check expiration_date)"
+    },
+    {
+     "condition": "Card details provided by customer (last 4, expiration, CVV) must match the customer's account records.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify the card details match the customer's account"
+    },
+    {
+     "condition": "Customer must not have provided incorrect card details 2 times (card would be locked; must visit branch).",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+    },
+    {
+     "condition": "PIN must be exactly 4 digits, not sequential (e.g. 1234) or repeating (e.g. 1111).",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Ask customer to set a 4-digit PIN for the card (must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111)"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check the card's issue_reason to select the correct activation tool",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Always verify the issue reason before selecting the tool."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Remind customer to review recent transactions for unauthorized charges",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "After activation, remind customer to review recent transactions for any unauthorized charges"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Ask if they have noticed suspicious activity on their account",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Ask if they have noticed any suspicious activity on their account"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Recommend changing online banking password if fraud was suspected",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Recommend changing their online banking password if fraud was suspected"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm activation was successful",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Confirm activation was successful"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "expiration_date",
+     "rule": "Must be supplied in MM/YY format.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Card expiration date (MM/YY format)"
+    }
+   ]
+  },
+  "activate_debit_card_8293": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_024"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Look up the card's issue_reason, status (PENDING), and expiration date to confirm this reissue activation tool is correct and the card is eligible.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Look up the card in the debit_cards table and check the 'issue_reason' field to determine which activation tool to use"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm the linked checking account is still OPEN.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The linked checking account must still be OPEN"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Card issue_reason must be 'expired', 'damaged', 'upgrade', or 'bank_reissue'.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "activate_debit_card_8293: Use for REISSUED cards (expiration renewal, damaged card, design upgrade, or bank-initiated, issue_reason = 'expired', 'damaged', 'upgrade', or 'bank_reissue')"
+    },
+    {
+     "condition": "Customer must be verified.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Customer must have the physical card in their possession.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Customer must have the physical card in their possession"
+    },
+    {
+     "condition": "Debit card must be in PENDING status, not already ACTIVE.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+    },
+    {
+     "condition": "Linked checking account must be OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "The linked checking account must still be OPEN"
+    },
+    {
+     "condition": "Card must not be expired.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Card must not be expired (check expiration_date)"
+    },
+    {
+     "condition": "Card details provided by customer must match the customer's account.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify the card details match the customer's account"
+    },
+    {
+     "condition": "PIN must be exactly 4 digits and not sequential or repeating.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Ask customer to set a 4-digit PIN for the card (must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111)"
+    },
+    {
+     "condition": "Card not locked from 2 incorrect card detail attempts; if locked, customer must visit a branch.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check card issue_reason to select the correct activation tool",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Always verify the issue reason before selecting the tool."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm activation was successful",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Confirm activation was successful"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform customer old card remains active for 24-hour grace period",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Inform customer that their old card will remain active for 24 hours as a grace period"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Remind customer to update recurring payments if card number changed",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+     "quote": "Remind them to update any recurring payments with the new card details if the card number changed"
+    }
+   ],
+   "derived_arguments": []
+  },
+  "apply_checking_account_credit_5829": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_017"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Check transaction history to confirm the rebate has not already been applied or to confirm each fee discrepancy",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Confirm the rebate has not already been applied by checking the account's transaction history"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Verify account ownership and confirm the account is a checking account",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Confirm the account is a checking account (credits cannot be applied to savings or other account types)"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity and account ownership must be verified",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Verify the customer's identity and account ownership"
+    },
+    {
+     "condition": "The account must be a checking account, not savings or other type",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Credits may ONLY be applied to checking accounts. Savings accounts and other account types are not eligible."
+    },
+    {
+     "condition": "Credit only for a missing rebate or a fee mischarge (otherwise supervisor approval required)",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Credits may only be applied for the two circumstances listed above. Do not apply credits for any other reason without supervisor approval."
+    },
+    {
+     "condition": "For rebate credits, customer must meet rebate eligibility requirements",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Verify the customer is eligible for the rebate based on documented rebate policies"
+    },
+    {
+     "condition": "For rebate credits, the rebate must not already have been applied per transaction history",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Confirm the rebate has not already been applied by checking the account's transaction history"
+    },
+    {
+     "condition": "For fee refunds, each fee discrepancy must be confirmed in transaction history",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Check the transaction history to confirm each fee discrepancy"
+    },
+    {
+     "condition": "Tool may be called only once per checking account per interaction; 14-day cooldown after a credit on the same account",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "After a credit is applied to a checking account, the system enforces a 14-day cooldown period before another credit can be applied to that same account."
+    },
+    {
+     "condition": "Amount must be greater than 0",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "amount: The positive dollar amount to credit (must be greater than 0)"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer of the applied credit and new account balance",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Inform the customer of the applied credit and new account balance"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Calculate the correct credit amount based on rebate policy or overcharged fee",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Calculate the correct credit amount based on the rebate policy or fee that was overcharged"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "amount",
+     "rule": "Net correction across all identified fee discrepancies (and/or rebate amount per policy), combined into a single total if multiple corrections; exact, no rounding",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Ensure the credit amount reflects the net correction across all identified fee discrepancies"
+    },
+    {
+     "argument": "amount",
+     "rule": "If multiple corrections needed on same account, combine into one total amount",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Because only one credit call is allowed per account, if multiple corrections are needed for the same account (e.g., both fee refunds and missing rebates), combine them into a single credit with the total amount and use the credit_type that applies to the majority of the corrections."
+    },
+    {
+     "argument": "credit_type",
+     "rule": "'rebate_credit' for missing rebates, 'fee_refund' for incorrect fees; when combined, use the type applying to the majority of corrections",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+     "quote": "Because only one credit call is allowed per account, if multiple corrections are needed for the same account (e.g., both fee refunds and missing rebates), combine them into a single credit with the total amount and use the credit_type that applies to the majority of the corrections."
+    }
+   ]
+  },
+  "apply_credit_card_account_flag_6147": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_003"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_dispute_history_7291",
+     "purpose": "Confirm the account has no active or pending transaction disputes (closure eligibility check before retention offers).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Pending disputes: The account must not have any active or pending transaction disputes."
+    },
+    {
+     "tool": "get_pending_replacement_orders_5765",
+     "purpose": "Confirm there is no pending replacement card order on the account.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+    },
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Verify account age (at least 60 days), no outstanding balance, and customer tenure of 2+ years.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Minimum account age: The account must be open for at least 60 days."
+    },
+    {
+     "tool": "get_closure_reason_history_8293",
+     "purpose": "Check for closure reason records within the past year; if any exist, retention offers are skipped.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Determine today's date to compute the expiration date one year from today.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "- expiration_date (string, required): Set to a date a year from today in MM/DD/YYYY format."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The account has no active or pending transaction disputes.",
+     "verifying_tool": "get_user_dispute_history_7291",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Pending disputes: The account must not have any active or pending transaction disputes."
+    },
+    {
+     "condition": "The account has no pending replacement card orders.",
+     "verifying_tool": "get_pending_replacement_orders_5765",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+    },
+    {
+     "condition": "The account has been open for at least 60 days.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Minimum account age: The account must be open for at least 60 days."
+    },
+    {
+     "condition": "The account has no outstanding balance.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Outstanding balance: The account must have no outstanding balance."
+    },
+    {
+     "condition": "All closure eligibility requirements are met; otherwise no retention offers may be made.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "If any requirement is not met, explain what must be resolved and do not proceed with retention offers."
+    },
+    {
+     "condition": "The account has no closure reason records within the past year (otherwise skip retention offers).",
+     "verifying_tool": "get_closure_reason_history_8293",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+    },
+    {
+     "condition": "The customer's stated reason for closing is annual fee concerns.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Annual fee concerns: If they have been a customer for 2+ years, offer to waive their annual fee for one year as a loyalty benefit."
+    },
+    {
+     "condition": "The customer has been a customer for 2 or more years; otherwise offer a downgrade instead of a fee waiver.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "If they have been a customer for less than 2 years, offer a permanent downgrade to a no-annual-fee card while preserving account history."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check closure reason history with get_closure_reason_history_8293 (Step 2).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask the customer why they want to close and log it with log_credit_card_closure_reason_4521 (Step 3).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Then log it using log_credit_card_closure_reason_4521."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "flag_type",
+     "rule": "Use 'annual_fee_waived' for the annual fee waiver.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "- flag_type (string, required): Use 'annual_fee_waived'."
+    },
+    {
+     "argument": "expiration_date",
+     "rule": "One year from today's date, in MM/DD/YYYY format.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "- expiration_date (string, required): Set to a date a year from today in MM/DD/YYYY format."
+    },
+    {
+     "argument": "reason",
+     "rule": "Use 'loyalty_benefit' for long-tenured (2+ years) customers.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "- reason (string, required): Use 'loyalty_benefit' for long-tenured customers."
+    }
+   ]
+  },
+  "apply_savings_account_credit_6831": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_043",
+    "doc_bank_accounts_bank_accounts_(general)_044"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Verify account ownership, confirm the account is a savings account, and check APY components for interest corrections",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "Before applying: Verify the customer's account details and APY components using get_all_user_accounts_by_user_id_3847, review transaction history using get_bank_account_transactions_9173 to confirm the interest amount credited, calculate the correct interest amount based on documented APY rates and bonuses, determine the difference between expected and actual interest."
+    },
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Review transaction history to confirm the interest amount credited (or the incorrect fee charged)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "Before applying: Verify the customer's account details and APY components using get_all_user_accounts_by_user_id_3847, review transaction history using get_bank_account_transactions_9173 to confirm the interest amount credited, calculate the correct interest amount based on documented APY rates and bonuses, determine the difference between expected and actual interest."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer's identity and account ownership have been verified",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "1) Verify the customer's identity and account ownership"
+    },
+    {
+     "condition": "The target account is a savings account",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "2) Confirm the account is a savings account"
+    },
+    {
+     "condition": "The customer meets one of the eligible circumstances (interest correction due to system error, incorrectly charged fee, or goodwill for significant inconvenience due to bank error)",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "3) Verify the customer meets one of the eligible circumstances listed above"
+    },
+    {
+     "condition": "For fee refunds, the fee must have been incorrectly charged to the savings account (e.g., customer within withdrawal limits or met balance requirement)",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "Fee Refunds: If a fee was incorrectly charged to the savings account (e.g., excess withdrawal fee charged when customer was within limits, monthly maintenance fee charged when balance requirement was met), the agent may apply a credit to refund the incorrect fee."
+    },
+    {
+     "condition": "Goodwill credits over $25 typically require supervisor approval",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "Goodwill credits should be rare and typically require supervisor approval for amounts over $25."
+    },
+    {
+     "condition": "Amount must be a positive number greater than 0",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "- amount (number): The positive dollar amount to credit (must be greater than 0)"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Submit interest discrepancy report using submit_interest_discrepancy_report_7294 (for interest corrections)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "Important: Always apply the credit to the customer's account BEFORE submitting the report."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer of the applied credit and new account balance",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "6) Inform the customer of the applied credit and new account balance"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Calculate the correct credit amount based on the discrepancy or fee",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "4) Calculate the correct credit amount based on the discrepancy or fee"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "amount",
+     "rule": "For interest corrections, the difference between the expected interest (from documented APY rates and bonuses) and actual interest credited; for fee refunds, the incorrectly charged fee amount",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "4) Calculate the correct credit amount based on the discrepancy or fee"
+    },
+    {
+     "argument": "credit_type",
+     "rule": "'interest_correction' for APY/interest calculation errors, 'fee_refund' for incorrect fee charges, 'goodwill_credit' for customer service gestures due to bank error",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+     "quote": "- credit_type (string): Must be one of 'interest_correction', 'fee_refund', or 'goodwill_credit'"
+    }
+   ]
+  },
+  "apply_statement_credit_8472": {
+   "source_docs": [
+    "doc_credit_cards_credit_cards_(general)_017"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Look up the credit_card_account_id to which the credit will be applied.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+     "quote": "credit_card_account_id (string, required) - The credit card account ID to apply the credit to. This can be found by calling get_credit_card_accounts_by_user."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The amount must be a positive number in dollars.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+     "quote": "amount (number, required) - The credit amount in dollars. Must be a positive number (e.g., 25.00 for a $25 credit)."
+    },
+    {
+     "condition": "The reason must be exactly one of the allowed enumerated values.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+     "quote": "reason (string, required) - The reason for the statement credit. Must be exactly one of:"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Unlock the tool by calling unlock_discoverable_agent_tool with apply_statement_credit_8472.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+     "quote": "Call unlock_discoverable_agent_tool with the tool name apply_statement_credit_8472."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Verify the credit appears as a negative transaction in the customer's credit card transaction history (get_credit_card_transactions_by_user) and reduces the statement balance.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+     "quote": "Verify the credit appears as a negative transaction in the customer\u2019s credit card transaction history and reduces the statement balance."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "reason",
+     "rule": "Map the purpose of the credit to the matching enum value (e.g., late fee reversal -> 'late_fee_reversal', courtesy credit -> 'goodwill_adjustment', billing error -> 'error_correction'; 'other' only if none apply).",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+     "quote": "reason (string, required) - The reason for the statement credit. Must be exactly one of:"
+    }
+   ]
+  },
+  "approve_credit_limit_increase_5847": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_007"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_limit_increase_history_4829",
+     "purpose": "Check whether a CLI request was submitted within the card tier's cooldown period.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Cooldown Period: Use the get_credit_limit_increase_history_4829 tool to check if the customer has submitted a request within the cooldown period for their card tier."
+    },
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Check account age, card tier, current limit, balance/past-due status, and credit utilization.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Account Age: Verify the account has been open for the minimum required days for their card tier."
+    },
+    {
+     "tool": "get_user_dispute_history_7291",
+     "purpose": "Verify the account has no active disputes.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "No Pending Disputes: Verify the account has no active disputes."
+    },
+    {
+     "tool": "get_pending_replacement_orders_5765",
+     "purpose": "Verify there are no outstanding replacement card orders for the account.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "No Pending Replacement Cards: Verify there are no outstanding replacement card orders for this account."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Requested increase amount is within the maximum allowed for the customer's card tier.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "BEFORE submitting any CLI request, verify that the customer's requested increase amount is within the maximum allowed for their card tier."
+    },
+    {
+     "condition": "Account has been open for at least the minimum required days for its card tier.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Account Age: Verify the account has been open for the minimum required days for their card tier."
+    },
+    {
+     "condition": "No CLI request was submitted within the cooldown period for the card tier (excluding the current submission).",
+     "verifying_tool": "get_credit_limit_increase_history_4829",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "If a request exists within this period, deny the new request and inform the customer when they will be eligible to submit again."
+    },
+    {
+     "condition": "Account has no active/pending disputes.",
+     "verifying_tool": "get_user_dispute_history_7291",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "No Pending Disputes: Verify the account has no active disputes."
+    },
+    {
+     "condition": "No pending replacement card orders for the account.",
+     "verifying_tool": "get_pending_replacement_orders_5765",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "If a replacement is pending, the CLI cannot be processed until the replacement is delivered or cancelled."
+    },
+    {
+     "condition": "Account is in good standing: current with no past-due balance.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Account Good Standing: The account must be current with no past-due balance."
+    },
+    {
+     "condition": "Current credit utilization is below the maximum threshold for the card tier.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Credit Utilization: Verify current utilization is below the maximum threshold for their card tier."
+    },
+    {
+     "condition": "All eligibility criteria must be checked before an approval decision; all must be met.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "You MUST check ALL of the following eligibility criteria before making an approval or denial decision as this ensures complete audit records."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Submit the CLI request using submit_credit_limit_increase_request_7392.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Eligibility checks are internal and not exposed to customers, so the submission must happen first."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify all eligibility criteria after submitting the request.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "After submitting the request, verify the customer meets all eligibility requirements."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer of the decision and confirm the new credit limit.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "For approvals, confirm the new credit limit."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "new_credit_limit",
+     "rule": "New total credit limit = current credit limit + the confirmed requested increase amount (not the increase amount itself).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "- new_credit_limit (float, required): The new total credit limit to set."
+    }
+   ]
+  },
+  "change_debit_card_pin_6285": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_027"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Verify customer identity and obtain date of birth to ensure the new PIN is not the birth year or birth month/day",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be the customer's birth year or birth month/day"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Identify the customer's checking accounts to confirm the debit card belongs to the customer",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Customer must be the owner of the debit card"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Confirm the card belongs to the customer's account and is in ACTIVE status",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Card must be in ACTIVE status (cannot change PIN on FROZEN, PENDING, or CLOSED cards)"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity must be verified",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Customer must own the debit card (card is linked to one of the customer's accounts)",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Customer must be the owner of the debit card"
+    },
+    {
+     "condition": "Debit card status must be ACTIVE (not FROZEN, PENDING, or CLOSED)",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Card must be in ACTIVE status (cannot change PIN on FROZEN, PENDING, or CLOSED cards)"
+    },
+    {
+     "condition": "If the card is frozen, it must be unfrozen first",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "If customer's card is frozen, they must unfreeze it first before changing PIN"
+    },
+    {
+     "condition": "Customer must confirm their current PIN",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Ask customer to confirm their current PIN for additional security"
+    },
+    {
+     "condition": "New PIN must be exactly 4 digits",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Must be exactly 4 digits"
+    },
+    {
+     "condition": "New PIN cannot be sequential (e.g., 1234, 4321)",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be sequential (e.g., 1234, 4321)"
+    },
+    {
+     "condition": "New PIN cannot be all the same digit",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be all the same digit (e.g., 1111)"
+    },
+    {
+     "condition": "New PIN cannot be the customer's birth year or birth month/day",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be the customer's birth year or birth month/day"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "1. Verify customer identity"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask customer to confirm current PIN",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Ask customer to confirm their current PIN for additional security"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask customer for new 4-digit PIN and validate it meets security requirements",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Validate the new PIN meets security requirements (same as above)"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Unfreeze the card if it is frozen",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "If customer's card is frozen, they must unfreeze it first before changing PIN"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm to the customer the PIN has been changed (without reading back the PIN)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "6. Confirm the PIN has been changed"
+    }
+   ],
+   "derived_arguments": []
+  },
+  "clear_debit_card_fraud_alert_4892": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_039"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Retrieve the customer's on-file details (DOB, email, phone, address) so the customer's identity can be verified before clearing the alert or block.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "Always verify the customer's identity before using this tool."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The customer's identity has been verified.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "Always verify the customer's identity before using this tool."
+    },
+    {
+     "condition": "The fraud alert is not bank-initiated. Bank-initiated alerts cannot be cleared by this tool and must be transferred to the security team.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "This tool CANNOT clear bank-initiated fraud alerts."
+    },
+    {
+     "condition": "For fraud alerts: the alert was customer-initiated and the customer confirms their recent transactions are legitimate.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "For fraud alerts: The alert was customer-initiated AND customer confirms their recent transactions are legitimate"
+    },
+    {
+     "condition": "For velocity blocks: the customer provides a reasonable explanation for the unusual activity, and the explanation is not suspicious or inconsistent.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "For velocity blocks: Customer provides a reasonable explanation for the unusual activity (e.g., shopping spree, travel)"
+    },
+    {
+     "condition": "The customer does not report transactions they did not make. If they do, escalate to the security team instead of clearing.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "Customer reports transactions they did not make"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify the customer's identity.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "Always verify the customer's identity before using this tool."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Document in the interaction notes why the alert or block was cleared.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "Document why the alert/block was cleared in the interaction notes."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "reason",
+     "rule": "Use 'customer_verified' when clearing a customer-initiated fraud alert after identity verification and the customer's confirmation that the transactions are legitimate.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "`'customer_verified'`: Use when clearing a customer-initiated fraud alert after the customer has verified their identity and confirmed their transactions are legitimate"
+    },
+    {
+     "argument": "reason",
+     "rule": "Use 'velocity_clear' when clearing a velocity block after identity verification.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+     "quote": "`'velocity_clear'`: Use when clearing a velocity block after verifying the customer's identity"
+    }
+   ]
+  },
+  "close_bank_account_7392": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_005",
+    "doc_bank_accounts_bank_accounts_(general)_006",
+    "doc_bank_accounts_bank_accounts_(general)_007",
+    "doc_bank_accounts_bank_accounts_(general)_008"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Check the account's status, current_holdings balance, account type/tier and opening date, plus the customer's other business checking and savings accounts.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+     "quote": "Account status is OPEN"
+    },
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Verify there are no pending transactions on the account being closed.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+     "quote": "No pending transactions for this account"
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Determine whether the account is within the early closure fee window for its tier.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+     "quote": "Early closure fee: $15 if closed within 30 days"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "If an early closure fee applies, current_holdings must be at least the fee amount; otherwise current_holdings must be $0.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+     "quote": "If an early closure fee applies, the account balance must be at least the fee amount; otherwise, account balance (current_holdings) must be $0."
+    },
+    {
+     "condition": "Account status is OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_006",
+     "quote": "Account status is OPEN"
+    },
+    {
+     "condition": "No pending transactions exist for the account.",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_006",
+     "quote": "No pending transactions for this account"
+    },
+    {
+     "condition": "For a business checking account, the customer has no linked business savings accounts that are still OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_007",
+     "quote": "Customer has no linked business savings accounts that are still OPEN (close those first)"
+    },
+    {
+     "condition": "For a business savings account, the customer must keep at least one active business checking account.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_008",
+     "quote": "Customer must have at least one active business checking account remaining (business savings requires a linked business checking account)"
+    },
+    {
+     "condition": "ELITE tier personal savings accounts require manager approval.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_006",
+     "quote": "For ELITE tier, obtain manager approval before proceeding."
+    },
+    {
+     "condition": "PREMIUM tier business checking accounts require supervisor review, and ELITE tier ones require manager approval.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_007",
+     "quote": "For PREMIUM tier, obtain supervisor review. For ELITE tier, obtain manager approval."
+    },
+    {
+     "condition": "PREMIUM tier business savings accounts require supervisor review, and ELITE tier ones require manager approval.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_008",
+     "quote": "For PREMIUM tier, obtain supervisor review. For ELITE tier, obtain manager approval."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify that all pre-closure requirements are met.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+     "quote": "Verify pre-closure requirements are met."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Determine the account tier and the applicable fees and notice period.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+     "quote": "Determine the account tier and applicable fees/notice period."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Close any linked OPEN business savings accounts before closing a business checking account.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_007",
+     "quote": "Customer has no linked business savings accounts that are still OPEN (close those first)"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Obtain manager approval for ELITE tier personal savings accounts.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_006",
+     "quote": "For ELITE tier, obtain manager approval before proceeding."
+    }
+   ],
+   "derived_arguments": []
+  },
+  "close_credit_card_account_7834": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_002"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Look up the customer's credit card accounts to obtain the account ID and check the outstanding balance and account age",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "This can be found in the customer's account profile or by looking up their credit card accounts."
+    },
+    {
+     "tool": "get_user_dispute_history_7291",
+     "purpose": "Check that the credit card account has no pending disputes",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "No pending disputes (pending disputes allowed: No)"
+    },
+    {
+     "tool": "get_pending_replacement_orders_5765",
+     "purpose": "Check that the account has no pending replacement card orders",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "No pending replacement cards"
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Determine the current date to compute whether the account is at least 60 days old",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "Account age at least 60 days"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The customer's identity has been verified using standard verification procedures",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "Verify the customer's identity using standard verification procedures."
+    },
+    {
+     "condition": "The credit card account's outstanding balance is exactly $0.00",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "Outstanding balance must be $0.00 dollars"
+    },
+    {
+     "condition": "There are no pending disputes on the credit card account",
+     "verifying_tool": "get_user_dispute_history_7291",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "No pending disputes (pending disputes allowed: No)"
+    },
+    {
+     "condition": "The credit card account is at least 60 days old (opening date at least 60 days before the current date)",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "Account age at least 60 days"
+    },
+    {
+     "condition": "The credit card account has no pending replacement card orders",
+     "verifying_tool": "get_pending_replacement_orders_5765",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "No pending replacement cards"
+    },
+    {
+     "condition": "The user_id must match the authenticated user requesting the closure",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "This should match the authenticated user."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify the customer's identity",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "Verify the customer's identity using standard verification procedures."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm all closure eligibility requirements are met ($0 balance, no pending disputes, account age >= 60 days, no pending replacement cards)",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "Confirm all eligibility requirements are met per 'How can I close a credit card account?':"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "user_id",
+     "rule": "Must be the user_id of the authenticated customer requesting the closure",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+     "quote": "This should match the authenticated user."
+    }
+   ]
+  },
+  "close_debit_card_4721": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_025"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_email",
+     "purpose": "Retrieve the customer's details to verify identity before closing the card.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Find the customer's checking accounts so card ownership can be confirmed (user_id matches).",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Customer must be the owner of the debit card (verify user_id matches)"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Check the card's status (ACTIVE or PENDING) and its date_issued for the minimum age check.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "The debit card must currently be in ACTIVE or PENDING status"
+    },
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Check for pending or processing transactions and pending refunds on the card.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "No pending transactions: The card must not have any pending or processing transactions."
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Get today's date to work out the card's age from date_issued.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Calculate this from the date_issued field."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The customer has been identity-verified.",
+     "verifying_tool": "get_user_information_by_email",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "The customer owns the debit card: the card's account user_id matches the verified customer.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Customer must be the owner of the debit card (verify user_id matches)"
+    },
+    {
+     "condition": "The debit card's status is ACTIVE or PENDING.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "The debit card must currently be in ACTIVE or PENDING status"
+    },
+    {
+     "condition": "The card has no pending or processing transactions.",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "No pending transactions: The card must not have any pending or processing transactions."
+    },
+    {
+     "condition": "The card has no pending refunds, unless the customer acknowledges in writing that refunds will be credited to the linked checking account.",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "If pending refunds exist, inform the customer they must wait for the refunds to process (typically 3-5 business days) or acknowledge in writing that the refunds will be credited to the linked checking account instead."
+    },
+    {
+     "condition": "The card has been active for at least 14 days since date_issued. This is waived when the reason is lost, stolen, or fraud_suspected.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Minimum card age: The debit card must have been active for at least 14 days."
+    },
+    {
+     "condition": "The lost, stolen, and fraud_suspected reasons bypass the minimum card age requirement.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "These reasons bypass the minimum card age requirement (requirement 6) for security purposes"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify the customer's identity.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask the customer for the closure reason.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Ask customer for the reason they want to close the card (select from: lost, stolen, fraud_suspected, damaged, no_longer_needed, account_closing)"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check all eligibility requirements, and do not proceed if any is unmet.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Check eligibility requirements. If any requirement is not met, inform the customer what needs to be resolved and do not proceed with closure."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "For lost, stolen, or fraud_suspected reasons, ask the customer whether they want to order a replacement card immediately.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Ask if they want to order a replacement card immediately"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm the closure and tell the customer the card is permanently deactivated, that recurring payments need updating, and how to order a new card.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Confirm the card has been closed and provide the following information:"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "reason",
+     "rule": "Map the customer's stated reason to one of: lost, stolen, fraud_suspected, damaged, no_longer_needed, account_closing.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+     "quote": "Ask customer for the reason they want to close the card (select from: lost, stolen, fraud_suspected, damaged, no_longer_needed, account_closing)"
+    }
+   ]
+  },
+  "deny_credit_limit_increase_5848": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_007"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_limit_increase_history_4829",
+     "purpose": "Check whether a prior CLI request exists within the card tier's cooldown period.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Cooldown Period: Use the get_credit_limit_increase_history_4829 tool to check if the customer has submitted a request within the cooldown period for their card tier."
+    },
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Verify account age, past-due balance and credit utilization for the card account.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "You MUST check ALL of the following eligibility criteria before making an approval or denial decision as this ensures complete audit records."
+    },
+    {
+     "tool": "get_user_dispute_history_7291",
+     "purpose": "Verify the account has no active disputes.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "No Pending Disputes: Verify the account has no active disputes."
+    },
+    {
+     "tool": "get_pending_replacement_orders_5765",
+     "purpose": "Verify there are no outstanding replacement card orders for the account.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "No Pending Replacement Cards: Verify there are no outstanding replacement card orders for this account."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "All eligibility criteria (account age, cooldown, disputes, replacement cards, good standing, utilization) must have been checked before the denial decision.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "You MUST check ALL of the following eligibility criteria before making an approval or denial decision as this ensures complete audit records."
+    },
+    {
+     "condition": "At least one CLI requirement is not met.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "If any requirements are not met:"
+    },
+    {
+     "condition": "Account age is checked against the minimum required days for the card tier.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Account Age: Verify the account has been open for the minimum required days for their card tier."
+    },
+    {
+     "condition": "A prior CLI request within the tier cooldown period leads to denial.",
+     "verifying_tool": "get_credit_limit_increase_history_4829",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "If a request exists within this period, deny the new request and inform the customer when they will be eligible to submit again."
+    },
+    {
+     "condition": "Account has no active disputes is checked.",
+     "verifying_tool": "get_user_dispute_history_7291",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "No Pending Disputes: Verify the account has no active disputes."
+    },
+    {
+     "condition": "No pending replacement card orders is checked.",
+     "verifying_tool": "get_pending_replacement_orders_5765",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "If a replacement is pending, the CLI cannot be processed until the replacement is delivered or cancelled."
+    },
+    {
+     "condition": "Account is current with no past-due balance is checked.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Account Good Standing: The account must be current with no past-due balance."
+    },
+    {
+     "condition": "Credit utilization is below the card tier maximum threshold is checked.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Credit Utilization: Verify current utilization is below the maximum threshold for their card tier."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm the requested increase amount is within the card tier maximum.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "BEFORE submitting any CLI request, verify that the customer's requested increase amount is within the maximum allowed for their card tier."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Submit the CLI request with submit_credit_limit_increase_request_7392.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Eligibility checks are internal and not exposed to customers, so the submission must happen first."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify all basic eligibility criteria after submitting the request.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "After submitting the request, verify the customer meets all eligibility requirements."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer of the denial reason and when they may reapply.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "For denials, explain the reason and when they may be eligible to reapply."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "denial_reason",
+     "rule": "Set to the enum value matching the failed eligibility criterion (e.g., cooldown violation -> 'cooldown_period_active', active dispute -> 'pending_disputes', pending replacement -> 'pending_replacement_card', past due -> 'past_due_balance', utilization too high -> 'high_utilization', account too new -> 'insufficient_account_age').",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "- denial_reason (string, required): Must be one of: 'insufficient_account_age', 'cooldown_period_active', 'pending_disputes', 'pending_replacement_card', 'past_due_balance', 'high_utilization', 'insufficient_payment_history', 'requested_amount_exceeds_limit', 'other'."
+    }
+   ]
+  },
+  "file_credit_card_transaction_dispute_4829": {
+   "source_docs": [
+    "doc_credit_cards_credit_cards_(general)_014"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Retrieve the user's registered phone, email, and home address to populate the phone, email, and address arguments.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "8. address (string) - The registered home address of the user."
+    },
+    {
+     "tool": "get_credit_card_transactions_by_user",
+     "purpose": "Identify the disputed transaction, its ID, and the date it occurred (purchase_date).",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "10. purchase_date (string, format MM/DD/YYYY) - The date in which the disputed transaction occurred."
+    },
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Determine the last 4 digits of the credit card on which the disputed transaction took place.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "3. card_last_4_digits (string) - Last 4 digits of the credit card under which the disputed transaction took place."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The tool must be unlocked before it is called.",
+     "verifying_tool": "list_discoverable_agent_tools",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "First unlock the tool, then call it using call_discoverable_agent_tool with the tool name and a JSON string containing all the required arguments."
+    },
+    {
+     "condition": "The user must have been asked whether they tried to resolve the issue with the merchant first.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "9. contacted_merchant (boolean) - Ask user: Did you try to resolve this with the merchant first?"
+    },
+    {
+     "condition": "The user must have been asked when they noticed the issue.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "11. issue_noticed_date (string, format MM/DD/YYYY) - Ask user when they noticed the issue."
+    },
+    {
+     "condition": "Provisional credit eligibility must be determined per the Provisional Credit Eligibility Guidelines.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "15. eligible_for_provisional_credit (boolean) - Agent must determine this based on the Provisional Credit Eligibility Guidelines article in this knowledge base."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Unlock the file_credit_card_transaction_dispute_4829 tool.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "First unlock the tool, then call it using call_discoverable_agent_tool with the tool name and a JSON string containing all the required arguments."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "card_action",
+     "rule": "'keep_active' if user wants to keep using current card; 'cancel_and_reissue' if the user wants the card replaced (whether replacement already ordered or cancellation part of this dispute).",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "2. card_action (string) - Determine the appropriate card action based on the user's situation."
+    },
+    {
+     "argument": "partial_refund_amount",
+     "rule": "Provide only when resolution_requested is 'partial_refund'.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "14. partial_refund_amount (number, optional) - Only required if resolution_requested is 'partial_refund'."
+    },
+    {
+     "argument": "eligible_for_provisional_credit",
+     "rule": "Determined by applying the Provisional Credit Eligibility Guidelines.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "15. eligible_for_provisional_credit (boolean) - Agent must determine this based on the Provisional Credit Eligibility Guidelines article in this knowledge base."
+    },
+    {
+     "argument": "purchase_date",
+     "rule": "Date the disputed transaction occurred, formatted MM/DD/YYYY.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+     "quote": "10. purchase_date (string, format MM/DD/YYYY) - The date in which the disputed transaction occurred."
+    }
+   ]
+  },
+  "file_debit_card_transaction_dispute_6281": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_031"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Look up the disputed transaction to get its transaction_id, date, and amount. Also checks the $1.00 minimum, the 60-day age limit, and ATM details.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "ID of the transaction being disputed. Use get_bank_account_transactions_9173 to find it."
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm the checking account linked to the debit card is OPEN and find its tier for the open-dispute limit.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "The debit card must be linked to an OPEN checking account"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Identify the debit card ID linked to the checking account.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "The debit card must be linked to an OPEN checking account"
+    },
+    {
+     "tool": "get_debit_dispute_status_7483",
+     "purpose": "Count the open debit disputes on the account and compare against the tier maximum.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Customer cannot exceed the maximum open disputes for their checking account tier: Entry Tier max 2, Mid Tier max 3, Premium Tier max 4, Elite Tier max 5."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer must be verified.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Transaction amount must be at least $1.00.",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Transaction must be at least $1.00"
+    },
+    {
+     "condition": "Transaction must be no more than 60 days old.",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Transaction must be within 60 days old"
+    },
+    {
+     "condition": "Open debit disputes on the checking account must be below the tier maximum (Entry 2, Mid 3, Premium 4, Elite 5). The limit applies per account.",
+     "verifying_tool": "get_debit_dispute_status_7483",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Dispute limits are per account, not per customer."
+    },
+    {
+     "condition": "The debit card must be linked to an OPEN checking account.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "The debit card must be linked to an OPEN checking account"
+    },
+    {
+     "condition": "For ATM disputes, determine whether the ATM was a Rho-Bank ATM or a third-party ATM.",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "For ATM disputes, determine if it was a Rho-Bank ATM or third-party ATM (different processes apply)"
+    },
+    {
+     "condition": "Customer must be informed of their liability exposure based on reporting timing before proceeding.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Before proceeding, inform the customer of their liability exposure based on when they noticed the unauthorized activity:"
+    },
+    {
+     "condition": "For fraud disputes over $500, ask whether a police report was filed and recommend one if not.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "For fraud disputes over $500, ask if customer has filed a police report."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Inform the customer of their Regulation E liability exposure.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Before proceeding, inform the customer of their liability exposure based on when they noticed the unauthorized activity:"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Perform the actual card action (e.g. freeze_debit_card_3892), using the most severe action across all disputes on the card.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "However, when performing the actual card action after filing all disputes, use the MOST SEVERE action across all disputes."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "card_action",
+     "rule": "Map from dispute_category: card_present_fraud or card_not_present_fraud \u2192 close_and_reissue; unauthorized_transaction \u2192 freeze_pending_investigation; all other categories \u2192 keep_active.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "- 'unauthorized_transaction' \u2192 'freeze_pending_investigation'"
+    },
+    {
+     "argument": "dispute_category",
+     "rule": "For an unauthorized transaction where fraud is suspected, use card_present_fraud (in-store/physical) or card_not_present_fraud (online/phone). Use unauthorized_transaction only when fraud is not suspected.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "If YES, use 'card_present_fraud' (for in-store/physical transactions) or 'card_not_present_fraud' (for online/phone transactions)."
+    },
+    {
+     "argument": "customer_max_liability_amount",
+     "rule": "Reported within 2 business days of statement \u2192 50; within 60 days \u2192 500; after 60 days \u2192 -1 (unlimited).",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Reported within 2 business days of statement: Maximum liability $50"
+    },
+    {
+     "argument": "written_statement_provided",
+     "rule": "Set to true if the customer agrees to provide a written statement (this conversation can serve as the statement).",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Set to true if the customer agrees."
+    },
+    {
+     "argument": "transaction_id",
+     "rule": "When multiple duplicates exist, dispute the earliest (first) transaction.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Dispute the earliest (first) transaction when multiple duplicates exist."
+    }
+   ]
+  },
+  "freeze_debit_card_3892": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_026",
+    "doc_bank_accounts_bank_accounts_(general)_031"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Confirm the debit card is in ACTIVE status and belongs to the customer's checking account before freezing.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "3. Card must currently be in ACTIVE status (cannot freeze PENDING, CLOSED, or already FROZEN cards)"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Identify the customer's checking accounts to confirm ownership of the debit card.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "2. Customer must be the owner of the debit card"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity must be verified.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "1. Customer must be verified"
+    },
+    {
+     "condition": "Customer must own the debit card (card linked to one of the customer's checking accounts).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "2. Customer must be the owner of the debit card"
+    },
+    {
+     "condition": "Card status must be ACTIVE (not PENDING, CLOSED, or FROZEN).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "3. Card must currently be in ACTIVE status (cannot freeze PENDING, CLOSED, or already FROZEN cards)"
+    },
+    {
+     "condition": "Customer must be informed that new transactions, recurring payments will be declined, pending authorized transactions may still process, and they can unfreeze anytime.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "3. Inform customer of the following:"
+    },
+    {
+     "condition": "If the customer confirms the card is lost/stolen, closing should be recommended instead of freezing.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "- If customer confirms the card is lost/stolen, recommend closing instead of freezing"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "1. Verify customer identity"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask customer why they want to freeze the card",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "2. Ask customer why they want to freeze the card"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Inform customer of freeze consequences",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "3. Inform customer of the following:"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm the freeze was successful",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "5. Confirm the freeze was successful"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "When freezing as a dispute card action, file the debit card dispute(s) first (file_debit_card_transaction_dispute_6281)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "**Note:** This parameter records metadata only; the agent must separately perform the indicated card action after filing the dispute."
+    }
+   ],
+   "derived_arguments": []
+  },
+  "log_credit_card_closure_reason_4521": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_003"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_dispute_history_7291",
+     "purpose": "Confirm the credit card account has no active or pending transaction disputes before proceeding.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Pending disputes: The account must not have any active or pending transaction disputes."
+    },
+    {
+     "tool": "get_pending_replacement_orders_5765",
+     "purpose": "Confirm there is no pending replacement card order for the account.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+    },
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Check account open date (at least 60 days) and that there is no outstanding balance.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Minimum account age: The account must be open for at least 60 days."
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Determine today's date to evaluate the 60-day account age and the past-year window for closure reason records.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+    },
+    {
+     "tool": "get_closure_reason_history_8293",
+     "purpose": "Check whether the account has closure reason records within the past year; if so, skip retention and go directly to closure (Step 6) without logging.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The credit card account has no active or pending transaction disputes.",
+     "verifying_tool": "get_user_dispute_history_7291",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Pending disputes: The account must not have any active or pending transaction disputes."
+    },
+    {
+     "condition": "The account has no pending replacement card order that has not been received or activated.",
+     "verifying_tool": "get_pending_replacement_orders_5765",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+    },
+    {
+     "condition": "The account has been open for at least 60 days.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Minimum account age: The account must be open for at least 60 days."
+    },
+    {
+     "condition": "The account has no outstanding balance.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Outstanding balance: The account must have no outstanding balance."
+    },
+    {
+     "condition": "If any eligibility requirement is not met, do not proceed with retention steps (including logging the reason).",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "If any requirement is not met, explain what must be resolved and do not proceed with retention offers."
+    },
+    {
+     "condition": "The account has no closure reason records within the past year; otherwise skip directly to processing the closure.",
+     "verifying_tool": "get_closure_reason_history_8293",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+    },
+    {
+     "condition": "The customer has been asked and has stated why they want to close the account.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Ask the customer why they want to close their account."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify closure eligibility (disputes, pending replacements, account age, balance).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Before attempting retention, confirm the customer is eligible to close their account."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check closure reason history for the account within the past year.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask the customer why they want to close their account.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Then log it using log_credit_card_closure_reason_4521."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Address the customer's concern with tailored solutions based on the logged reason.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "Offer tailored solutions based on the customer's reason:"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Make one retention offer based on card tier if the customer still wants to close.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "If the customer still wants to close after addressing their concerns, make one retention offer based on their card tier:"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "closure_reason",
+     "rule": "Map the customer's stated reason to one of the allowed values: 'annual_fee', 'not_using_card', 'found_better_card', 'unhappy_with_rewards', 'simplifying_finances', 'negative_experience', 'other'.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+     "quote": "- closure_reason (string, required): One of: 'annual_fee', 'not_using_card', 'found_better_card', 'unhappy_with_rewards', 'simplifying_finances', 'negative_experience', 'other'."
+    }
+   ]
+  },
+  "open_bank_account_4821": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_001",
+    "doc_bank_accounts_bank_accounts_(general)_002",
+    "doc_bank_accounts_bank_accounts_(general)_003",
+    "doc_bank_accounts_bank_accounts_(general)_004"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Confirm the customer's identity details and date of birth to check the 18+ age requirement for personal checking.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "2. The customer is at least 18 years old."
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Retrieve the customer's existing accounts to check account counts, statuses (OPEN/CLOSED/closed for cause/collections), balances, and tenure.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "3. The customer does not exceed 4 personal checking accounts."
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm an active checking account exists with at least 14 days tenure and count existing personal savings accounts.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- Count existing personal savings accounts; ensure the customer is below the 5 limit."
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Check for an OPEN personal checking account with at least $500 balance, count business checking accounts, and check for CLOSED accounts.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+     "quote": "5. The customer's existing checking account has a balance of at least $500."
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Identify a qualifying OPEN business checking account (30+ days, $2,500+ balance), count business savings accounts, and check for negative balances.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- OPEN business checking account identified and qualified (\u2265 30 days open and \u2265 $2,500 balance)."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity is verified (all account types).",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "1. The customer is verified."
+    },
+    {
+     "condition": "Personal checking: customer is at least 18 years old.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "2. The customer is at least 18 years old."
+    },
+    {
+     "condition": "Personal checking: customer does not exceed 4 personal checking accounts.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "3. The customer does not exceed 4 personal checking accounts."
+    },
+    {
+     "condition": "Personal checking: no checking accounts closed for cause in the past 6 months.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "4. The customer has no checking accounts closed for cause in the past 6 months."
+    },
+    {
+     "condition": "Personal savings: customer has at least one active Rho-Bank checking account.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- Customer has at least one active Rho-Bank checking account."
+    },
+    {
+     "condition": "Personal savings: customer holds fewer than 5 personal savings accounts.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- Customer currently holds fewer than 5 personal savings accounts."
+    },
+    {
+     "condition": "Personal savings: no accounts in collections and no negative balances.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- Customer has no accounts in collections and no negative balances."
+    },
+    {
+     "condition": "Personal savings: checking account held for at least 14 days.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- The customer\u2019s checking account tenure is at least 14 days."
+    },
+    {
+     "condition": "Business checking: at least one existing personal checking account with status OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+     "quote": "2. The customer has at least one existing personal checking account with status OPEN."
+    },
+    {
+     "condition": "Business checking: customer does not exceed 6 business checking accounts.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+     "quote": "3. The customer does not exceed 6 business checking accounts."
+    },
+    {
+     "condition": "Business checking: customer has no accounts with status CLOSED.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+     "quote": "4. The customer has no accounts with status CLOSED."
+    },
+    {
+     "condition": "Business checking: existing checking account balance is at least $500.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+     "quote": "5. The customer's existing checking account has a balance of at least $500."
+    },
+    {
+     "condition": "Business savings: at least one business checking account with status OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Customer has at least one business checking account with status OPEN."
+    },
+    {
+     "condition": "Business savings: fewer than 4 existing business savings accounts.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Customer has fewer than 4 existing business savings accounts."
+    },
+    {
+     "condition": "Business savings: no accounts with negative balances.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Customer has no accounts with negative balances."
+    },
+    {
+     "condition": "Business savings: a business checking account has been open at least 30 days.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- At least one existing business checking account has been open for at least 30 days."
+    },
+    {
+     "condition": "Business savings: that business checking account has a current balance of at least $2,500.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- That business checking account has a current balance of at least $2,500."
+    },
+    {
+     "condition": "Customer has confirmed the desired account_class selection.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "3. Confirm the customer's desired account_class selection."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "1. Verify customer identity."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check eligibility requirements.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "2. Check eligibility requirements listed above."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm the account_class selection with the customer.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "  - When to call: After steps 1\u20133, once eligibility is confirmed and the customer has selected an account_class."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "For savings accounts, ask the customer whether to transfer the opening deposit now; if yes transfer via transfer_funds_between_bank_accounts_7291, otherwise inform them of the 30-day funding window.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- Ask the customer if they want you to transfer the opening deposit from their checking account now."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "For business savings, ask whether to transfer the opening deposit from the qualifying business checking account now.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Ask the customer if they want you to transfer the opening deposit now from their eligible business checking account."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "account_type",
+     "rule": "Set to 'savings' when opening a personal savings account.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- Use the open_bank_account_4821 tool with account_type set to 'savings' and the confirmed account_class."
+    },
+    {
+     "argument": "account_type",
+     "rule": "Business savings doc instructs setting account_type to 'savings'.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Set account_type to 'savings'."
+    },
+    {
+     "argument": "account_class",
+     "rule": "Personal checking account_class must be the full official name ending with 'Account'.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+     "quote": "- Personal checking account_class options must use the full official name ending with 'Account' (e.g., 'Blue Account', 'Green Account (checking)')."
+    },
+    {
+     "argument": "account_class",
+     "rule": "Savings account_class must be the full official name ending with 'Account' exactly as confirmed with the customer.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- account_class: the full official account name ending with 'Account' exactly as confirmed with the customer."
+    },
+    {
+     "argument": "account_class",
+     "rule": "Business savings account_class is the exact official name ending with 'Account' provided by the customer.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Ensure you capture the exact official account_class name ending with \u201cAccount.\u201d"
+    },
+    {
+     "argument": "user_id",
+     "rule": "Use the authenticated customer's user identifier.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "- user_id: the authenticated customer\u2019s user identifier."
+    }
+   ]
+  },
+  "order_debit_card_5739": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_023",
+    "doc_bank_accounts_bank_accounts_(general)_029"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Verify customer identity, check date_of_birth for age 18+, and check that address on file is a valid US domestic address",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "7) Customer must be at least 18 years old (verify using date_of_birth)"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm account is a checking account, status OPEN, open at least 3 business days, balance at least $25, and determine account tier for fees",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "3) Check eligibility requirements for the specified account"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Check active debit card count, pending debit card orders, and replacement history within 12 months",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "8) Customer cannot have a pending debit card order for the same account (check debit_cards table for PENDING status)"
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Compute business days since account opening, customer age, and rolling 12-month replacement window",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "4) Account must have been open for at least 3 business days (excluding weekends)"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity must be verified",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "1) Customer must be verified"
+    },
+    {
+     "condition": "Account type must be 'checking'",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "2) The account must be a checking account (account_type must be 'checking')"
+    },
+    {
+     "condition": "Account status must be OPEN",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "3) Account status must be OPEN"
+    },
+    {
+     "condition": "Account must have been open at least 3 business days excluding weekends",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "4) Account must have been open for at least 3 business days (excluding weekends)"
+    },
+    {
+     "condition": "No more than 1 active debit card per checking account",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "5) Customer cannot have more than 1 active debit cards per checking account"
+    },
+    {
+     "condition": "Account balance must be at least $25",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "6) Account must have a minimum balance of $25 (to cover potential fees)"
+    },
+    {
+     "condition": "Customer must be at least 18 years old based on date_of_birth",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "7) Customer must be at least 18 years old (verify using date_of_birth)"
+    },
+    {
+     "condition": "No PENDING debit card order for the same account",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "8) Customer cannot have a pending debit card order for the same account (check debit_cards table for PENDING status)"
+    },
+    {
+     "condition": "Customer's address on file must be a valid US domestic address",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "9) Customer's address on file must be a valid US domestic address (international shipping is not available)"
+    },
+    {
+     "condition": "Account must have sufficient funds for delivery and design fees",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "- If the account has insufficient funds for delivery or design fees, the order will fail"
+    },
+    {
+     "condition": "Entry tier: replacement cannot be ordered within 48 hours of card closure",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "- 48-hour waiting period after card closure before a replacement can be ordered"
+    },
+    {
+     "condition": "Entry tier: only STANDARD delivery allowed",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "- Standard shipping only (no expedited option available) - delivery_fee: $0"
+    },
+    {
+     "condition": "Premium tier: if 5 replacements in rolling 12 months exceeded, must wait (no fee option)",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "- If customer has exceeded the 5-card limit, they must wait until oldest replacement ages out (no fee option - must wait)"
+    },
+    {
+     "condition": "Customer must be informed that fees will be deducted from checking account balance before order",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "Always inform the customer that the fee will be deducted from their checking account balance before placing the order."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "1) Verify customer identity"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm which checking account to link",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "2) Confirm which checking account the debit card should be linked to. "
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check eligibility requirements",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "3) Check eligibility requirements for the specified account"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask preferred delivery option and explain fees",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "4) Ask customer for preferred delivery option (STANDARD, EXPEDITED, or RUSH) and explain fees. "
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask preferred card design and explain fees",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "5) Ask customer for preferred card design (CLASSIC, PREMIUM, or CUSTOM) and explain fees. "
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm shipping address",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "6) Confirm the address that the customer would like to mail the card to. "
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Inform customer fees will be deducted from checking account",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "Always inform the customer that the fee will be deducted from their checking account balance before placing the order."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform customer of expected delivery timeframe and applicable fees",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+     "quote": "8) Inform customer of expected delivery timeframe and any applicable fees"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "delivery_fee",
+     "rule": "By tier and option: Entry STANDARD $0 only; Mid STANDARD $0, EXPEDITED $15; Premium STANDARD/EXPEDITED $0, RUSH $35; Elite all $0. Default (non-tier) STANDARD $0, EXPEDITED $15, RUSH $35",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "When using order_debit_card_5739, you must provide the exact delivery_fee and design_fee amounts based on the tier rules below."
+    },
+    {
+     "argument": "design_fee",
+     "rule": "CLASSIC $0 all tiers; PREMIUM $10 Entry/Mid, $0 Premium/Elite; CUSTOM $25 Entry/Mid, $15 Premium, $0 Elite",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "When using order_debit_card_5739, you must provide the exact delivery_fee and design_fee amounts based on the tier rules below."
+    },
+    {
+     "argument": "excess_replacement_fee",
+     "rule": "If replacements (issue_reason lost/stolen/fraud/damaged) in last 12 months exceed tier limit: Entry (>2) $25, Mid (>3) $15; Premium not allowed; Elite unlimited; otherwise omit/0",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "- If customer has exceeded the 2-card limit, they must wait until oldest replacement ages out of the 12-month window, OR pay a $25 excess replacement fee"
+    },
+    {
+     "argument": "excess_replacement_fee",
+     "rule": "Mid tier exceeding 3 replacements in rolling 12 months: $15",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+     "quote": "- If customer has exceeded the 3-card limit, they must wait until oldest replacement ages out, OR pay a $15 excess replacement fee"
+    }
+   ]
+  },
+  "order_replacement_credit_card_7291": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_replacements_001",
+    "doc_credit_cards_credit_cards_(general)_014"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Look up the customer's credit card account to obtain the credit_card_account_id of the card being replaced",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Look up the customer's credit card account."
+    },
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Retrieve customer details (DOB, email, phone, address) to verify identity and to confirm the primary shipping address",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Verify the customer's identity using standard verification procedures."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer's identity has been verified using standard verification procedures",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Verify the customer's identity using standard verification procedures."
+    },
+    {
+     "condition": "The credit card account being replaced belongs to the customer (looked up)",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Look up the customer's credit card account."
+    },
+    {
+     "condition": "Shipping address has been confirmed with the customer (primary or alternate, including unit/suite information)",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Confirm the shipping address with the customer (primary or alternate, including any unit or suite information)."
+    },
+    {
+     "condition": "Replacement reason was asked of the customer and is exactly one of fraud_suspected, lost, stolen, damaged, expired, other",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Ask for the replacement reason and record exactly one of: fraud_suspected, lost, stolen, damaged, expired, or other."
+    },
+    {
+     "condition": "Customer was asked whether they want expedited shipping and advised of tier-based fees; consent captured if a fee applies",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Ask whether they want expedited shipping (advise on possible fees by tier; see Shipping selection)."
+    },
+    {
+     "condition": "Customer is eligible for replacement per the knowledge base; do not unlock or call the tool otherwise",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Do not unlock or call the tool unless the customer is eligible."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Unlock the tool via unlock_discoverable_agent_tool with tool_name order_replacement_credit_card_7291",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Use unlock_discoverable_agent_tool with tool_name: order_replacement_credit_card_7291."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm eligibility for replacement in the knowledge base",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Confirm eligibility for replacement in the knowledge base before proceeding."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Communicate the expected delivery window based on selected shipping method",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Communicate the expected delivery window based on the selected method (standard: 7\u201310 business days; expedited: 2\u20133 business days)."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "If reason was fraud_suspected or stolen, remind customer to review recent transactions and dispute unauthorized charges",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "If the reason was fraud_suspected or stolen, remind the customer to review recent transactions and dispute any unauthorized charges in the app or website."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Document the interaction and replacement order details in the customer record",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Document the interaction and the replacement order details in the customer record."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "reason",
+     "rule": "Must be exactly one of fraud_suspected, lost, stolen, damaged, expired, other, as stated by the customer",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "Ask for the replacement reason and record exactly one of: fraud_suspected, lost, stolen, damaged, expired, or other."
+    },
+    {
+     "argument": "expedited_shipping",
+     "rule": "Set per customer choice; strongly recommend true when reason is fraud_suspected or stolen; fee depends on card tier (entry $15, mid $10, premium $0) and requires consent if a fee applies",
+     "doc_id": "doc_credit_cards_credit_card_replacements_001",
+     "quote": "If the reason is fraud_suspected or stolen, strongly recommend expedited shipping to minimize exposure and remind the customer to review recent transactions for unauthorized activity."
+    }
+   ]
+  },
+  "pay_credit_card_from_checking_9182": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_009"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Verify the customer's identity using standard procedures before processing the payment.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Verify the customer's identity using standard procedures."
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Look up the customer's Rho-Bank checking account to obtain its ID and confirm sufficient funds.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Look up the customer's checking account to confirm sufficient funds."
+    },
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Look up the customer's credit card account to obtain its ID and confirm the outstanding balance.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Look up the customer's credit card account to confirm the outstanding balance."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The customer's identity has been verified.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Verify the customer's identity using standard procedures."
+    },
+    {
+     "condition": "The customer has a Rho-Bank checking account with sufficient funds to cover the payment amount.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Confirm the customer has a Rho-Bank checking account with sufficient funds to cover the payment amount."
+    },
+    {
+     "condition": "The amount must be positive and must not exceed the checking account balance or the credit card outstanding balance.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Must be positive and cannot exceed the checking account balance or the credit card outstanding balance."
+    },
+    {
+     "condition": "The customer has confirmed the payment amount and authorized the transfer.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Confirm the payment amount with the customer and obtain authorization to transfer."
+    },
+    {
+     "condition": "The account IDs and user_id must match the authenticated customer and the amount must be authorized.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Then pass the arguments via call_discoverable_agent_tool exactly as listed above, ensuring the account IDs and user_id match the authenticated customer and the amount is authorized."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify the customer's identity.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Verify the customer's identity using standard procedures."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Look up the checking account to confirm sufficient funds.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Look up the customer's checking account to confirm sufficient funds."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Look up the credit card account to confirm the outstanding balance.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Look up the customer's credit card account to confirm the outstanding balance."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Confirm payment amount with the customer and obtain transfer authorization.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Confirm the payment amount with the customer and obtain authorization to transfer."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Unlock pay_credit_card_from_checking_9182 via unlock_discoverable_agent_tool.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+     "quote": "Unlock the pay_credit_card_from_checking_9182 tool using unlock_discoverable_agent_tool."
+    }
+   ],
+   "derived_arguments": []
+  },
+  "request_temporary_debit_card_limit_increase_8374": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_040"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Verify the linked checking account is OPEN and at least 60 days old",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "1) **Account Status**: The linked checking account must be OPEN (in good standing)"
+    },
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Check for overdraft fees in the last 30 days",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "3) **Overdraft History**: No overdraft fees in the last 30 days"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Verify the debit card is ACTIVE",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "4) **Card Status**: The debit card must be ACTIVE"
+    },
+    {
+     "tool": "get_current_time",
+     "purpose": "Compute account age and the 30-day overdraft window",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "2) **Account Age**: The account must be at least 60 days old"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The linked checking account must be OPEN (in good standing)",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "1) **Account Status**: The linked checking account must be OPEN (in good standing)"
+    },
+    {
+     "condition": "The linked checking account must be at least 60 days old",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "2) **Account Age**: The account must be at least 60 days old"
+    },
+    {
+     "condition": "No overdraft fees on the account in the last 30 days",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "3) **Overdraft History**: No overdraft fees in the last 30 days"
+    },
+    {
+     "condition": "The debit card must be ACTIVE",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "4) **Card Status**: The debit card must be ACTIVE"
+    },
+    {
+     "condition": "new_limit must not exceed 150% of the current limit",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "- **Maximum Increase**: New limit cannot exceed 150% of current limit (50% boost maximum)"
+    },
+    {
+     "condition": "Only one temporary increase per 24-hour period per card",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "- **Frequency**: Only one temporary increase per 24-hour period per card"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify all eligibility requirements (account status, account age, overdraft history, card status)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "Before granting a temporary limit increase, verify ALL of the following:"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "new_limit",
+     "rule": "Must be at most 150% of the card's current limit for the chosen limit_type",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+     "quote": "- **Maximum Increase**: New limit cannot exceed 150% of current limit (50% boost maximum)"
+    }
+   ]
+  },
+  "reset_debit_card_pin_6284": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_027"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Retrieve customer details (date of birth, etc.) to verify identity and to check that the new PIN is not the customer's birth year or birth month/day.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Find the customer's checking accounts so the debit card can be confirmed as belonging to the customer.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Customer must be the owner of the debit card"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Confirm the card belongs to the customer's account and is in ACTIVE status.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Card must be in ACTIVE status (cannot change PIN on FROZEN, PENDING, or CLOSED cards)"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity must be verified.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Customer must own the debit card (card_id belongs to one of the customer's checking accounts).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Customer must be the owner of the debit card"
+    },
+    {
+     "condition": "Debit card status must be ACTIVE (not FROZEN, PENDING, or CLOSED).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Card must be in ACTIVE status (cannot change PIN on FROZEN, PENDING, or CLOSED cards)"
+    },
+    {
+     "condition": "Customer has confirmed the last 4 digits of their card.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "For security, ask customer to confirm the last 4 digits of their card"
+    },
+    {
+     "condition": "new_pin must be exactly 4 digits.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Must be exactly 4 digits"
+    },
+    {
+     "condition": "new_pin cannot be sequential (e.g., 1234, 4321).",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be sequential (e.g., 1234, 4321)"
+    },
+    {
+     "condition": "new_pin cannot be all the same digit (e.g., 1111).",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be all the same digit (e.g., 1111)"
+    },
+    {
+     "condition": "new_pin cannot be the customer's birth year or birth month/day.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Cannot be the customer's birth year or birth month/day"
+    },
+    {
+     "condition": "This tool is for customers who forgot their PIN; if the customer knows the current PIN, change_debit_card_pin_6285 is used instead.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Use reset_debit_card_pin_6284 with parameters: card_id, last_4_digits, new_pin"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Verify customer identity using standard verification procedures"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask customer to confirm the last 4 digits of their card.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "For security, ask customer to confirm the last 4 digits of their card"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Ask customer to provide a new 4-digit PIN.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Ask customer to provide a new 4-digit PIN"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Validate the new PIN meets security requirements.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Validate the new PIN meets security requirements:"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "If the card is frozen, it must be unfrozen first.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "If customer's card is frozen, they must unfreeze it first before changing PIN"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm to the customer the PIN has been changed and is effective immediately (never read back the PIN).",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+     "quote": "Confirm the PIN has been changed and is effective immediately"
+    }
+   ],
+   "derived_arguments": []
+  },
+  "set_debit_card_recurring_block_7382": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_034"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_user_information_by_id",
+     "purpose": "Look up the customer's information on file so their identity can be verified before changing card settings.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Verify customer identity"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The customer's identity must be verified before the recurring block is changed.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Verify customer identity"
+    },
+    {
+     "condition": "The customer must have been told that the block applies to ALL recurring payments on the card, not just one merchant.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Explain that this will block ALL recurring payments on the card, not just one merchant"
+    },
+    {
+     "condition": "If the customer only wants to block one merchant, the agent should advise them to cancel directly with that merchant instead of using the card-wide block.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "If customer only wants to block one merchant, advise them to cancel directly with that merchant"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Verify customer identity"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Explain to the customer that the block affects ALL recurring payments on the card",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Explain that this will block ALL recurring payments on the card, not just one merchant"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "If the customer also needs a dispute for past charges after cancellation, file the dispute first",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "First file the dispute for past charges"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer that the block takes effect within 24 hours",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Block takes effect within 24 hours"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer that one-time purchases are not affected",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "One-time purchases are NOT affected - only recurring/subscription charges"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer that the block does not cancel their subscriptions and they must contact merchants directly",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "This does NOT cancel their subscriptions with merchants - they must still contact merchants directly"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Inform the customer that the block remains active until they request its removal",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Block remains active until customer requests it to be removed"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "When both a dispute and a block were needed, advise the customer to confirm cancellation directly with the merchant in writing",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "Still advise customer to confirm cancellation directly with merchant in writing"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "block_recurring",
+     "rule": "Set to true if the customer wants to block recurring payments; set to false if they want to unblock them.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+     "quote": "block_recurring: true to block, false to unblock"
+    }
+   ]
+  },
+  "submit_credit_limit_increase_request_7392": {
+   "source_docs": [
+    "doc_credit_cards_credit_card_account_logistics_007"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Look up the credit card account and its card tier so the requested increase can be checked against the tier's maximum allowed increase before submission.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "BEFORE submitting any CLI request, verify that the customer's requested increase amount is within the maximum allowed for their card tier."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The requested_increase_amount must not exceed the maximum allowed increase for the customer's card tier.",
+     "verifying_tool": "get_credit_card_accounts_by_user",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Do NOT submit a request that exceeds the tier limit."
+    },
+    {
+     "condition": "The customer must have confirmed a valid increase amount within their tier's limits (if they over-requested, they must have adjusted the request).",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Once the customer has confirmed a valid increase amount within their tier's limits, submit the request on their behalf using the submit_credit_limit_increase_request_7392 tool."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify the requested increase amount is within the card tier's maximum (Step 0).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "BEFORE submitting any CLI request, verify that the customer's requested increase amount is within the maximum allowed for their card tier."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Perform all eligibility checks (account age, cooldown via get_credit_limit_increase_history_4829, disputes, pending replacement cards, good standing, utilization).",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "After submitting the request, verify the customer meets all eligibility requirements."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Eligibility checks are performed only after the submission creates the formal record.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Eligibility checks are internal and not exposed to customers, so the submission must happen first."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Approve via approve_credit_limit_increase_5847 or deny via deny_credit_limit_increase_5848 after eligibility checks.",
+     "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+     "quote": "Use the approve_credit_limit_increase_5847 tool to approve and apply the increase."
+    }
+   ],
+   "derived_arguments": []
+  },
+  "submit_interest_discrepancy_report_7294": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_043",
+    "doc_bank_accounts_bank_accounts_(general)_044"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Look up the customer's accounts to verify ownership and determine APY components (linked checking, credit cards, relationship products)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "2) Look up the customer's accounts using get_all_user_accounts_by_user_id_3847"
+    },
+    {
+     "tool": "get_bank_account_transactions_9173",
+     "purpose": "Find the interest credit actually applied to the savings account",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "3) Check transaction history using get_bank_account_transactions_9173 to find the interest credit"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer's identity and ownership of the savings account must be verified",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "1) Verify the customer's identity and account ownership"
+    },
+    {
+     "condition": "A discrepancy must exist between expected and actual interest credited (missing APY boost, incorrect tier rate, missing relationship bonus, or other calculation error)",
+     "verifying_tool": "get_bank_account_transactions_9173",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "4. System Calculation Error: Any other discrepancy between expected and actual interest credited."
+    },
+    {
+     "condition": "The account must be a savings account",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "- account_id (string): The savings account ID with the discrepancy"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Apply a credit to the customer's savings account using apply_savings_account_credit_6831 (credit_type interest_correction)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "Important: Always apply the credit to the customer's account BEFORE submitting the report."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Look up customer's accounts with get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "2) Look up the customer's accounts using get_all_user_accounts_by_user_id_3847"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Check transaction history with get_bank_account_transactions_9173 to find the interest credit",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "3) Check transaction history using get_bank_account_transactions_9173 to find the interest credit"
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "expected_apy",
+     "rule": "Sum of all applicable APY components (base rate, tier rate, linked checking boost, credit card bonuses, relationship bonus) per the savings account type documentation",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "5) Calculate the expected APY by adding all applicable components"
+    },
+    {
+     "argument": "amount_difference",
+     "rule": "Expected interest minus actual interest credited (as found in transaction history)",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+     "quote": "6) Calculate the discrepancy between expected and actual interest"
+    }
+   ]
+  },
+  "transfer_funds_between_bank_accounts_7291": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_002",
+    "doc_bank_accounts_bank_accounts_(general)_004",
+    "doc_bank_accounts_bank_accounts_(general)_010"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm that the source and destination accounts exist, belong to the same customer, are ACTIVE/OPEN, and that the source has enough funds for the transfer.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "Confirm both the source and destination accounts are in ACTIVE or OPEN status"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Both the source and destination accounts must be in ACTIVE or OPEN status.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "Requirements: Both the source and destination accounts must be in ACTIVE or OPEN status."
+    },
+    {
+     "condition": "The source account must have sufficient available funds to cover the transfer amount.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "Verify the source account has sufficient available funds to cover the transfer amount"
+    },
+    {
+     "condition": "Both accounts must belong to the same customer, and the customer must have authorized the transfer.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "Ensure the two accounts belong to the same customer and the customer has authorized the transfer"
+    },
+    {
+     "condition": "The amount must be a positive USD value.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "Validate the amount is a positive USD value"
+    },
+    {
+     "condition": "The source and destination account IDs must be distinct and valid.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "Confirm the source and destination account IDs are distinct and valid"
+    },
+    {
+     "condition": "For a savings opening deposit, the customer must authorize an immediate transfer.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "  - When to call: In step 5, only if the customer authorizes an immediate transfer for the opening deposit."
+    },
+    {
+     "condition": "For a business savings opening deposit, the source must be an OPEN business checking account that has been open at least 30 days and holds a balance of at least $2,500.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "- Use the qualifying OPEN business checking account that meets both the tenure and balance thresholds as the source for the optional opening deposit transfer."
+    },
+    {
+     "condition": "For a business savings opening deposit, the customer must authorize transferring the deposit now.",
+     "verifying_tool": null,
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "  - Only if the customer authorizes transferring the opening deposit now."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Open the new savings account with open_bank_account_4821 (opening deposit case).",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "4) Open the savings account (agent action)"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify the customer's identity.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "1) Verify identity"
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Validate account statuses and available funds.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "2. Validate account statuses and available funds per the Preconditions and Validation section."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Verify the transfer posted as expected and that no duplicate transfer was initiated.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "- Verify the transfer posted as expected between the specified accounts"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm completion to the customer and document the action.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+     "quote": "4. On success, confirm completion to the customer and, if requested, share updated balances."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "source_account_id",
+     "rule": "For a personal savings opening deposit, use the customer's Rho-Bank checking account.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "    - source_account_id: the customer's Rho-Bank checking account to be debited."
+    },
+    {
+     "argument": "destination_account_id",
+     "rule": "For a personal savings opening deposit, use the newly opened savings account.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "    - destination_account_id: the newly opened personal savings account to be credited."
+    },
+    {
+     "argument": "amount",
+     "rule": "For an opening deposit, use the required opening deposit amount confirmed with the customer.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+     "quote": "    - amount: the required opening deposit amount confirmed with the customer."
+    },
+    {
+     "argument": "source_account_id",
+     "rule": "For a business savings opening deposit, use the qualifying OPEN business checking account (open at least 30 days, balance of at least $2,500).",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "  - source_account_id: the qualifying OPEN business checking account that meets the 30-day tenure and $2,500 balance requirements."
+    },
+    {
+     "argument": "destination_account_id",
+     "rule": "For a business savings opening deposit, use the newly opened business savings account_id.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+     "quote": "  - destination_account_id: the newly opened business savings account_id."
+    }
+   ]
+  },
+  "unfreeze_debit_card_3893": {
+   "source_docs": [
+    "doc_bank_accounts_bank_accounts_(general)_026"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_all_user_accounts_by_user_id_3847",
+     "purpose": "Confirm the customer owns the checking account linked to the debit card, and that this linked checking account is still OPEN.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "The linked checking account must still be OPEN"
+    },
+    {
+     "tool": "get_debit_cards_by_account_id_7823",
+     "purpose": "Confirm the debit card belongs to the customer's checking account and is currently in FROZEN status.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "Card must currently be in FROZEN status"
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "Customer identity must be verified.",
+     "verifying_tool": "get_user_information_by_id",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "Customer must be verified"
+    },
+    {
+     "condition": "Customer must be the owner of the debit card (the card is linked to one of the customer's checking accounts).",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "Customer must be the owner of the debit card"
+    },
+    {
+     "condition": "Debit card status must currently be FROZEN.",
+     "verifying_tool": "get_debit_cards_by_account_id_7823",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "Card must currently be in FROZEN status"
+    },
+    {
+     "condition": "The checking account linked to the card must be OPEN.",
+     "verifying_tool": "get_all_user_accounts_by_user_id_3847",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "The linked checking account must still be OPEN"
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Verify customer identity",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "Verify customer identity"
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm to the customer that the card is now active and ready to use immediately.",
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+     "quote": "Confirm the card is now active and ready to use immediately"
+    }
+   ],
+   "derived_arguments": []
+  },
+  "update_transaction_rewards_3847": {
+   "source_docs": [
+    "doc_credit_cards_credit_cards_(general)_004"
+   ],
+   "prerequisite_calls": [
+    {
+     "tool": "get_credit_card_accounts_by_user",
+     "purpose": "Determine the card type needed to recalculate the correct rewards rate.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Recalculate the correct rewards for each transaction based on the card type, transaction category, and any applicable promotions."
+    },
+    {
+     "tool": "get_credit_card_transactions_by_user",
+     "purpose": "Retrieve the transaction's category, amount, and date to independently recalculate rewards.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Recalculate the correct rewards for each transaction based on the card type, transaction category, and any applicable promotions."
+    }
+   ],
+   "preconditions": [
+    {
+     "condition": "The cash back dispute for the transaction has been resolved and approved.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "After a cash back dispute is resolved and approved, you must update the affected transaction(s) with the correct rewards value."
+    },
+    {
+     "condition": "The transaction_id comes from the user's resolved disputes in the cash_back_disputes database.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Look up the user\u2019s resolved disputes in the cash_back_disputes database to find the transaction_id values that need rewards adjustments."
+    },
+    {
+     "condition": "The tool update_transaction_rewards_3847 has been unlocked.",
+     "verifying_tool": "list_discoverable_agent_tools",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Use `unlock_discoverable_agent_tool` to unlock the agent tool `update_transaction_rewards_3847`."
+    },
+    {
+     "condition": "The rewards value must be independently verified, not taken from the dispute record's expected_rewards field.",
+     "verifying_tool": null,
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Important: Do not rely on any expected_rewards field in the dispute record."
+    },
+    {
+     "condition": "The calculation reflects the proper base rate and any bonus category or promotion active at the time of purchase.",
+     "verifying_tool": "get_credit_card_transactions_by_user",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Ensure your calculation reflects the proper base rate and any active bonus category or promotion at the time of purchase."
+    }
+   ],
+   "ordering": [
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Look up the user's resolved cash back disputes to identify the transaction_ids.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Look up the user\u2019s resolved disputes in the cash_back_disputes database to find the transaction_id values that need rewards adjustments."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Unlock update_transaction_rewards_3847.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Use `unlock_discoverable_agent_tool` to unlock the agent tool `update_transaction_rewards_3847`."
+    },
+    {
+     "relation": "must_happen_before_this_call",
+     "step": "Recalculate the correct rewards for each transaction.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Recalculate the correct rewards for each transaction based on the card type, transaction category, and any applicable promotions."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Confirm the update in credit_card_transaction_history.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Confirm the update in credit_card_transaction_history after the tool call completes."
+    },
+    {
+     "relation": "must_happen_after_this_call",
+     "step": "Retain calculation notes in the internal case record.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "Retain your calculation notes in the internal case record for auditability."
+    }
+   ],
+   "derived_arguments": [
+    {
+     "argument": "new_rewards_earned",
+     "rule": "String formatted as 'X points', where X is the whole-number point value recalculated from the card type, transaction category, base rate, and promotions active at purchase time (not from expected_rewards).",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "new_rewards_earned: a string formatted as 'X points' where X is the correct whole-number point value"
+    },
+    {
+     "argument": "transaction_id",
+     "rule": "The exact transaction identifier from the user's resolved cash back dispute.",
+     "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+     "quote": "transaction_id: the exact transaction identifier"
+    }
+   ]
+  }
+ },
+ "dropped": []
+}
