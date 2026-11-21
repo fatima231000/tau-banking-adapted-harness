@@ -12,7 +12,11 @@ from copy import deepcopy
 
 from tau2.agent.adapted import kb as K
 from tau2.agent.adapted.config import HarnessConfig
-from tau2.agent.adapted.prompts import GROUNDING_NOTE, STATE_NOTE, TODO_NOTE
+from tau2.agent.adapted.prompts import (
+    GROUNDING_NOTE,
+    STATE_NOTE,
+    TODO_NOTE,
+)
 from tau2.agent.llm_agent import LLMAgentState
 from tau2.data_model.message import AssistantMessage, ToolMessage, UserMessage
 
@@ -86,6 +90,7 @@ def open_todos(state: "AdaptedAgentState") -> list[str]:
 
 class ContextBuilder:
     def __init__(self, cfg: HarnessConfig):
+        self._candidate_note = cfg.candidate().get("note", "")
         self.cfg = cfg
 
     # ---- outgoing (model → world) ----
@@ -115,11 +120,13 @@ class ContextBuilder:
         state.seen_customer += "\n" + text
         if _HUMAN_ASK.search(text):
             state.human_requests += 1
-        if self.cfg.enable and state.human_requests >= 1 and text.strip():
-            msg = deepcopy(
-                msg
-            )  # a fact the model cannot count reliably across a long conversation
-            msg.content = f"{text}\n\n{STATE_NOTE.format(n=state.human_requests)}"
+        note = self.cfg.candidate().get("note") or (
+            STATE_NOTE if self.cfg.enable else ""
+        )
+        if note and state.human_requests >= 1 and text.strip():
+            # a fact the model cannot count reliably across a long conversation
+            msg = deepcopy(msg)
+            msg.content = f"{text}\n\n{note.format(n=state.human_requests)}"
             return msg
         if self.cfg.ledger and text.strip():
             msg = deepcopy(msg)

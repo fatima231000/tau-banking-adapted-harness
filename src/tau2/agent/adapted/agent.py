@@ -93,6 +93,7 @@ class AdaptedLLMAgent(LLMAgent):
             llm_args=llm_args,
             **kw,
         )
+        self._candidate = self.cfg.candidate()
         self.context = ContextBuilder(self.cfg)
         self.gate = Gate(self.cfg, self.system_prompt)
 
@@ -220,6 +221,21 @@ class AdaptedLLMAgent(LLMAgent):
                         ],
                     }
                     return sent, state
+
+            # Self-check from an evolved candidate: the agent re-reads its own draft reply once
+            # before it is sent. Nothing is blocked; the second answer goes out whatever it says.
+            if (
+                (review := self._candidate.get("review"))
+                and not calls
+                and not state.bounced
+            ):
+                state.bounced = True
+                state.messages.append(out)
+                state.messages.append(UserMessage(role="user", content=review))
+                events.append(
+                    {"type": "self_check", "draft": (out.content or "")[:300]}
+                )
+                continue
 
             # Decision gate: a refusal or added condition needs a rule behind it (one bounce per turn).
             if (

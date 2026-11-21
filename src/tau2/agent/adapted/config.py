@@ -6,11 +6,13 @@ Defaults are the final configuration. Ablate a component with its env var set to
 
 from __future__ import annotations
 
+import json
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 _REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
 _KB_INDEX_DIR = os.path.join(_REPO, "adapted-harness", "kb_index")
+_EVOLVE_DIR = os.path.join(_REPO, "adapted-harness", "evolve")
 
 
 def _flag(name: str, default: bool) -> bool:
@@ -84,6 +86,17 @@ class HarnessConfig:
         False  # working-method instructions + one state line on customer turns
     )
     replay_thinking: bool = False  # send the model's own thinking blocks back each turn
+    # Evolved candidate (adapted-harness/evolve): a JSON file with up to three elements, each
+    # optional: "system" (a prompt section), "note" (a state line on customer turns, {n} = number
+    # of human-agent requests), "review" (a self-check the agent runs once on a reply before it is
+    # sent). No gates, no extra tools, nothing compiled from the knowledge base.
+    candidate_path: str = ""
+
+    def candidate(self) -> dict:
+        if not self.candidate_path:
+            return {}
+        with open(self.candidate_path) as f:
+            return json.load(f)
 
     @classmethod
     def preset(cls, name: str) -> "HarnessConfig":
@@ -105,6 +118,34 @@ class HarnessConfig:
                 checker=False,
                 skills=True,
                 lean_gate=True,
+            )
+        if (
+            name == "plain"
+        ):  # the baseline agent plus prompt caching, nothing else (for oracle runs)
+            return cls(
+                gate=False,
+                ledger=False,
+                derived=False,
+                contracts=False,
+                conflicts=False,
+                index=False,
+                kb_search=False,
+                decision_gate=False,
+                decisions=False,
+                early_checklist=False,
+                workflows=False,
+                known_issues=False,
+                checker=False,
+                skills=False,
+                lean_gate=False,
+                mix_virtual=False,
+            )
+        if (
+            name == "evolved"
+        ):  # the baseline agent + caching + the current best candidate
+            return replace(
+                cls.preset("plain"),
+                candidate_path=os.path.join(_EVOLVE_DIR, "out", "best.json"),
             )
         if name == "enable":
             return cls(
@@ -155,6 +196,7 @@ class HarnessConfig:
             rule_cards_path=os.environ.get("HARNESS_RULECARDS_PATH", d.rule_cards_path),
             skills=_flag("HARNESS_SKILLS", d.skills),
             enable=_flag("HARNESS_ENABLE", d.enable),
+            candidate_path=os.environ.get("HARNESS_CANDIDATE", d.candidate_path),
             replay_thinking=_flag("HARNESS_REPLAY_THINKING", d.replay_thinking),
             lean_gate=_flag("HARNESS_LEANGATE", d.lean_gate),
             skills_path=os.environ.get("HARNESS_SKILLS_PATH", d.skills_path),
@@ -165,6 +207,7 @@ class HarnessConfig:
             k: getattr(self, k)
             for k in (
                 "enable",
+                "candidate_path",
                 "replay_thinking",
                 "skills",
                 "lean_gate",

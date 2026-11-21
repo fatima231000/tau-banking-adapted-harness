@@ -168,6 +168,8 @@ def build_system_prompt(base: str, cfg: HarnessConfig) -> str:
         parts.append(INDEX)
     if cfg.skills:
         parts.append(SKILLS)
+    if section := cfg.candidate().get("system"):
+        parts.append(section)
     if cfg.enable:
         parts.append(
             WORKING_METHOD

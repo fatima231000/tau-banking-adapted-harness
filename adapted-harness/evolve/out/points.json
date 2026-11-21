@@ -1,0 +1,925 @@
+{
+ "targets": [
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_014",
+   "index": 16,
+   "role": "target",
+   "split": "validate",
+   "kind": "handoff",
+   "reference": "After the customer insists the letter is a real Rho-Bank communication for a referral offer that isn't documented, the agent should transfer the customer to a human agent with reason 'unconfirmed_external_communication' instead of closing the request.",
+   "what_agent_did": "Re-searched, again found no program, then told the customer it could do nothing further and closed the request, without escalating the unverified external letter to a human agent.",
+   "rule": "Per the internal referral-link procedure and the transfer reason codes, when a customer cites an external communication (e.g., a mailed letter) with offer terms that can't be confirmed and they persist, the case should be transferred to a human with reason unconfirmed_external_communication."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_015",
+   "index": 32,
+   "role": "target",
+   "split": "evolve",
+   "kind": "adds_condition",
+   "reference": "Having confirmed the Platinum Rewards Card referral program matches the customer's stated terms and is still open, the agent gives the customer the get_referral_link tool right away, without requiring identity verification or a referral-history check first.",
+   "what_agent_did": "Withheld the referral link tool and required two-factor identity verification and a referral-history check first. Verification failed and the agent eventually transferred the customer to a human.",
+   "rule": "Per the referral pre-check policy, once the card has a documented, open referral program whose terms match what the customer cites, the agent provides the referral link tool. Identity verification is not a prerequisite for this step."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_015",
+   "index": 28,
+   "role": "target",
+   "split": "evolve",
+   "kind": "adds_condition",
+   "reference": "Having confirmed the Platinum Rewards Card referral program is open and matches the customer's terms, the agent provides the get_referral_link tool to the customer right away, instead of first requiring two-item identity verification. At most it asks for the user ID needed to use the link.",
+   "what_agent_did": "It made granting the referral link tool conditional on full identity verification with two of DOB, email, phone and address. It later refused when the customer could only provide their user ID and phone number.",
+   "rule": "Providing the referral link tool for a documented, open referral program whose terms match does not require the agent to block on two-factor identity verification."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_015",
+   "index": 12,
+   "role": "target",
+   "split": "evolve",
+   "kind": "adds_condition",
+   "reference": "Having confirmed the Platinum Rewards Card terms match, the agent should immediately give the user the get_referral_link tool (give_discoverable_user_tool) so they can generate their link, without demanding identity verification first.",
+   "what_agent_did": "Withheld the referral link tool and required full identity verification (name plus two details) before providing it, which the user could not complete.",
+   "rule": "Providing the referral link tool for a valid, open referral program does not require identity verification; the agent added an unnecessary gate."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_026",
+   "index": 22,
+   "role": "target",
+   "split": "evolve",
+   "kind": "narrows_request",
+   "reference": "Treat all four discrepancies, including the over-credited GitHub Enterprise purchase (txn_b7e2d4c5f506), as eligible for a cash back dispute. Offer the dispute tool for all four transactions, not only the three under-rewarded ones.",
+   "what_agent_did": "Identified the GitHub transaction as credited at the wrong rate but offered disputes only for the three under-rewarded transactions. Later, in [29], it told the user that no dispute was needed for GitHub.",
+   "rule": "The cash back dispute process covers any discrepancy between the cash back received and the cash back that should have been received, in either direction. After disputes are approved, the agent should update transaction rewards to the correct amounts."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_026",
+   "index": 14,
+   "role": "target",
+   "split": "evolve",
+   "kind": "narrows_request",
+   "reference": "After finding the four discrepancies, the correct reply offers to dispute all four, including the over-credited GitHub Enterprise charge (txn_b7e2d4c5f506) on the Silver card, so it can be corrected to 1,020 points. It does not limit the offer to the three under-earned Business Silver transactions.",
+   "what_agent_did": "The agent proposed disputing only the three under-earned Business Silver transactions. It presented the over-earned GitHub Enterprise charge as optional and something that would hurt the customer, which steered her away from disputing it.",
+   "rule": "When a customer asks the agent to check and fix cash back across their cards, every rewards discrepancy should go through the dispute and correction process, including over-credits, not just the ones that favor the customer."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_048",
+   "index": 84,
+   "role": "target",
+   "split": "validate",
+   "kind": "skips_check",
+   "reference": "Do not call close_credit_card_account_7834 on the Gold Rewards Card. The account stays open: tell the customer it cannot be closed at this time and explain why, while still applying the $5 retention credit to the Crypto-Cash Back card.",
+   "what_agent_did": "After the customer declined the Gold retention offer, the agent closed the Gold Rewards Card right away with close_credit_card_account_7834, even though the reference leaves Gold open.",
+   "rule": "Gold must not be closed in this situation. The likely reason is the just-made checking payment or the pending Silver application that replaces it, but the exact policy is not visible in the transcript."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_048",
+   "index": 62,
+   "role": "target",
+   "split": "validate",
+   "kind": "extra_action",
+   "reference": "Treat the Gold Rewards Card request as resolved: the customer took the Silver Rewards Card offer made 'instead of closing the Gold card', so the Gold card stays open and the agent does not ask about closing it again. The reply handles only the Crypto-Cash Back closure: it logs the reason, then presents the retention offer for that card.",
+   "what_agent_did": "Brought the Gold card closure back up even though the customer had accepted the Silver card as the alternative to closing it. The agent asked whether to close the Gold card now, which led to closing it at [66].",
+   "rule": "When a customer accepts a product offered as an alternative to closing a card, the closure request is withdrawn and the card should stay open."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_066",
+   "index": 48,
+   "role": "target",
+   "split": "evolve",
+   "kind": "wrong_choice",
+   "reference": "Since the customer has no Rho-Bank+ subscription and won't go past $6,000, the reply should recommend the Green Account (savings) + Evergreen Account (checking) + Silver Rewards Card combination as the one giving the highest effective APY on $6,000. It should not steer the customer to the Gold Account savings with a Gold Rewards Card and a Rho-Bank+ signup.",
+   "what_agent_did": "Recommended the Gold Account savings plus a Gold Rewards Card, which needs Rho-Bank+, as the best combination. The customer accepted this, which led to opening a Gold savings account and a Green Fee-Free checking account and applying for the Gold Rewards Card.",
+   "rule": "Recommend the product combination that actually maximizes the customer's net APY under their stated constraints, using the documented pairing bonuses for checking accounts and credit cards. Do not pick a combination that needs a subscription the customer lacks or has balance minimums they can't meet."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_066",
+   "index": 59,
+   "role": "target",
+   "split": "evolve",
+   "kind": "argument_value",
+   "reference": "Open the savings account with account_class exactly \"Green Account\" (the system's class name, without the \"(savings)\" suffix), then open the Evergreen checking account.",
+   "what_agent_did": "Opened the savings account with account_class \"Green Account (savings)\" instead of \"Green Account\".",
+   "rule": "The account_class argument must use the exact class name the system expects. Here that is \"Green Account\", not the descriptive doc label \"Green Account (savings)\"."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_066",
+   "index": 14,
+   "role": "target",
+   "split": "evolve",
+   "kind": "wrong_choice",
+   "reference": "States that a new checking account (e.g., the Evergreen checking) can be opened directly with the account-opening tool, not that it requires a human transfer, and offers to open it before closing the Light Blue account.",
+   "what_agent_did": "Told the customer it cannot open a new checking account (only savings) and offered a transfer to a human agent instead, which led to never opening the Evergreen checking account.",
+   "rule": "The open_bank_account tool supports opening checking accounts; the agent should open the requested checking account itself rather than hand off."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_070",
+   "index": 20,
+   "role": "target",
+   "split": "evolve",
+   "kind": "wrong_choice",
+   "reference": "Recommends Sky Blue Business Checking as the single account that meets all the stated must-haves (no overdraft fee, at least $15/month in ATM rebates, minimum balance under $10,000, at least 1% APY) and is the easiest to use with the most perks. It does not recommend Lime Green.",
+   "what_agent_did": "Recommended Lime Green Business Checking as the one account to open. It later opened that account.",
+   "rule": "Among the business checking accounts that meet all the customer's hard requirements, recommend the one the knowledge base supports as the best fit for 'easiest to use, most perks', which is Sky Blue."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_070",
+   "index": 22,
+   "role": "target",
+   "split": "evolve",
+   "kind": "adds_condition",
+   "reference": "Asks for identity verification and proceeds toward opening Sky Blue business checking as the customer requested. It does not make opening conditional on the customer first confirming the company's formation date.",
+   "what_agent_did": "Said Sky Blue could not be opened until the customer confirmed the agency was formed within 4 years. This set up the later refusal and the switch to Lime Green.",
+   "rule": "When a customer chooses an account that fits all their stated needs, open it after verification. Don't demand documentation the policy doesn't require for opening."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_070",
+   "index": 17,
+   "role": "target",
+   "split": "evolve",
+   "kind": "adds_condition",
+   "reference": "When the user asks to proceed without the exact formation date, the correct reply does not block on it or steer to another product. It keeps Sky Blue as the single recommendation, gets the user's confirmation, and opens a Sky Blue business_checking account for user 224959b99e.",
+   "what_agent_did": "Refused to open Sky Blue unless the user confirmed the company was within 4 years of formation, and offered Hunter Green as an alternative. This led to opening Hunter Green instead.",
+   "rule": "The reference opens Sky Blue without requiring confirmation of the formation date. The agent should not make an unverifiable company-age attestation a blocking condition and switch the user to a different account class."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_071",
+   "index": 30,
+   "role": "target",
+   "split": "validate",
+   "kind": "wrong_choice",
+   "reference": "When the customer asks for one checking recommendation, the reply recommends Sky Blue Business Checking. Not knowing the exact formation date should not rule Sky Blue out; if needed, the agent resolves startup eligibility (for example by verifying the customer and checking their records) rather than defaulting to Lime Green.",
+   "what_agent_did": "Recommended Lime Green Business Checking because it couldn't confirm the studio's formation date for Sky Blue. It later opened Lime Green instead of Sky Blue.",
+   "rule": "Among the accounts that meet all of the customer's requirements, pick the best-fitting one. Here that is Sky Blue: no minimum balance and a higher mobile deposit limit, and it suits a small startup studio. Do not drop it over an unconfirmed eligibility detail."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_071",
+   "index": 25,
+   "role": "target",
+   "split": "validate",
+   "kind": "adds_condition",
+   "reference": "Recommends Sky Blue as the single business checking account that fits all of the customer's stated requirements, per the active promotion priority. It does not add a company-formation-age condition, does not present Lime Green as a fallback, and asks for the savings requirements.",
+   "what_agent_did": "Presented two options and made Sky Blue conditional on the studio being within 4 years of formation, asking the customer to confirm the formation date. In [39] this led it to choose Lime Green instead of Sky Blue.",
+   "rule": "When multiple business checking accounts meet the customer's stated requirements, the November promotion says to recommend Sky Blue first. The agent should not impose unstated eligibility conditions that displace the prioritized account."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_078",
+   "index": 41,
+   "role": "target",
+   "split": "evolve",
+   "kind": "extra_action",
+   "reference": "Close only the Light Blue and Green cards (unfreezing those two first, since frozen cards can't be closed) with reason 'lost'. For the Light Green card, check that account's transactions first and leave the card frozen rather than unfreezing and closing it.",
+   "what_agent_did": "Moved to close all three cards, including the Light Green card, without first reviewing that account's transactions. It then unfroze all three and closed the Light Green card as well.",
+   "rule": "Light Green account card handling apparently requires a transaction review, and the card should stay frozen rather than be closed; the gold run calls get_bank_account_transactions and leaves the lg card FROZEN."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_078",
+   "index": 45,
+   "role": "target",
+   "split": "evolve",
+   "kind": "extra_action",
+   "reference": "Before closing anything, the agent should review the accounts' recent transactions (unlock and call get_bank_account_transactions_9173). It should then close only the Light Blue and Green cards as lost, after unfreezing those two. The Light Green card should stay frozen rather than be unfrozen and closed.",
+   "what_agent_did": "The agent immediately tried to close all three cards, including the Light Green card, without checking transactions. It then unfroze and closed the Light Green card as well.",
+   "rule": "Policy evidently requires checking account transactions before acting on lost cards. The Light Green card was not to be closed; it should stay frozen."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_078",
+   "index": 29,
+   "role": "target",
+   "split": "evolve",
+   "kind": "skips_check",
+   "reference": "Following the customer's explicit request to freeze all three cards right away, the agent first freezes all three debit cards (Light Blue, Green, Light Green). Then, for the cards that can be closed, it unfreezes them before closing them as lost. It should not close any card before all three have been frozen.",
+   "what_agent_did": "Closed the Light Blue and Green cards directly as lost without first freezing all three cards as the user requested. It froze only the Light Green card, and only afterward.",
+   "rule": "When a customer asks to freeze cards immediately, freeze all of them first as requested. Unfreeze a frozen card before closing it."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_081",
+   "index": 108,
+   "role": "target",
+   "split": "evolve",
+   "kind": "handoff",
+   "reference": "On the customer's first transfer request after the work is done, do not call transfer_to_human_agents yet. Reply in text: recap and confirm that the card freezes and closures, replacement orders and disputes are all in place, and offer to answer any remaining questions. Transfer only if the customer asks again.",
+   "what_agent_did": "Called transfer_to_human_agents immediately on the customer's first end-of-conversation transfer request, without first trying to resolve the concern. As a result the customer's second (4th overall) transfer request never occurred.",
+   "rule": "Policy expects the agent to try to address the customer's concern before transferring and to transfer only after a repeated request. The reference shows two user transfer requests before the transfer."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_081",
+   "index": 111,
+   "role": "target",
+   "split": "evolve",
+   "kind": "handoff",
+   "reference": "On this end-of-call transfer request, the correct reply does not transfer yet. It acknowledges the request and offers to confirm the card replacements and disputes itself, for example by restating their status. It transfers to a human only if the customer asks again.",
+   "what_agent_did": "Called transfer_to_human_agents right after the customer's first transfer request at the end of the call. Because of this, the customer never repeated the request, and the second transfer request record the reference produces was never created.",
+   "rule": "Do not transfer on a customer's first request. First try to resolve the concern directly (here, confirming the completed actions), and transfer only if the customer persists."
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_081",
+   "index": 85,
+   "role": "target",
+   "split": "evolve",
+   "kind": "other",
+   "reference": "On this first end-of-call request for a human, the correct reply does not transfer yet. It answers in a message, for example by confirming the card replacements and disputes itself or offering further help. Only if the customer asks for a human again does it call transfer_to_human_agents.",
+   "what_agent_did": "On the customer's first post-completion request for a human, the agent immediately called transfer_to_human_agents. The customer never made the second transfer request that the reference run contains, so one human-transfer request record is missing.",
+   "rule": "The agent should not transfer on the first human-agent request when it can handle the matter itself. It should first try to address the concern and transfer only after the customer insists again."
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_099",
+   "index": 10,
+   "role": "target",
+   "split": "validate",
+   "kind": "skips_check",
+   "reference": "After verifying the user, the agent checks the referrer's eligibility by unlocking and calling the discoverable tool that retrieves all of the user's accounts (get_all_user_accounts_by_user_id_3847), rather than only checking credit card accounts, before confirming referral eligibility.",
+   "what_agent_did": "Checked only time, referrals, and credit card accounts, never calling the all-user-accounts tool. It then declared Kenji eligible to refer without reviewing his full account list.",
+   "rule": "Referral eligibility requires verifying the referrer's existing accounts via the full account lookup tool."
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_099",
+   "index": 19,
+   "role": "target",
+   "split": "validate",
+   "kind": "skips_check",
+   "reference": "Before telling Kenji he is eligible and recommending World Blue, the agent discovers and calls the tool that lists all of his accounts by user ID (get_all_user_accounts_by_user_id) to confirm referrer eligibility, such as holding a qualifying open account. Only then does it present the eligibility result and the World Blue recommendation.",
+   "what_agent_did": "Declared Kenji eligible to submit a referral based only on referral history and recommended World Blue, without ever retrieving his accounts to check referrer eligibility requirements.",
+   "rule": "Referral eligibility requires checking the referrer's existing accounts (via the account-listing tool) before confirming eligibility."
+  }
+ ],
+ "controls": [
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_016",
+   "index": 25,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_016",
+   "index": 6,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_018",
+   "index": 25,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_018",
+   "index": 37,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_024",
+   "index": 12,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_024",
+   "index": 10,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_028",
+   "index": 61,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_028",
+   "index": 25,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_048",
+   "index": 94,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_048",
+   "index": 53,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_057",
+   "index": 47,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_057",
+   "index": 69,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_072",
+   "index": 29,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_072",
+   "index": 6,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_074",
+   "index": 26,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_074",
+   "index": 6,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_075",
+   "index": 37,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_075",
+   "index": 28,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_098",
+   "index": 25,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_098",
+   "index": 33,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_101",
+   "index": 20,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-A",
+   "retrieval": "terminal_use",
+   "task": "task_101",
+   "index": 24,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_014",
+   "index": 20,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_014",
+   "index": 12,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_016",
+   "index": 19,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_016",
+   "index": 6,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_018",
+   "index": 4,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_018",
+   "index": 32,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_024",
+   "index": 13,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_026",
+   "index": 41,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_026",
+   "index": 50,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_028",
+   "index": 73,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_028",
+   "index": 27,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_057",
+   "index": 63,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_057",
+   "index": 73,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_072",
+   "index": 29,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_072",
+   "index": 33,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_074",
+   "index": 4,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_074",
+   "index": 34,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_075",
+   "index": 29,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_075",
+   "index": 10,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_098",
+   "index": 7,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_098",
+   "index": 31,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_101",
+   "index": 25,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "base-B",
+   "retrieval": "terminal_use",
+   "task": "task_101",
+   "index": 20,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_014",
+   "index": 6,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_014",
+   "index": 2,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_016",
+   "index": 25,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_016",
+   "index": 23,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_018",
+   "index": 30,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_018",
+   "index": 14,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_024",
+   "index": 4,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_028",
+   "index": 14,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_028",
+   "index": 2,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_057",
+   "index": 14,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_057",
+   "index": 18,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_071",
+   "index": 19,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_071",
+   "index": 8,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_072",
+   "index": 22,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_072",
+   "index": 2,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_074",
+   "index": 2,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_074",
+   "index": 20,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_075",
+   "index": 12,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_075",
+   "index": 16,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_098",
+   "index": 2,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_098",
+   "index": 14,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_099",
+   "index": 2,
+   "role": "control",
+   "split": "evolve",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_099",
+   "index": 14,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_101",
+   "index": 2,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  },
+  {
+   "run": "gold-docs",
+   "retrieval": "golden_retrieval",
+   "task": "task_101",
+   "index": 14,
+   "role": "control",
+   "split": "validate",
+   "kind": "control"
+  }
+ ],
+ "dropped": []
+}

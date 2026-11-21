@@ -1,0 +1,4 @@
+{
+ "_status": "seed: self-check alone; replay only",
+ "review": "[self-check before this reply is sent; not from the customer] Re-read the customer's messages and your draft above. List each thing the customer asked for and what your draft does with it: does it now, declines it, changes it, or makes it wait on something. For anything declined, changed, left out or made conditional, name the policy line, the internal-procedure condition or the tool error that requires it. If you cannot name one, do what was asked instead. Then send the final reply to the customer, or make the tool calls that carry it out. Do not mention this check."
+}

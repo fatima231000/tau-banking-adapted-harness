@@ -1,5 +1,9 @@
 # τ-Banking harness architecture: baseline surface
 
+> **Read [REPORT.md](REPORT.md) first.** It is the current account: what was diagnosed, what the
+> harness is now, and the DEV results. Section 5 below describes the v6 gate design, which was
+> later switched off.
+
 What the baseline agent operates inside: the loop, the tools, the knowledge base.
 Paths are relative to the repo root. Inventory generated from code at `19f13ea3`.
 
