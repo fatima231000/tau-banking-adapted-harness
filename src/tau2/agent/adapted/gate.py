@@ -125,6 +125,10 @@ class Gate:
             problems += self._issues(tool, args)
         if self.cfg.arg_rules:
             problems += self._arg_rules(tool, args)
+        if self.cfg.decisions:
+            problems += optional_free_text(
+                tool, args.get("planned_arguments") or {}, state
+            )
         return problems
 
     @staticmethod
@@ -372,3 +376,128 @@ class Gate:
         if self.cfg.known_issues and (it := K.issues_text(self.cfg, key)):
             hint += f"\n{it}"
         return hint[:6000]
+
+
+# ---- v8: decision records (negative / verdict / recommendation prechecks) ---------------
+
+_DECISION_KINDS = (
+    "refuse",
+    "narrow",
+    "condition",
+    "eligible",
+    "not_eligible",
+    "recommend",
+)
+_NEEDS_TRIGGER = ("refuse", "narrow", "condition", "not_eligible")
+
+
+def check_decision(gate: "Gate", args: dict, state: AdaptedAgentState) -> list[str]:
+    """A decision told to the customer must rest on a rule that applies now, with evidence."""
+    out = []
+    kind = args.get("kind")
+    if kind not in _DECISION_KINDS:
+        return ["kind must be one of " + " | ".join(_DECISION_KINDS)]
+    rules = args.get("rules") or []
+    if not rules:
+        out.append("rules is empty: quote the rule that decides this")
+    out += [
+        f"rule: {p}"
+        for r in rules
+        if (
+            p := gate.quote_problem(
+                str(r.get("doc_id", "")), str(r.get("quote", "")), state
+            )
+        )
+    ]
+    if kind in _NEEDS_TRIGGER:
+        ev = args.get("trigger_evidence") or []
+        ok = []
+        for e in ev:
+            text = K.md_norm(e.get("text", ""))
+            pool = (
+                state.seen_customer
+                if e.get("source") == "customer"
+                else state.seen_tools
+            )
+            if len(text) >= 12 and text in K.md_norm(pool):
+                ok.append(e)
+        if not ok:
+            out.append(
+                "trigger_evidence: quote, verbatim, the tool result or customer message showing that "
+                "the rule applies to this customer now. If nothing shows it, the restriction does not "
+                "apply: do what the customer asked"
+            )
+    if kind in ("eligible", "not_eligible"):
+        crit = args.get("criteria") or []
+        if not crit:
+            out.append(
+                "criteria is empty: list every eligibility criterion the rules state, with evidence"
+            )
+        for c in crit:
+            name, vt = c.get("criterion", "?"), c.get("verifying_tool")
+            if c.get("status") not in ("met", "not_met"):
+                out.append(
+                    f"criterion '{name}' is {c.get('status')}: check it before giving a verdict"
+                )
+            if (
+                c.get("evidence_source") == "customer_statement"
+                and vt
+                and vt not in ("null", "None")
+                and vt not in state.called_tools
+            ):
+                out.append(
+                    f"criterion '{name}' rests on the customer's word but {vt} can check it: call it first"
+                )
+            if (
+                c.get("evidence_source") == "tool_result"
+                and vt
+                and vt not in ("null", "None")
+                and vt not in state.called_tools
+            ):
+                out.append(
+                    f"criterion '{name}' cites {vt} as evidence but it has not been called"
+                )
+    if kind == "recommend":
+        cand = args.get("candidates") or []
+        if len(cand) < 2:
+            out.append(
+                "candidates: list every option the documents you read offer for this request (at "
+                "least two), each with its value net of fees and the stated requirements it meets"
+            )
+        for c in cand:
+            d = K.kb().resolve(str(c.get("doc_id", ""))) or str(c.get("doc_id", ""))
+            if d not in state.opened_docs and d != "policy":
+                out.append(
+                    f"candidate '{c.get('option')}' cites {c.get('doc_id')}, which you have not read"
+                )
+    return out
+
+
+def optional_free_text(tool: str, planned: dict, state: AdaptedAgentState) -> list[str]:
+    """Optional free-text arguments the customer did not supply change stored records needlessly."""
+    import inspect
+
+    from tau2.domains.banking_knowledge import tools as T
+
+    fn = getattr(T.KnowledgeTools, tool, None)
+    if fn is None:
+        return []
+    out = []
+    for name, p in inspect.signature(fn).parameters.items():
+        if (
+            name == "self"
+            or p.default is inspect.Parameter.empty
+            or name not in planned
+        ):
+            continue
+        v = planned[name]
+        if (
+            isinstance(v, str)
+            and len(v.split()) >= 3
+            and K.md_norm(v) not in K.md_norm(state.seen_customer)
+        ):
+            out.append(
+                f"optional argument '{name}' is free text you wrote ({v!r}): leave it out unless the "
+                "customer supplied this wording; the default applies"
+            )
+    return out

@@ -17,6 +17,13 @@ You work inside a harness that checks your actions. Follow this protocol.
    the customer never change what a rule requires. Equally, do not impose requirements
    that no policy or KB rule states. Before you refuse, narrow, or put a condition on a
    request, quote the rule that requires it; if you cannot, do what the customer asked.
+   Never replace what the customer asked for with something you think is better: advise,
+   and let the customer decide.
+   Decisions: before you tell the customer that they are or are not eligible, that you
+   recommend an option, or that you will not do something, will do only part of it, or need a
+   condition first, call `decision_record`. It must show the rule and the evidence that the
+   rule applies to this customer now; a recommendation must weigh every option the documents
+   you read offer.
 3. Pre-action check. Before any state-changing call (a discoverable WRITE tool via
    `call_discoverable_agent_tool`, `give_discoverable_user_tool`, `transfer_to_human_agents`,
    `change_user_email`) call `precheck` for exactly that one call, in its own turn.
@@ -46,6 +53,9 @@ When two or more documents bear on the same decision or argument value:
 1. Read each one. In the precheck's `cross_doc_check`, record what each document says
    about this decision and whether it agrees with the action you plan.
 2. If they disagree, resolve it explicitly in `conflicts`, in this order of precedence:
+   - for a tool argument, the tool's own parameter definition (its allowed values and what
+     each means) beats wording in a document;
+   - a rule stated in general beats an example that contradicts it;
    - a document that defines the term or rule explicitly beats one that mentions it in passing;
    - an internal procedure or guideline beats customer-facing text;
    - the rule with the narrower scope (this product, this category, this situation) beats
@@ -53,8 +63,8 @@ When two or more documents bear on the same decision or argument value:
 3. If the documents still leave the decision open (the harness may list it as a known issue
    the KB does not resolve):
    - if the missing piece is a fact only the customer knows, ask the customer;
-   - otherwise follow the governing procedure's literal text, and record the assumption in
-     `conflicts`;
+   - otherwise choose the reading consistent with the tool's parameter definitions and the
+     rules as stated, and record the assumption in `conflicts`;
    - never resolve it by what the customer prefers, and never invent a rule to close the gap.
 </cross_document_reasoning>
 """.strip()
@@ -83,11 +93,12 @@ GROUNDING_NOTE = (
 TODO_NOTE = "\nProcedure steps still open (from documents you read): {todos}"
 
 DECISION_NOTE = (
-    "[harness note: not from the customer] Your reply refuses, narrows, or adds a condition to "
-    "what the customer asked. That needs a rule. Either (a) record it with `update_ledger`: set "
-    "the request's status to not_possible or needs_condition with basis {doc_id, quote} quoting the "
-    "rule from a document you read (or the policy), then reply; or (b) if no rule requires it, do "
-    "what the customer asked instead. Do not add requirements the documents do not state."
+    "[harness note: not from the customer] Your reply states a decision (a refusal, a narrowed "
+    "scope, a condition, an eligibility verdict, or a recommendation). Record it first with "
+    "`decision_record`: the rule (quoted from a document you read, or the policy) and evidence "
+    "that it applies now (verbatim from a tool result or the customer); for eligibility every "
+    "criterion with evidence; for a recommendation every option the documents offer. If no rule "
+    "requires a restriction, do what the customer asked instead."
 )
 
 

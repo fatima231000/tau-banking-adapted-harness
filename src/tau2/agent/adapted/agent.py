@@ -18,10 +18,11 @@ from loguru import logger
 from tau2.agent.adapted import kb as K
 from tau2.agent.adapted.config import HarnessConfig
 from tau2.agent.adapted.context import AdaptedAgentState, ContextBuilder
-from tau2.agent.adapted.gate import Gate, gated_key
+from tau2.agent.adapted.gate import Gate, check_decision, gated_key
 from tau2.agent.adapted.prompts import DECISION_NOTE, build_system_prompt
 from tau2.agent.adapted.virtual_tools import (
     VIRTUAL_TOOLS,
+    decision_record,
     kb_related,
     kb_search,
     precheck,
@@ -37,11 +38,19 @@ from tau2.data_model.message import (
 from tau2.environment.tool import Tool, as_tool
 from tau2.utils.llm_utils import generate
 
-# Text that refuses, narrows, or adds a condition to what the customer asked.
+# Text that states a decision: refuses, narrows, adds a condition, gives a verdict, recommends.
 _RESTRICTS = re.compile(
-    r"\b(unable to|can(?:no|')t (?:help|do|process|provide|give|issue|open|close|offer|approve|file|send|share|update)"
+    r"\b(unable to|can(?:no|')t (?:help|do|process|provide|give|issue|open|close|offer|approve|file|"
+    r"send|share|update|transfer|change|apply|add|remove|dispute|refund|credit|waive)"
     r"|not (?:eligible|able to|possible|permitted|allowed)|(?:need|have) to (?:first )?verify"
-    r"|must (?:first )?(?:verify|confirm|provide)|before I can|won't be able|I'm not able)\b",
+    r"|must (?:first )?(?:verify|confirm|provide)|before I can|won't be able|I'm not able"
+    r"|(?:nothing|no action) (?:needs|is needed)|doesn't (?:need|qualify|apply)|instead of)\b",
+    re.I,
+)
+_VERDICT = re.compile(
+    r"\b(you(?:'re| are) (?:eligible|qualified)|you qualify|qualifies|you can (?:submit|open|apply|get|"
+    r"use|have)|(?:I|I'd|I would) recommend|my recommendation|best (?:option|choice|fit|match)|"
+    r"the right (?:account|card|option) for you)\b",
     re.I,
 )
 
@@ -66,6 +75,8 @@ class AdaptedLLMAgent(LLMAgent):
             virtual.append(as_tool(kb_related))
         if self.cfg.kb_search:
             virtual.append(as_tool(kb_search))
+        if self.cfg.decisions:
+            virtual.append(as_tool(decision_record))
         super().__init__(
             tools=list(tools) + virtual,
             domain_policy=domain_policy,
@@ -184,7 +195,10 @@ class AdaptedLLMAgent(LLMAgent):
                 and not calls
                 and not state.bounced
                 and not state.turn_grounded
-                and _RESTRICTS.search(out.content or "")
+                and (
+                    _RESTRICTS.search(out.content or "")
+                    or (self.cfg.decisions and _VERDICT.search(out.content or ""))
+                )
             ):
                 state.bounced = True
                 state.messages.append(out)
@@ -266,14 +280,56 @@ class AdaptedLLMAgent(LLMAgent):
                 return "PRECHECK FAILED:\n- " + "\n- ".join(problems)
             state.passed_prechecks.append(tc.arguments)
             return f"PRECHECK PASSED for {tc.arguments.get('action_tool')}. Make that call now, with exactly the planned arguments."
+        if tc.name == "decision_record":
+            problems = check_decision(self.gate, tc.arguments, state)
+            events.append(
+                {"type": "decision_record", "args": tc.arguments, "problems": problems}
+            )
+            if problems:
+                return "DECISION RECORD FAILED:\n- " + "\n- ".join(problems)
+            state.turn_grounded = True
+            return "DECISION RECORDED. You may now tell the customer, citing the rule in plain words."
         if tc.name == "update_ledger":
+            new = tc.arguments.get("requests") or []
+            problems_c = []
+            if self.cfg.decisions:
+                # Request conservation: a recorded request changes status, it never disappears.
+                key = lambda r: str(r.get("id") or r.get("description"))  # noqa: E731
+                kept = {key(r) for r in new}
+                for old in state.ledger.get("requests", []):
+                    if key(old) not in kept and old.get("status") == "open":
+                        new.append(old)
+                        problems_c.append(
+                            f"request '{old.get('description', key(old))}' was dropped; it is kept as open. "
+                            "Close it as done, declined_by_customer (with the customer's words) or "
+                            "not_possible (after a decision_record)"
+                        )
+                for r in new:
+                    st = r.get("status")
+                    if st == "declined_by_customer":
+                        q = K.md_norm(r.get("customer_quote", ""))
+                        if len(q) < 4 or q not in K.md_norm(state.seen_customer):
+                            r["status"] = "open"
+                            problems_c.append(
+                                f"request '{r.get('description')}' marked declined_by_customer without "
+                                "the customer's own words (customer_quote); kept open"
+                            )
+                    if (
+                        st in ("not_possible", "needs_condition")
+                        and not state.turn_grounded
+                    ):
+                        r["status"] = "open"
+                        problems_c.append(
+                            f"request '{r.get('description')}' marked {st} without a passed "
+                            "decision_record this turn; kept open"
+                        )
             state.ledger = {
-                "requests": tc.arguments.get("requests") or [],
+                "requests": new,
                 "customer_claims": tc.arguments.get("customer_claims") or [],
             }
             # A restriction (refusal or added condition) must rest on a rule the model has read.
-            problems = []
-            for r in state.ledger["requests"]:
+            problems = list(problems_c)
+            for r in [] if self.cfg.decisions else state.ledger["requests"]:
                 if r.get("status") not in ("not_possible", "needs_condition"):
                     continue
                 b = r.get("basis") or {}

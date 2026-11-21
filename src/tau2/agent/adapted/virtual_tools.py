@@ -71,8 +71,10 @@ def update_ledger(requests: list[dict], customer_claims: list[dict] = None) -> s
             {"id": str, "description": str,
              "status": "open" | "done" | "declined_by_customer" | "not_possible" |
                        "needs_condition",
-             "basis": {"doc_id": str, "quote": str}  (required for not_possible and
-                       needs_condition: the rule that requires the restriction)}.
+             "customer_quote": str  (required for declined_by_customer: the customer's own
+                       words declining it)}.
+            A request, once recorded, stays in the ledger: change its status, never drop it.
+            not_possible and needs_condition need a decision_record first.
         customer_claims: Facts the customer stated. Each item: {"claim": str,
             "status": "unverified" | "verified" | "contradicted", "how": str}.
 
@@ -116,4 +118,43 @@ def kb_search(query: str, k: int = 8) -> str:
     return ""
 
 
-VIRTUAL_TOOLS = {"precheck", "update_ledger", "kb_related", "kb_search"}
+def decision_record(
+    kind: str,
+    request: str,
+    rules: list[dict],
+    trigger_evidence: list[dict] = None,
+    criteria: list[dict] = None,
+    candidates: list[dict] = None,
+) -> str:
+    """Record a decision BEFORE you tell it to the customer. Required for: refusing or narrowing a
+    request, adding a condition to it, giving an eligibility verdict, or recommending an option.
+
+    Args:
+        kind: "refuse" | "narrow" | "condition" | "eligible" | "not_eligible" | "recommend".
+        request: The customer request this decision is about (as in your ledger).
+        rules: Rules that decide it. Each item: {"doc_id": "<document id, or 'policy'>",
+            "quote": "<exact text>"}.
+        trigger_evidence: For refuse / narrow / condition / not_eligible: why the rule applies NOW.
+            Each item: {"source": "tool_result" | "customer", "text": "<verbatim text from a tool
+            result or the customer's message>"}.
+        criteria: For eligible / not_eligible: every eligibility criterion the rules state. Each
+            item: {"criterion": str, "status": "met" | "not_met", "evidence_source":
+            "tool_result" | "kb_doc" | "customer_statement", "evidence": str,
+            "verifying_tool": "<tool that can confirm it, or null>"}.
+        candidates: For recommend: every option from the documents you read that could satisfy
+            the request. Each item: {"option": str, "doc_id": str, "assessment": "<value net of
+            fees, and which stated requirements it meets or misses>"}.
+
+    Returns:
+        "DECISION RECORDED" or the problems to fix first.
+    """
+    return ""
+
+
+VIRTUAL_TOOLS = {
+    "precheck",
+    "update_ledger",
+    "kb_related",
+    "kb_search",
+    "decision_record",
+}

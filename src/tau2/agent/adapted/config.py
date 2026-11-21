@@ -29,7 +29,10 @@ class HarnessConfig:
     conflicts: bool = True  # cross-document consistency check in the precheck
     index: bool = True  # kb_related connected-document lookup
     kb_search: bool = True  # harness BM25 search with snippets (hybrid with the shell)
-    decision_gate: bool = True  # refusals / added conditions need a quoted rule
+    decision_gate: bool = True  # bounce text that states a decision without a record
+    decisions: bool = (
+        True  # decision_record + request conservation + optional free-text check
+    )
     early_checklist: bool = True  # show contract + known issues at unlock time
     mix_virtual: bool = True  # harness tools may share a turn with real calls
     cache: bool = True  # prompt caching on the agent's model calls
@@ -83,6 +86,7 @@ class HarnessConfig:
             index=_flag("HARNESS_INDEX", d.index),
             kb_search=_flag("HARNESS_KBSEARCH", d.kb_search),
             decision_gate=_flag("HARNESS_DECISION", d.decision_gate),
+            decisions=_flag("HARNESS_DECISIONS", d.decisions),
             early_checklist=_flag("HARNESS_EARLY", d.early_checklist),
             mix_virtual=_flag("HARNESS_MIX", d.mix_virtual),
             cache=_flag("HARNESS_CACHE", d.cache),
@@ -108,6 +112,7 @@ class HarnessConfig:
                 "index",
                 "kb_search",
                 "decision_gate",
+                "decisions",
                 "early_checklist",
                 "mix_virtual",
                 "cache",
