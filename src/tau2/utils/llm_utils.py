@@ -204,6 +204,21 @@ def _input_audio_format(message: UserMessage) -> str:
     return "wav"
 
 
+def _attach_thinking_blocks(
+    messages: list[Message], litellm_messages: list[dict]
+) -> None:
+    """Attach stored provider thinking blocks to their assistant messages (1:1 message lists only)."""
+    if len(messages) != len(litellm_messages):
+        return
+    for message, payload in zip(messages, litellm_messages):
+        if not isinstance(message, AssistantMessage) or not message.raw_data:
+            continue
+        choices = message.raw_data.get("choices") or [{}]
+        blocks = (choices[0].get("message") or {}).get("thinking_blocks")
+        if blocks:
+            payload["thinking_blocks"] = blocks
+
+
 def to_litellm_messages(messages: list[Message]) -> list[dict]:
     """
     Convert a list of Tau2 messages to a list of litellm messages.
@@ -639,8 +654,13 @@ def _generate_once(
         if model.split("/")[-1].startswith("gpt-5")
         else model
     )
+    # Opt-in (default off): send each past assistant turn's own thinking blocks back, so the
+    # model keeps its reasoning across turns instead of re-deriving it from visible text.
+    replay_thinking = bool(kwargs.pop("replay_thinking", False))
     _apply_anthropic_adaptive_thinking(model, kwargs)
     litellm_messages = to_litellm_messages(messages)
+    if replay_thinking:
+        _attach_thinking_blocks(messages, litellm_messages)
     if api_model.startswith("openai/responses/"):
         litellm_messages = _keep_non_leading_system_messages_positional(
             litellm_messages

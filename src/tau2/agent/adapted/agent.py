@@ -108,6 +108,8 @@ class AdaptedLLMAgent(LLMAgent):
 
     def _llm(self, state: AdaptedAgentState) -> AssistantMessage:
         extra = {}
+        if self.cfg.replay_thinking:
+            extra["replay_thinking"] = True
         if self.cfg.cache:
             # Cache the system prompt and the conversation so far: harness turns re-send the same prefix.
             extra["cache_control_injection_points"] = [

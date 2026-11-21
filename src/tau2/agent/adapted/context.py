@@ -12,7 +12,7 @@ from copy import deepcopy
 
 from tau2.agent.adapted import kb as K
 from tau2.agent.adapted.config import HarnessConfig
-from tau2.agent.adapted.prompts import GROUNDING_NOTE, TODO_NOTE
+from tau2.agent.adapted.prompts import GROUNDING_NOTE, STATE_NOTE, TODO_NOTE
 from tau2.agent.llm_agent import LLMAgentState
 from tau2.data_model.message import AssistantMessage, ToolMessage, UserMessage
 
@@ -115,6 +115,12 @@ class ContextBuilder:
         state.seen_customer += "\n" + text
         if _HUMAN_ASK.search(text):
             state.human_requests += 1
+        if self.cfg.enable and state.human_requests >= 1 and text.strip():
+            msg = deepcopy(
+                msg
+            )  # a fact the model cannot count reliably across a long conversation
+            msg.content = f"{text}\n\n{STATE_NOTE.format(n=state.human_requests)}"
+            return msg
         if self.cfg.ledger and text.strip():
             msg = deepcopy(msg)
             open_items = [

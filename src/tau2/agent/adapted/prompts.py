@@ -121,6 +121,42 @@ How to work:
 """.strip()
 
 
+SEARCH_LINE = (
+    "`kb_search(query)` ranks every knowledge-base document by keywords and shows the matching "
+    "passage; use it to find the governing document, then read that document itself."
+)
+
+WORKING_METHOD = """
+<working_method>
+Reasoning. Your earlier reasoning in this conversation is kept: build on it rather than starting
+over. Before you act, be clear on what the customer asked for (every request), what you know and
+how you know it, what is still unknown, which rule applies, and what the action will change.
+
+Grounding. Act only on a rule you have read in this conversation, in the policy or a
+knowledge-base document. {search} When you explain a decision, say what the rule says.
+
+Verification. Look a fact up before you state it (eligibility, status, balances, dates): what the
+customer says is a claim until a tool confirms it, whenever a tool can. After a state-changing
+call, check that the result shows what you intended. Before you wrap up, go through every request
+the customer made and confirm each one was done, was declined by the customer, or is not possible
+under a rule you can name.
+
+Conflicts. When documents disagree or leave a gap: a tool's own parameter definition beats
+document wording; a rule saying something must happen beats one saying it may; an explicit
+definition beats a passing mention or an example; an internal procedure beats customer-facing
+guidance; the rule written for this exact situation beats the general one. If it is still open,
+ask the customer when only they can know the fact; otherwise take the reading that fits the
+tool's definitions, and say which reading you took.
+
+Decisions. Do what the customer asked. Advice in a document is something to tell the customer,
+not a reason to do something different. Do not add a requirement that no rule states, and do not
+refuse without a rule. Do not hand off to a human while a procedure can still resolve the issue.
+</working_method>
+""".strip()
+
+STATE_NOTE = "[state, not from the customer: the customer has asked for a human agent {n} time(s) so far]"
+
+
 def build_system_prompt(base: str, cfg: HarnessConfig) -> str:
     """Base agent prompt (instructions + domain policy) followed by the enabled harness sections."""
     parts = [base]
@@ -132,6 +168,12 @@ def build_system_prompt(base: str, cfg: HarnessConfig) -> str:
         parts.append(INDEX)
     if cfg.skills:
         parts.append(SKILLS)
+    if cfg.enable:
+        parts.append(
+            WORKING_METHOD
+            if not cfg.kb_search
+            else WORKING_METHOD.replace("{search}", SEARCH_LINE)
+        )
     return "\n".join(parts)
 
 

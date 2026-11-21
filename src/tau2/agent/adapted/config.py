@@ -79,6 +79,12 @@ class HarnessConfig:
     lean_gate: bool = False  # form-free check: required lookups before a write; request count before a transfer
     skills_path: str = field(default=os.path.join(_KB_INDEX_DIR, "out", "skills.json"))
 
+    # Capability-enabling harness: no gates, nothing compiled from the KB.
+    enable: bool = (
+        False  # working-method instructions + one state line on customer turns
+    )
+    replay_thinking: bool = False  # send the model's own thinking blocks back each turn
+
     @classmethod
     def preset(cls, name: str) -> "HarnessConfig":
         """Named configurations. "lean": cards + lean check + caching, every form-based gate off."""
@@ -99,6 +105,26 @@ class HarnessConfig:
                 checker=False,
                 skills=True,
                 lean_gate=True,
+            )
+        if name == "enable":
+            return cls(
+                gate=False,
+                ledger=False,
+                derived=False,
+                contracts=False,
+                conflicts=False,
+                index=False,
+                kb_search=True,
+                decision_gate=False,
+                decisions=False,
+                early_checklist=False,
+                workflows=False,
+                known_issues=False,
+                checker=False,
+                skills=False,
+                lean_gate=False,
+                enable=True,
+                replay_thinking=True,
             )
         return cls()
 
@@ -128,6 +154,8 @@ class HarnessConfig:
             index_path=os.environ.get("HARNESS_INDEX_PATH", d.index_path),
             rule_cards_path=os.environ.get("HARNESS_RULECARDS_PATH", d.rule_cards_path),
             skills=_flag("HARNESS_SKILLS", d.skills),
+            enable=_flag("HARNESS_ENABLE", d.enable),
+            replay_thinking=_flag("HARNESS_REPLAY_THINKING", d.replay_thinking),
             lean_gate=_flag("HARNESS_LEANGATE", d.lean_gate),
             skills_path=os.environ.get("HARNESS_SKILLS_PATH", d.skills_path),
         )
@@ -136,6 +164,8 @@ class HarnessConfig:
         return {
             k: getattr(self, k)
             for k in (
+                "enable",
+                "replay_thinking",
                 "skills",
                 "lean_gate",
                 "gate",
