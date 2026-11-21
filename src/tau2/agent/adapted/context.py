@@ -45,6 +45,11 @@ class AdaptedAgentState(LLMAgentState):
     rejections: dict = {}
     call_names: dict = {}  # tool_call id -> (name, inner name, command)
     todos: list[dict] = []  # procedure steps from workflow docs the model has read
+    pending_virtual: list = []  # harness-tool results waiting to join the next tool-result block
+    turn_grounded: bool = (
+        False  # a restriction this turn was recorded with a verified rule
+    )
+    bounced: bool = False  # decision gate already bounced once this turn
 
 
 def add_workflow(cfg: HarnessConfig, doc: str, state: "AdaptedAgentState") -> None:
@@ -177,6 +182,12 @@ class ContextBuilder:
                 )
         if ct := K.cards_text(self.cfg, tool):
             notes.append(f"[harness] {ct}")
+        if self.cfg.early_checklist:
+            # Show the whole checklist now, so the first precheck can pass.
+            if self.cfg.contracts and (c := K.contract_text(self.cfg, tool)):
+                notes.append(f"[harness] {c}")
+            if self.cfg.known_issues and (it := K.issues_text(self.cfg, tool)):
+                notes.append(f"[harness] {it}")
         if not notes:
             return msg
         msg = deepcopy(msg)

@@ -9,6 +9,8 @@ assistant message finally returned to the orchestrator.
 from __future__ import annotations
 
 import json
+import re
+from copy import deepcopy
 from typing import Optional
 
 from loguru import logger
@@ -17,7 +19,7 @@ from tau2.agent.adapted import kb as K
 from tau2.agent.adapted.config import HarnessConfig
 from tau2.agent.adapted.context import AdaptedAgentState, ContextBuilder
 from tau2.agent.adapted.gate import Gate, gated_key
-from tau2.agent.adapted.prompts import build_system_prompt
+from tau2.agent.adapted.prompts import DECISION_NOTE, build_system_prompt
 from tau2.agent.adapted.virtual_tools import (
     VIRTUAL_TOOLS,
     kb_related,
@@ -26,9 +28,22 @@ from tau2.agent.adapted.virtual_tools import (
     update_ledger,
 )
 from tau2.agent.llm_agent import LLMAgent
-from tau2.data_model.message import AssistantMessage, MultiToolMessage, ToolMessage
+from tau2.data_model.message import (
+    AssistantMessage,
+    MultiToolMessage,
+    ToolMessage,
+    UserMessage,
+)
 from tau2.environment.tool import Tool, as_tool
 from tau2.utils.llm_utils import generate
+
+# Text that refuses, narrows, or adds a condition to what the customer asked.
+_RESTRICTS = re.compile(
+    r"\b(unable to|can(?:no|')t (?:help|do|process|provide|give|issue|open|close|offer|approve|file|send|share|update)"
+    r"|not (?:eligible|able to|possible|permitted|allowed)|(?:need|have) to (?:first )?verify"
+    r"|must (?:first )?(?:verify|confirm|provide)|before I can|won't be able|I'm not able)\b",
+    re.I,
+)
 
 
 class AdaptedLLMAgent(LLMAgent):
@@ -72,20 +87,34 @@ class AdaptedLLMAgent(LLMAgent):
         )
 
     def _llm(self, state: AdaptedAgentState) -> AssistantMessage:
+        extra = {}
+        if self.cfg.cache:
+            # Cache the system prompt and the conversation so far: harness turns re-send the same prefix.
+            extra["cache_control_injection_points"] = [
+                {"location": "message", "role": "system"},
+                {"location": "message", "index": -1},
+            ]
         return generate(
             model=self.llm,
             tools=self.tools,
             messages=state.system_messages + state.messages,
             call_name="agent_response",
             **self.llm_args,
+            **extra,
         )
 
     def generate_next_message(self, message, state: AdaptedAgentState):
-        for m in (
+        incoming = (
             message.tool_messages
             if isinstance(message, MultiToolMessage)
             else [message]
-        ):
+        )
+        if isinstance(message, UserMessage):
+            state.turn_grounded, state.bounced = False, False
+        # Results of harness tools that shared a turn with real calls go in the same tool-result block.
+        state.messages.extend(state.pending_virtual)
+        state.pending_virtual = []
+        for m in incoming:
             state.messages.append(self.context.incoming(m, state))
 
         events, cost, usage = [], 0.0, {"prompt_tokens": 0, "completion_tokens": 0}
@@ -96,6 +125,75 @@ class AdaptedLLMAgent(LLMAgent):
                 usage[k] += (out.usage or {}).get(k, 0) or 0
             calls = out.tool_calls or []
             virtual = [tc for tc in calls if tc.name in VIRTUAL_TOOLS]
+            real = [tc for tc in calls if tc.name not in VIRTUAL_TOOLS]
+
+            # Harness tools (not precheck) mixed with real calls: answer them now, send the rest.
+            if (
+                self.cfg.mix_virtual
+                and virtual
+                and real
+                and not any(tc.name == "precheck" for tc in virtual)
+            ):
+                blocked, matched, overrides = (
+                    self._screen(real, state) if self.cfg.gate else ([], {}, [])
+                )
+                if not blocked:
+                    state.messages.append(out)
+                    for tc in virtual:
+                        reply = self._answer(tc, [], state, events)
+                        state.pending_virtual.append(
+                            ToolMessage(
+                                id=tc.id,
+                                role="tool",
+                                content=reply,
+                                requestor="assistant",
+                            )
+                        )
+                    for idx in sorted(matched.values(), reverse=True):
+                        events.append(
+                            {
+                                "type": "gate_pass",
+                                "action": state.passed_prechecks[idx].get(
+                                    "action_tool"
+                                ),
+                            }
+                        )
+                        state.passed_prechecks.pop(idx)
+                    events += [
+                        {"type": "gate_override", "action": k} for k in overrides
+                    ]
+                    sent = deepcopy(out)
+                    sent.tool_calls = real
+                    self.context.outgoing(sent, state)
+                    sent.cost, sent.usage = cost, usage
+                    sent.raw_data = {
+                        **(out.raw_data or {}),
+                        "harness": events
+                        + [
+                            {
+                                "type": "mixed_turn",
+                                "virtual": [tc.name for tc in virtual],
+                            }
+                        ],
+                    }
+                    return sent, state
+
+            # Decision gate: a refusal or added condition needs a rule behind it (one bounce per turn).
+            if (
+                self.cfg.decision_gate
+                and not calls
+                and not state.bounced
+                and not state.turn_grounded
+                and _RESTRICTS.search(out.content or "")
+            ):
+                state.bounced = True
+                state.messages.append(out)
+                state.messages.append(UserMessage(role="user", content=DECISION_NOTE))
+                events.append(
+                    {"type": "decision_bounce", "text": (out.content or "")[:300]}
+                )
+                continue
+
             blocked, matched, overrides = (
                 self._screen(calls, state)
                 if (self.cfg.gate and not virtual)
@@ -173,8 +271,36 @@ class AdaptedLLMAgent(LLMAgent):
                 "requests": tc.arguments.get("requests") or [],
                 "customer_claims": tc.arguments.get("customer_claims") or [],
             }
-            events.append({"type": "ledger", "ledger": state.ledger})
-            return "Ledger stored:\n" + json.dumps(state.ledger, indent=1)[:3000]
+            # A restriction (refusal or added condition) must rest on a rule the model has read.
+            problems = []
+            for r in state.ledger["requests"]:
+                if r.get("status") not in ("not_possible", "needs_condition"):
+                    continue
+                b = r.get("basis") or {}
+                p = (
+                    self.gate.quote_problem(
+                        str(b.get("doc_id", "")), str(b.get("quote", "")), state
+                    )
+                    if b
+                    else "no basis given"
+                )
+                if p:
+                    problems.append(
+                        f"request '{r.get('description', r.get('id'))}' is marked {r.get('status')} but its rule does not check out ({p})"
+                    )
+                else:
+                    state.turn_grounded = True
+            events.append(
+                {"type": "ledger", "ledger": state.ledger, "problems": problems}
+            )
+            text = "Ledger stored:\n" + json.dumps(state.ledger, indent=1)[:3000]
+            if problems:
+                text += (
+                    "\nRESTRICTIONS WITHOUT A VERIFIED RULE:\n- "
+                    + "\n- ".join(problems)
+                    + "\nQuote the rule from a document you read, or do what the customer asked."
+                )
+            return text
         if tc.name == "kb_search":
             k = int(tc.arguments.get("k") or 8)
             text, shown = K.search_text(

@@ -69,7 +69,10 @@ def update_ledger(requests: list[dict], customer_claims: list[dict] = None) -> s
     Args:
         requests: Every request the customer has made in this conversation. Each item:
             {"id": str, "description": str,
-             "status": "open" | "done" | "declined_by_customer" | "not_possible"}.
+             "status": "open" | "done" | "declined_by_customer" | "not_possible" |
+                       "needs_condition",
+             "basis": {"doc_id": str, "quote": str}  (required for not_possible and
+                       needs_condition: the rule that requires the restriction)}.
         customer_claims: Facts the customer stated. Each item: {"claim": str,
             "status": "unverified" | "verified" | "contradicted", "how": str}.
 

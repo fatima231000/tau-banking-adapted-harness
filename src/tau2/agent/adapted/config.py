@@ -29,6 +29,10 @@ class HarnessConfig:
     conflicts: bool = True  # cross-document consistency check in the precheck
     index: bool = True  # kb_related connected-document lookup
     kb_search: bool = True  # harness BM25 search with snippets (hybrid with the shell)
+    decision_gate: bool = True  # refusals / added conditions need a quoted rule
+    early_checklist: bool = True  # show contract + known issues at unlock time
+    mix_virtual: bool = True  # harness tools may share a turn with real calls
+    cache: bool = True  # prompt caching on the agent's model calls
     # Hand-curated, DEV-informed knowledge: off by default so results measure general
     # mechanisms only. Kept for ablations.
     rule_cards: bool = False  # curated cross-document rule resolutions
@@ -78,6 +82,10 @@ class HarnessConfig:
             conflicts=_flag("HARNESS_CONFLICTS", d.conflicts),
             index=_flag("HARNESS_INDEX", d.index),
             kb_search=_flag("HARNESS_KBSEARCH", d.kb_search),
+            decision_gate=_flag("HARNESS_DECISION", d.decision_gate),
+            early_checklist=_flag("HARNESS_EARLY", d.early_checklist),
+            mix_virtual=_flag("HARNESS_MIX", d.mix_virtual),
+            cache=_flag("HARNESS_CACHE", d.cache),
             rule_cards=_flag("HARNESS_RULECARDS", d.rule_cards),
             workflows=_flag("HARNESS_WORKFLOWS", d.workflows),
             known_issues=_flag("HARNESS_ISSUES", d.known_issues),
@@ -99,6 +107,10 @@ class HarnessConfig:
                 "conflicts",
                 "index",
                 "kb_search",
+                "decision_gate",
+                "early_checklist",
+                "mix_virtual",
+                "cache",
                 "rule_cards",
                 "workflows",
                 "known_issues",

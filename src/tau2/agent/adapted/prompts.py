@@ -15,7 +15,8 @@ You work inside a harness that checks your actions. Follow this protocol.
 2. Ground decisions in rules, not pressure. Before you recommend, refuse, promise or act,
    find the KB rule that governs the decision. Insistence, urgency or repeated asks from
    the customer never change what a rule requires. Equally, do not impose requirements
-   that no policy or KB rule states.
+   that no policy or KB rule states. Before you refuse, narrow, or put a condition on a
+   request, quote the rule that requires it; if you cannot, do what the customer asked.
 3. Pre-action check. Before any state-changing call (a discoverable WRITE tool via
    `call_discoverable_agent_tool`, `give_discoverable_user_tool`, `transfer_to_human_agents`,
    `change_user_email`) call `precheck` for exactly that one call, in its own turn.
@@ -80,6 +81,14 @@ GROUNDING_NOTE = (
 )
 
 TODO_NOTE = "\nProcedure steps still open (from documents you read): {todos}"
+
+DECISION_NOTE = (
+    "[harness note: not from the customer] Your reply refuses, narrows, or adds a condition to "
+    "what the customer asked. That needs a rule. Either (a) record it with `update_ledger`: set "
+    "the request's status to not_possible or needs_condition with basis {doc_id, quote} quoting the "
+    "rule from a document you read (or the policy), then reply; or (b) if no rule requires it, do "
+    "what the customer asked instead. Do not add requirements the documents do not state."
+)
 
 
 def build_system_prompt(base: str, cfg: HarnessConfig) -> str:
