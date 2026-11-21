@@ -1,0 +1,480 @@
+# KB interconnection index: 20-doc experiment
+
+Model `claude-opus-5-5` (effort medium), tokens in/out 20017/6104. Sample = docs naming the debit-card/dispute tools, filled with BM25 neighbours (KB-only selection).
+
+## Known dependencies (from trace profiling)
+Needs: 133, matched to another doc: 55, unresolved: 78. Edges: 40 needs→provides, 10 shared-tool, 119 shared-entity.
+
+
+| link | in sample | BM25 top-3 | entity index |
+|---|---|---|---|
+| dispute filing (liability) ↔ provisional-credit guidelines | True | True | True |
+| fraud escalation ↔ dispute filing (conflicting guidance) | True | False | True |
+| card closure 'no pending transactions' ↔ the tool that shows pending transactions | True | n/a | False |
+
+## Entity-index edges (121; generic entities dropped: ['checking account', 'debit card'])
+
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - needs→provides: [general)_043 needs] Usage details for submit_interest_discrepancy_report_7294 (tool) ← [general)_044 provides] Parameter definitions for submit_interest_discrepancy_report_7294 (account_id, user_id, expected_apy, actual_apy, amount_difference) with APY format as percentage number | Parameter definitions for the discrepancy report tool.
+  - needs→provides: [general)_043 needs] Usage details for submit_interest_discrepancy_report_7294 (tool) ← [general)_044 provides] Criteria for when to submit an interest discrepancy report (missing APY boost, incorrect tier rate, missing relationship bonus, system calculation error) | Criteria for when to submit the report.
+  - needs→provides: [general)_044 needs] apply_savings_account_credit_6831 usage and parameters (tool) ← [general)_043 provides] Parameters of apply_savings_account_credit_6831 (account_id, amount > 0, credit_type enum) | Parameters of apply_savings_account_credit_6831.
+  - shared tools: ['apply_savings_account_credit_6831', 'get_all_user_accounts_by_user_id_3847', 'get_bank_account_transactions_9173', 'submit_interest_discrepancy_report_7294']
+  - shared entities: ['account id', 'apply_savings_account_credit_6831', 'backend team', 'get_all_user_accounts_by_user_id_3847', 'get_bank_account_transactions_9173', 'identity verification', 'interest discrepancy report', 'linked checking apy boost']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - needs→provides: [general)_031 needs] Debit Card Provisional Credit Guidelines (rule) ← [general)_032 provides] Conditions under which debit card provisional credit is required (60-day timely reporting, qualifying dispute categories, written statement, open checking account with no holds) | Conditions requiring debit card provisional credit.
+  - needs→provides: [general)_031 needs] Debit Card Provisional Credit Guidelines (rule) ← [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | Provisional credit deadlines.
+  - needs→provides: [general)_031 needs] Debit Card Provisional Credit Guidelines (rule) ← [general)_032 provides] Debit provisional credit amount rule: full disputed amount minus late-reporting liability ($50 or $500) | Rule for the provisional credit amount.
+  - shared entities: ['debit card dispute', 'dispute category', 'pin compromised', 'provisional credit', 'regulation e', 'written statement']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Definition of 'qualifying disputes' for provisional credit (definition) ← [general)_032 provides] List of dispute categories qualifying for required provisional credit | Lists dispute categories qualifying for provisional credit.
+  - needs→provides: [general)_032 needs] Rule for determining whether customer liability is $50 or $500 for late reporting (rule) ← [general)_037 provides] Unauthorized transaction liability tiers: $50 within 2 business days, $500 within 60 days, full liability after 60 days | Liability tiers by reporting time.
+  - needs→provides: [general)_032 needs] Regulation E details (rule) ← [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Regulation E scope.
+  - shared entities: ['dispute investigation timeline', 'documentation rights', 'provisional credit', 'regulation e']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Internal: Checking Debit Card Dispute Status**
+  - needs→provides: [general)_035 needs] Definition of what qualifies as a 'new account' for the extended 20-day provisional credit window (definition) ← [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | New account defined as open less than 30 days.
+  - needs→provides: [general)_035 needs] Definition of international/POS transactions qualifying for the 90-day investigation window (definition) ← [general)_032 provides] Investigation timeline with provisional credit: 45 business days, extended to 90 days for international, foreign POS, or new accounts | Lists international and foreign POS transactions for the extended window.
+  - needs→provides: [general)_035 needs] Dispute filing procedure and dispute category definitions (procedure) ← [general)_032 provides] List of dispute categories qualifying for required provisional credit | Lists qualifying dispute categories.
+  - shared entities: ['debit card dispute', 'dispute category', 'dispute investigation timeline', 'new account', 'provisional credit']
+- **Internal: Credit Card Retention Protocol** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [ogistics_003 needs] Procedure/tool for applying bonus points or statement credits (tool) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Statement credit procedure.
+  - needs→provides: [ogistics_003 needs] Annual fee refund procedure (procedure) ← [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Statement credit can be used for annual fee reversal.
+  - needs→provides: [ogistics_003 needs] Annual fee refund procedure (procedure) ← [general)_017 provides] Allowed reason codes: goodwill_adjustment, promotional_credit, annual_fee_reversal, late_fee_reversal, interest_charge_reversal, dispute_resolution, price_match, retention_offer, error_correction, other | annual_fee_reversal is an allowed reason code.
+  - shared entities: ['credit card account id', 'goodwill credit', 'retention offer', 'statement credit', 'user id']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_023 needs] account tier definitions and tier-based fee schedule (rule) ← [general)_029 provides] Delivery fee values by tier and shipping speed (Mid expedited $15, Premium rush $35, Elite all $0) | Gives tier-based delivery fee values.
+  - needs→provides: [general)_023 needs] account tier definitions and tier-based fee schedule (rule) ← [general)_029 provides] Design fees by tier for CLASSIC, PREMIUM, CUSTOM designs | Gives tier-based design fees.
+  - needs→provides: [general)_029 needs] order_debit_card_5739 tool specification (tool) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Ordering procedure using order_debit_card_5739.
+  - shared tools: ['order_debit_card_5739']
+  - shared entities: ['classic card design', 'custom card design fee', 'order_debit_card_5739', 'standard shipping']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_025 needs] lookup of card details (status, user_id, date_issued, pending transactions, pending refunds) (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool.
+  - needs→provides: [general)_025 needs] lookup of card details (status, user_id, date_issued, pending transactions, pending refunds) (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Defines the card fields returned by the lookup.
+  - needs→provides: [general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Close procedure.
+  - shared entities: ['card id', 'date issued', 'debit card status', 'user id']
+- **Internal: Activating a Debit Card** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_024 needs] debit_cards table lookup (issue_reason, status, expiration_date) (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool.
+  - needs→provides: [general)_024 needs] debit_cards table lookup (issue_reason, status, expiration_date) (data) ← [general)_028 provides] List of debit card fields returned and their meanings | Card fields such as issue_reason, status and expiration.
+  - needs→provides: [general)_028 needs] Mapping from issue_reason to the specific debit card activation tool (tool) ← [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Maps issue_reason to an activation tool.
+  - shared entities: ['card expiration date', 'card last 4 digits', 'debit card activation', 'issue reason']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_026 needs] Card status and ownership lookup (card_id, card status, owner) (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup returns card_id and status.
+  - needs→provides: [general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze procedure.
+  - needs→provides: [general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) ← [general)_026 provides] Unfreeze steps using unfreeze_debit_card_3893 with card_id | Unfreeze procedure.
+  - shared entities: ['card id', 'debit card closure', 'debit card status']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Retrieving Debit Card Information**
+  - needs→provides: [general)_023 needs] debit_cards table lookup (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Tool for looking up debit cards by account.
+  - needs→provides: [general)_028 needs] Procedure/tool for ordering a new debit card (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Debit card ordering procedure.
+  - needs→provides: [general)_028 needs] Rule on whether a new card may be ordered when an active or pending card exists (rule) ← [general)_023 provides] debit card eligibility requirements (checking only, verified, OPEN, 3 business days, max 1 active card, $25 minimum balance, age 18+, no pending order, US address) | Eligibility allows max 1 active card and no pending order.
+  - shared entities: ['debit card activation', 'savings account']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - needs→provides: [general)_026 needs] Debit card closure procedure for lost/stolen cards (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | close_debit_card_4721 usage with a reason parameter.
+  - needs→provides: [general)_026 needs] Debit card closure procedure for lost/stolen cards (procedure) ← [general)_025 provides] lost/stolen cards closed immediately with no cooling-off period | Lost/stolen cards are closed immediately.
+  - shared entities: ['card id', 'debit card status', 'identity verification', 'pending transactions', 'recurring subscription']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - needs→provides: [general)_044 needs] get_bank_account_transactions_9173 tool (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Usage of the transactions tool.
+  - needs→provides: [general)_044 needs] Customer account and transaction data (data) ← [general)_018 provides] Transaction record field definitions: transaction_id, account_id, date, description, amount, type, status | Defines transaction record fields.
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['account id', 'get_bank_account_transactions_9173', 'savings account']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [general)_014 needs] procedure to unlock discoverable tools (procedure) ← [general)_017 provides] Requirement to unlock tool with unlock_discoverable_agent_tool before calling via call_discoverable_agent_tool | Explains unlocking discoverable tools.
+  - needs→provides: [general)_017 needs] Dispute resolution process (procedure) ← [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Credit card dispute filing procedure.
+  - shared tools: ['call_discoverable_agent_tool']
+  - shared entities: ['call_discoverable_agent_tool', 'unlock tool', 'user id']
+- **Internal: Activating a Debit Card** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] debit card activation protocol (procedure) ← [general)_024 provides] Step-by-step debit card activation procedure | Activation procedure.
+  - needs→provides: [general)_003 needs] debit card activation protocol (procedure) ← [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Activation tool mapping.
+  - shared entities: ['card expiration date', 'card last 4 digits', 'debit card activation', 'identity verification', 'issue reason']
+- **Internal: Retrieving Debit Card Information** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] debit card lookup tool (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool.
+  - shared entities: ['card expiration date', 'card last 4 digits', 'date issued', 'debit card activation', 'freeze/unfreeze debit card', 'issue reason']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] transaction lookup via get_bank_account_transactions_9173 (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Usage of get_bank_account_transactions_9173.
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['everyonepay', 'get_bank_account_transactions_9173', 'transaction type']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) ← [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Defines the scope of Regulation E.
+  - needs→provides: [general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) ← [general)_037 provides] Investigation timelines: ~10 business days to investigate, 3 business days to report results, 1 business day to correct | Regulation E investigation timelines.
+  - shared entities: ['dispute investigation timeline', 'provisional credit']
+- **Filing a Credit Card Transaction Dispute (Internal)** ↔ **Checking User Dispute History (Internal)**
+  - needs→provides: [general)_016 needs] reason code definitions (definition) ← [general)_014 provides] allowed dispute_reason values | Allowed credit card dispute reason values.
+  - shared entities: ['card last 4 digits', 'credit card', 'credit card dispute', 'transaction id', 'user id']
+- **Internal: Activating a Debit Card** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Internal protocol for activating a pending replacement debit card (procedure) ← [general)_024 provides] Step-by-step debit card activation procedure | Step-by-step activation procedure.
+  - needs→provides: [general)_037 needs] Internal protocol for activating a pending replacement debit card (procedure) ← [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Selects the activation tool by issue_reason.
+  - shared entities: ['debit card activation', 'issue reason']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] tools to clear fraud alert, clear velocity block, and order replacement card (tool) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Order replacement card tool.
+  - needs→provides: [general)_003 needs] replacement card ordering procedure (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Card ordering procedure.
+  - shared entities: ['debit card activation', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_025 needs] transaction dispute filing procedure (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Defines how to file a debit card dispute.
+  - needs→provides: [general)_031 needs] close and reissue card tool/procedure (tool) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool.
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] freeze_debit_card_3892 usage (tool) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze steps using freeze_debit_card_3892.
+  - shared tools: ['freeze_debit_card_3892']
+  - shared entities: ['freeze_debit_card_3892', 'identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Checking Debit Card Dispute Status**
+  - needs→provides: [general)_035 needs] Dispute filing procedure and dispute category definitions (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing arguments and categories.
+  - shared entities: ['debit card dispute', 'dispute category', 'police report', 'provisional credit']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - needs→provides: [general)_039 needs] Process for handling reported unauthorized transactions/disputes (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit dispute filing procedure.
+  - needs→provides: [general)_039 needs] Process for handling reported unauthorized transactions/disputes (procedure) ← [general)_031 provides] Pre-filing requirements: verified, >= $1.00, within 60 days, open checking account, ATM ownership check | Pre-filing requirements for disputes.
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] freezing/unfreezing card protocol (procedure) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze procedure.
+  - needs→provides: [general)_003 needs] freezing/unfreezing card protocol (procedure) ← [general)_026 provides] Unfreeze steps using unfreeze_debit_card_3893 with card_id | Unfreeze procedure.
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **FAQ: Common Error Codes**
+  - needs→provides: [general)_003 needs] tools to clear fraud alert, clear velocity block, and order replacement card (tool) ← [general)_039 provides] Usage, parameters and reason codes (customer_verified, velocity_clear) for clear_debit_card_fraud_alert_4892 | Clear fraud alert/velocity tool usage.
+  - shared entities: ['bank-initiated fraud alert', 'identity verification', 'velocity block', 'velocity block auto-lift 30 minutes']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['account id', 'fee refund', 'get_bank_account_transactions_9173', 'monthly maintenance fee', 'savings account']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Dispute filing procedure/tool for Regulation E claims (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit card dispute filing tool arguments.
+  - shared entities: ['provisional credit', 'reg e liability limits', 'regulation e']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - needs→provides: [general)_017 needs] get_credit_card_accounts_by_user tool usage (tool) ← [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Usage of get_credit_card_accounts_by_user.
+  - shared tools: ['get_credit_card_accounts_by_user']
+  - shared entities: ['get_credit_card_accounts_by_user']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_029 needs] tool/procedure to retrieve all cards for the account (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Retrieves all cards for an account.
+  - shared entities: ['date issued', 'issue reason']
+- **Internal: Retrieving Debit Card Information** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Tool to look up debit card information (issue_reason, status, other cards) (tool) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool.
+  - shared entities: ['debit card activation', 'issue reason']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['dispute date', 'dispute id', 'dispute status', 'transaction id', 'user id']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['card status', 'debit card activation', 'issue reason', 'replacement debit card order', 'transfer to human agent']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - needs→provides: [general)_025 needs] debit card ordering / replacement process (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Step-by-step debit card ordering procedure.
+  - shared entities: ['identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - needs→provides: [general)_029 needs] card closure procedure and closure timestamp (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool procedure.
+  - shared entities: ['date issued']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_031 needs] close and reissue card tool/procedure (tool) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Procedure for ordering a reissued card.
+  - shared entities: ['identity verification']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - needs→provides: [general)_039 needs] Customer's debit card ID and whether an alert is customer- or bank-initiated (data) ← [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Lookup returns the debit card ID.
+  - shared entities: ['card id']
+- **Internal: Activating a Debit Card** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - needs→provides: [general)_024 needs] procedure for handling suspicious/unauthorized transactions after replacement (procedure) ← [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing for unauthorized transactions.
+  - shared entities: ['identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Lost debit card protocol (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Closing a card with reason 'lost'.
+  - shared entities: ['replacement debit card order']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Protocol for ordering a replacement debit card (procedure) ← [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Ordering procedure for a replacement card.
+  - shared entities: ['debit card activation']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - needs→provides: [general)_030 needs] standard debit card freeze/close procedure (procedure) ← [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze procedure.
+  - shared entities: ['lost or stolen card']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['get_bank_account_transactions_9173', 'identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared tools: ['get_bank_account_transactions_9173']
+  - shared entities: ['get_bank_account_transactions_9173', 'identity verification']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - needs→provides: [general)_037 needs] Tool/data to review recent transaction history (tool) ← [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction history tool.
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Lost/Stolen Card - Cross-Product Security Protocol**
+  - needs→provides: [general)_030 needs] standard debit card freeze/close procedure (procedure) ← [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Close procedure.
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'savings account', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['provisional credit', 'transaction id', 'user id']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['account status open', 'identity verification', 'mobile app']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Activating a Debit Card**
+  - shared entities: ['debit card activation', 'debit cards table', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['date issued', 'identity verification', 'replacement debit card order']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['minimum account age for closure', 'recurring subscription', 'user id']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card action', 'merchant contact', 'provisional credit']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Retrieving Debit Card Information**
+  - shared entities: ['account id', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification', 'savings account']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification', 'savings account']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'transaction id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['account id', 'supervisor']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['account id', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['account id', 'user id']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['card id', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['card id', 'identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification', 'user id']
+- **Internal: Activating a Debit Card** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['identity verification', 'recurring subscription']
+- **Internal: Activating a Debit Card** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['identity verification', 'recurring subscription']
+- **Internal: Checking Debit Card Dispute Status** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['dispute resolution', 'user id']
+- **Internal: Checking Debit Card Dispute Status** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['supervisor', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits', 'user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits', 'user id']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['date issued', 'issue reason']
+- **Internal: Activating a Debit Card** ↔ **Internal: Debit Card Replacement Options by Account Tier**
+  - shared entities: ['issue reason', 'replacement debit card']
+- **Internal: Debit Card Provisional Credit Guidelines** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['provisional credit', 'unauthorized transaction']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card', 'provisional credit']
+- **Internal: Applying Credits to Savings Accounts** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['goodwill credit', 'supervisor']
+- **Internal: Applying Credits to Savings Accounts** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['credit amount', 'goodwill credit']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Ordering a Debit Card for a Bank Account**
+  - shared entities: ['savings account']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['transaction id']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Closing/Cancelling a Debit Card**
+  - shared entities: ['pending transactions']
+- **Internal: Retrieving Bank Account Transaction History** ↔ **Internal: Freezing and Unfreezing a Debit Card**
+  - shared entities: ['pending transactions']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Managing Debit Card Security Alerts and Blocks** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Filing a Debit Card Transaction Dispute** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Applying Credits to Savings Accounts** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **FAQ: Common Error Codes**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Applying Credits to Savings Accounts**
+  - shared entities: ['identity verification']
+- **Internal: Activating a Debit Card** ↔ **Internal: Submitting Interest Discrepancy Reports**
+  - shared entities: ['identity verification']
+- **Internal: Ordering a Debit Card for a Bank Account** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Debit Card Provisional Credit Guidelines**
+  - shared entities: ['account status open']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Internal: Checking Debit Card Dispute Status**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Closing/Cancelling a Debit Card** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Checking User Dispute History (Internal)** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **Internal: Submitting Interest Discrepancy Reports** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['user id']
+- **Internal: Credit Card Retention Protocol** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **(Internal) Applying a Credit Card Statement Credit**
+  - shared entities: ['user id']
+- **Internal: Retrieving Debit Card Information** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['user id']
+- **Internal: Activating a Debit Card** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['recurring subscription']
+- **Internal: Freezing and Unfreezing a Debit Card** ↔ **Internal: Credit Card Retention Protocol**
+  - shared entities: ['recurring subscription']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **Internal: Filing a Debit Card Transaction Dispute**
+  - shared entities: ['checking account tier']
+- **Internal: Debit Card Replacement Options by Account Tier** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['issue reason']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['security team']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Internal: Managing Debit Card Security Alerts and Blocks**
+  - shared entities: ['customer service agent']
+- **FAQ: Common Error Codes** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits']
+- **FAQ: Common Error Codes** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Internal: Activating a Debit Card** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Internal: Activating a Debit Card** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['card last 4 digits']
+- **Understanding Regulation E: Your Debit Card Consumer Protections** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Filing a Credit Card Transaction Dispute (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Checking User Dispute History (Internal)**
+  - shared entities: ['credit card']
+- **Internal: Lost/Stolen Card - Cross-Product Security Protocol** ↔ **Understanding Regulation E: Your Debit Card Consumer Protections**
+  - shared entities: ['credit card']
+
+## BM25 top-3 neighbours
+
+- Internal: Retrieving Bank Account Transaction History → Internal: Filing a Debit Card Transaction Dispute (81.55)
+- Internal: Retrieving Bank Account Transaction History → Internal: Retrieving Debit Card Information (80.73)
+- Internal: Retrieving Bank Account Transaction History → Internal: Applying Credits to Savings Accounts (78.0)
+- Internal: Ordering a Debit Card for a Bank Account → Internal: Debit Card Replacement Options by Account Tier (281.02)
+- Internal: Ordering a Debit Card for a Bank Account → Internal: Activating a Debit Card (183.94)
+- Internal: Ordering a Debit Card for a Bank Account → Internal: Credit Card Retention Protocol (179.15)
+- Internal: Closing/Cancelling a Debit Card → Internal: Freezing and Unfreezing a Debit Card (270.24)
+- Internal: Closing/Cancelling a Debit Card → Internal: Credit Card Retention Protocol (255.13)
+- Internal: Closing/Cancelling a Debit Card → Internal: Activating a Debit Card (246.36)
+- Internal: Freezing and Unfreezing a Debit Card → Internal: Closing/Cancelling a Debit Card (199.91)
+- Internal: Freezing and Unfreezing a Debit Card → Internal: Activating a Debit Card (163.91)
+- Internal: Freezing and Unfreezing a Debit Card → Internal: Managing Debit Card Security Alerts and Blocks (163.26)
+- Internal: Debit Card Replacement Options by Account Tier → Internal: Ordering a Debit Card for a Bank Account (342.54)
+- Internal: Debit Card Replacement Options by Account Tier → Internal: Activating a Debit Card (175.52)
+- Internal: Debit Card Replacement Options by Account Tier → Internal: Credit Card Retention Protocol (169.9)
+- Internal: Filing a Debit Card Transaction Dispute → Filing a Credit Card Transaction Dispute (Internal) (420.2)
+- Internal: Filing a Debit Card Transaction Dispute → Internal: Debit Card Provisional Credit Guidelines (403.0)
+- Internal: Filing a Debit Card Transaction Dispute → Understanding Regulation E: Your Debit Card Consumer Protections (372.13)
+- Internal: Checking Debit Card Dispute Status → Internal: Debit Card Provisional Credit Guidelines (135.09)
+- Internal: Checking Debit Card Dispute Status → Checking User Dispute History (Internal) (113.99)
+- Internal: Checking Debit Card Dispute Status → Internal: Filing a Debit Card Transaction Dispute (111.64)
+- Internal: Managing Debit Card Security Alerts and Blocks → FAQ: Common Error Codes (245.51)
+- Internal: Managing Debit Card Security Alerts and Blocks → Understanding Regulation E: Your Debit Card Consumer Protections (222.58)
+- Internal: Managing Debit Card Security Alerts and Blocks → Internal: Freezing and Unfreezing a Debit Card (196.01)
+- Internal: Applying Credits to Savings Accounts → Internal: Submitting Interest Discrepancy Reports (283.94)
+- Internal: Applying Credits to Savings Accounts → (Internal) Applying a Credit Card Statement Credit (200.92)
+- Internal: Applying Credits to Savings Accounts → Internal: Credit Card Retention Protocol (171.73)
+- Internal: Submitting Interest Discrepancy Reports → Internal: Applying Credits to Savings Accounts (314.87)
+- Internal: Submitting Interest Discrepancy Reports → Internal: Credit Card Retention Protocol (132.62)
+- Internal: Submitting Interest Discrepancy Reports → Internal: Filing a Debit Card Transaction Dispute (127.08)
+- Checking User Dispute History (Internal) → Internal: Checking Debit Card Dispute Status (181.08)
+- Checking User Dispute History (Internal) → Internal: Filing a Debit Card Transaction Dispute (174.32)
+- Checking User Dispute History (Internal) → Filing a Credit Card Transaction Dispute (Internal) (169.13)
+- Internal: Activating a Debit Card → Internal: Retrieving Debit Card Information (276.74)
+- Internal: Activating a Debit Card → FAQ: Common Error Codes (263.01)
+- Internal: Activating a Debit Card → Internal: Closing/Cancelling a Debit Card (247.17)
+- Internal: Retrieving Debit Card Information → Internal: Activating a Debit Card (172.38)
+- Internal: Retrieving Debit Card Information → FAQ: Common Error Codes (152.81)
+- Internal: Retrieving Debit Card Information → Internal: Debit Card Replacement Options by Account Tier (136.51)
+- Understanding Regulation E: Your Debit Card Consumer Protections → FAQ: Common Error Codes (484.62)
+- Understanding Regulation E: Your Debit Card Consumer Protections → Internal: Filing a Debit Card Transaction Dispute (418.48)
+- Understanding Regulation E: Your Debit Card Consumer Protections → Internal: Lost/Stolen Card - Cross-Product Security Protocol (343.43)
+- Internal: Credit Card Retention Protocol → Internal: Closing/Cancelling a Debit Card (313.78)
+- Internal: Credit Card Retention Protocol → Internal: Filing a Debit Card Transaction Dispute (299.87)
+- Internal: Credit Card Retention Protocol → FAQ: Common Error Codes (299.4)
+- Filing a Credit Card Transaction Dispute (Internal) → Internal: Filing a Debit Card Transaction Dispute (277.01)
+- Filing a Credit Card Transaction Dispute (Internal) → (Internal) Applying a Credit Card Statement Credit (214.31)
+- Filing a Credit Card Transaction Dispute (Internal) → Internal: Credit Card Retention Protocol (183.28)
+- FAQ: Common Error Codes → Understanding Regulation E: Your Debit Card Consumer Protections (549.55)
+- FAQ: Common Error Codes → Internal: Activating a Debit Card (436.93)
+- FAQ: Common Error Codes → Internal: Closing/Cancelling a Debit Card (412.52)
+- Internal: Debit Card Provisional Credit Guidelines → Internal: Filing a Debit Card Transaction Dispute (222.76)
+- Internal: Debit Card Provisional Credit Guidelines → Understanding Regulation E: Your Debit Card Consumer Protections (190.29)
+- Internal: Debit Card Provisional Credit Guidelines → Internal: Checking Debit Card Dispute Status (175.61)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol → Understanding Regulation E: Your Debit Card Consumer Protections (169.25)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol → FAQ: Common Error Codes (155.07)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol → Internal: Credit Card Retention Protocol (142.91)
+- (Internal) Applying a Credit Card Statement Credit → Filing a Credit Card Transaction Dispute (Internal) (171.35)
+- (Internal) Applying a Credit Card Statement Credit → Internal: Credit Card Retention Protocol (165.68)
+- (Internal) Applying a Credit Card Statement Credit → Internal: Applying Credits to Savings Accounts (145.68)
+
+## Unresolved needs (no doc in the sample provides them)
+
+- Internal: Retrieving Bank Account Transaction History: needs **The customer's bank account ID, obtained from another lookup** (data)
+- Internal: Retrieving Bank Account Transaction History: needs **Fee schedules and rules (monthly fee, overdraft fee, ATM fee) for verifying fees** (rule)
+- Internal: Retrieving Bank Account Transaction History: needs **Rebate/refund eligibility policies (fee_rebate, rebate_credit, fee_refund)** (rule)
+- Internal: Retrieving Bank Account Transaction History: needs **Definition of EveryonePay product** (definition)
+- Internal: Retrieving Bank Account Transaction History: needs **Procedures for investigating customer inquiries about transactions or disputes** (procedure)
+- Internal: Ordering a Debit Card for a Bank Account: needs **customer identity verification procedure** (procedure)
+- Internal: Ordering a Debit Card for a Bank Account: needs **custom card design approval process/criteria** (procedure)
+- Internal: Ordering a Debit Card for a Bank Account: needs **customer account data (account_type, status, open date, balance, date_of_birth, address)** (data)
+- Internal: Ordering a Debit Card for a Bank Account: needs **definition of business days** (definition)
+- Internal: Ordering a Debit Card for a Bank Account: needs **definition of valid US domestic address** (definition)
+- Internal: Closing/Cancelling a Debit Card: needs **standard customer identity verification procedures** (procedure)
+- Internal: Closing/Cancelling a Debit Card: needs **checking account closure procedure** (procedure)
+- Internal: Closing/Cancelling a Debit Card: needs **online banking password change procedure** (procedure)
+- Internal: Freezing and Unfreezing a Debit Card: needs **Customer identity verification procedure** (procedure)
+- Internal: Freezing and Unfreezing a Debit Card: needs **Linked checking account status** (data)
+- Internal: Freezing and Unfreezing a Debit Card: needs **ATM Block setup instructions in mobile app** (procedure)
+- Internal: Debit Card Replacement Options by Account Tier: needs **customer's checking account tier** (data)
+- Internal: Debit Card Replacement Options by Account Tier: needs **linked checking account balance** (data)
+- Internal: Debit Card Replacement Options by Account Tier: needs **definition of the checking account tiers (Entry/Mid/Premium/Elite)** (definition)
+- Internal: Filing a Debit Card Transaction Dispute: needs **customer verification procedure** (procedure)
+- Internal: Filing a Debit Card Transaction Dispute: needs **Rho-Bank vs third-party ATM dispute processes** (procedure)
+- Internal: Filing a Debit Card Transaction Dispute: needs **customer's checking account tier and count of open disputes** (data)
+- Internal: Filing a Debit Card Transaction Dispute: needs **account status (open) and card-account linkage** (data)
+- Internal: Filing a Debit Card Transaction Dispute: needs **statement dates** (data)
+- Internal: Checking Debit Card Dispute Status: needs **Supervisor escalation procedure** (procedure)
+- Internal: Checking Debit Card Dispute Status: needs **Customer user_id lookup/verification** (data)
+- Internal: Managing Debit Card Security Alerts and Blocks: needs **Procedure and criteria for verifying the customer's identity** (procedure)
+- Internal: Managing Debit Card Security Alerts and Blocks: needs **How to transfer a customer to the security team** (procedure)
+- Internal: Applying Credits to Savings Accounts: needs **Documented savings APY rates, tier rates, linked checking APY boost and relationship bonus values** (data)
+- Internal: Applying Credits to Savings Accounts: needs **Savings excess withdrawal fee and withdrawal limit rules** (rule)
+- Internal: Applying Credits to Savings Accounts: needs **Monthly maintenance fee and minimum balance requirement rules** (threshold)
+- Internal: Applying Credits to Savings Accounts: needs **Customer identity verification and account ownership procedure** (procedure)
+- Internal: Applying Credits to Savings Accounts: needs **Supervisor approval procedure for goodwill credits** (procedure)
+- Internal: Submitting Interest Discrepancy Reports: needs **Savings account type documentation listing APY components (base rate, tier rates, linked checking boost, credit card bonuses, relationship bonus)** (rule)
+- Internal: Submitting Interest Discrepancy Reports: needs **APY tier balance thresholds** (threshold)
+- Internal: Submitting Interest Discrepancy Reports: needs **Definition of qualifying checking-savings account pairing** (definition)
+- Internal: Submitting Interest Discrepancy Reports: needs **Relationship bonus eligibility criteria (which multiple Rho-Bank products qualify)** (rule)
+- Internal: Submitting Interest Discrepancy Reports: needs **Identity and account ownership verification procedure** (procedure)
+- Internal: Submitting Interest Discrepancy Reports: needs **get_all_user_accounts_by_user_id_3847 tool** (tool)
+- Checking User Dispute History (Internal): needs **the user's correct and current user_id** (data)
+- Checking User Dispute History (Internal): needs **internal privileges to view dispute histories** (rule)
+- Checking User Dispute History (Internal): needs **internal data handling and privacy requirements** (rule)
+- Checking User Dispute History (Internal): needs **user_id format validation rules** (definition)
+- Checking User Dispute History (Internal): needs **internal support escalation procedure** (procedure)
+- Checking User Dispute History (Internal): needs **what actions to take based on dispute status** (procedure)
+- Internal: Activating a Debit Card: needs **standard customer identity verification procedures** (procedure)
+- Internal: Activating a Debit Card: needs **debit_card_orders table order reason** (data)
+- Internal: Activating a Debit Card: needs **linked checking account status** (data)
+- Internal: Retrieving Debit Card Information: needs **Customer's checking account ID** (data)
+- Understanding Regulation E: Your Debit Card Consumer Protections: needs **Standard identity verification and security questions procedure** (procedure)
+- Understanding Regulation E: Your Debit Card Consumer Protections: needs **Business account dispute protections** (rule)
+- Understanding Regulation E: Your Debit Card Consumer Protections: needs **Credit card dispute regulations** (rule)
+- Internal: Credit Card Retention Protocol: needs **Procedure/tool for actually processing the credit card closure** (procedure)
+- Internal: Credit Card Retention Protocol: needs **How to look up pending disputes, pending replacement cards, account open date and outstanding balance** (data)
+- Internal: Credit Card Retention Protocol: needs **Customer tenure data** (data)
+- Internal: Credit Card Retention Protocol: needs **Card tier classification of cards (entry, mid, premium)** (definition)
+- Internal: Credit Card Retention Protocol: needs **Procedure/tool for card downgrade to no-annual-fee card** (procedure)
+- Internal: Credit Card Retention Protocol: needs **Goodwill credit amount and policy** (threshold)
+- Internal: Credit Card Retention Protocol: needs **Supervisor escalation procedure and criteria** (procedure)
+- Internal: Credit Card Retention Protocol: needs **Rho-Bank card catalog and benefits** (data)
+- Internal: Credit Card Retention Protocol: needs **Bonus categories enrollment info and rewards rules** (data)
+- Filing a Credit Card Transaction Dispute (Internal): needs **provisional credit eligibility guidelines** (rule)
+- Filing a Credit Card Transaction Dispute (Internal): needs **order_replacement_credit_card_7291** (tool)
+- Filing a Credit Card Transaction Dispute (Internal): needs **customer registered profile data (user id, phone, email, address, full name)** (data)
+- Filing a Credit Card Transaction Dispute (Internal): needs **transaction details (transaction id, purchase date, card last 4 digits)** (data)
+- FAQ: Common Error Codes: needs **customer accounts lookup tool** (tool)
+- FAQ: Common Error Codes: needs **customer identity verification procedure** (procedure)
+- FAQ: Common Error Codes: needs **human agent transfer procedure** (procedure)
+- FAQ: Common Error Codes: needs **escalation procedure for persistent errors** (procedure)
+- Internal: Debit Card Provisional Credit Guidelines: needs **Credit card provisional credit tiered maximum amounts** (threshold)
+- Internal: Debit Card Provisional Credit Guidelines: needs **Account data: account open date, status, holds/restrictions, statement date of transaction** (data)
+- Internal: Debit Card Provisional Credit Guidelines: needs **Criteria for discretionary provisional credit offers** (rule)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **procedure/tool for ordering a replacement credit card with a new card number** (procedure)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **procedure/tool for adding a note to the customer account** (tool)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **customer's credit card type** (data)
+- Internal: Lost/Stolen Card - Cross-Product Security Protocol: needs **customer identity/user id for get_credit_card_accounts_by_user** (data)
+- (Internal) Applying a Credit Card Statement Credit: needs **Customer user_id lookup/identity verification** (data)
+- (Internal) Applying a Credit Card Statement Credit: needs **Procedure to view credit card transaction history** (tool)

@@ -1,0 +1,2400 @@
+{
+ "task_014": {
+  "verdict": "derivable",
+  "gold_writes": 1,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "transfer_to_human_agents",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Reason code choice: Tier 1 'customer_demands_after_unavailable_offer_refusal' could arguably apply if the customer persists multiple times before the transfer. The document says to pick from the highest applicable tier. Under the script, the agent offers the transfer and the customer accepts it rather than demanding one, so the Tier 2 code 'unconfirmed_external_communication' is the best fit.",
+     "No identity verification, lookups, submit_referral, or giving a user tool is warranted. The KB documents no Crypto-Cash Back referral program or referral-link tool, and the customer rejects generic referral info."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "transfer_to_human_agents",
+      "arguments_json": "{\"reason\": \"unconfirmed_external_communication\", \"summary\": \"Customer received a mailed letter describing a Crypto-Cash Back card referral program ($100 bonus per referral who spends $500 in first 2 months) and wants a referral link. Searched the knowledge base: only general referral guidance and Silver/Platinum card referral programs exist; no Crypto-Cash Back referral program could be found or verified. Informed customer and offered a transfer, which the customer accepted.\"}",
+      "rule": "Policy guideline 5: when the issue can't be resolved, ask the user whether they want a transfer and transfer only after they agree. The customer accepts the offered transfer. Reason code comes from doc_bank_accounts_bank_accounts_(general)_042, Tier 2 'unconfirmed_external_communication'. That code covers a customer who claims a specific promotion exists because they have a letter, email or flyer, when the agent cannot verify it in the KB after searching. The KB has referral documents only for the Silver and Platinum cards plus general referral guidance, and nothing for the Crypto-Cash Back card. The Tier 1 'customer_demands_after_unavailable_offer_refusal' code requires the customer to persist multiple times and demand a human. Here the customer simply accepts an offered transfer, so Tier 1 does not apply."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "transfer_to_human_agents",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Tier choice: the transfer-reason doc says to pick from the highest applicable tier. Tier 1 'customer_demands_after_unavailable_offer_refusal' could be argued if the customer's repeated requests to double-check count as persisting. Best reading: the customer accepts an agent-offered transfer rather than demanding a human, and the claim rests on a letter. That matches Tier 2 'unconfirmed_external_communication' exactly.",
+     "The agent should not give a referral tool or call submit_referral. No document names a discoverable referral tool, and the Crypto-Cash Back program cannot be verified. Generic referral information that does not match the claim should not be pushed.",
+     "No identity verification or lookups are needed. The request never requires accessing the customer's account data."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "transfer_to_human_agents",
+      "arguments_json": "{\"reason\": \"unconfirmed_external_communication\", \"summary\": \"Customer received a mailed letter describing a Crypto-Cash Back card referral program ($100 bonus per referral who spends $500 in first 2 months) and wants a referral link. After searching the knowledge base, no Crypto-Cash Back referral program could be found or verified; only general referral rules and Silver/Platinum card programs exist. Informed customer and offered a transfer, which the customer accepted.\"}",
+      "rule": "Policy guideline 5: if the issue cannot be resolved, ask the user whether they want a transfer and transfer only if they accept. The KB has no Crypto-Cash Back referral document; only the general, Silver and Platinum referral docs exist. doc_credit_cards_credit_cards_(general)_020 says not all cards participate and the card must have an active referral offer. Reason code from doc_bank_accounts_bank_accounts_(general)_042, Tier 2 'unconfirmed_external_communication': the customer claims a specific program exists from a letter that cannot be verified or found in the KB after searching. The Tier 1 code 'customer_demands_after_unavailable_offer_refusal' does not fit, because the customer accepts an offered transfer rather than demanding a human after repeated refusals. No other Tier 1 reason applies."
+     }
+    ]
+   }
+  }
+ },
+ "task_015": {
+  "verdict": "derivable",
+  "gold_writes": 2,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "give_discoverable_user_tool",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "get_referral_link",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Business Gold Rewards Card: the customer's claimed terms match the documented program, so refusal depends on the current time (get_current_time) being after the 2025-09-15 cutoff for new referrals. I assumed the program has expired, consistent with the scenario. If the current date were on or before 2025-09-15, the agent would instead give get_referral_link for 'Business Gold Rewards Card' at that point, and the later cards would not be raised.",
+     "Weekly limit pre-check ('reason to believe the referral will be automatically rejected'): checking it would need identity verification and a referral-history lookup. The reference path has no lookups, so I assumed no auto-rejection concern.",
+     "For every refused card, the general referral doc says not to transfer to a human, so no transfer_to_human_agents call is made.",
+     "give_discoverable_user_tool also has an optional 'arguments' field. I gave only the tool name; the customer supplies their own user_id and card name."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "give_discoverable_user_tool",
+      "arguments_json": "{\"discoverable_tool_name\": \"get_referral_link\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_009 'How the user generates their referral link': provide the customer with get_referral_link and have them run it themselves; agents must not generate the link on the customer's behalf. Given only for the Platinum Rewards Card, because the pre-check requires a documented program and correct claimed terms. The customer's Platinum claim ($100 bonus, $1,500 spend within 90 days) matches doc_credit_cards_platinum_rewards_card_008. The earlier cards are refused without a tool or transfer. Crypto-Cash Back: no documented program. Business Gold: terms match, but the program closed to new referrals on 2025-09-15. EcoCard: the documented bonus is $50, not $200. Silver Zoom: the documented terms are $150 and $7,500, not $100 and $3,000, and new referrals closed on 2025-10-01."
+     },
+     {
+      "actor": "customer",
+      "tool": "get_referral_link",
+      "arguments_json": "{\"user_id\": \"890389b165\", \"card_name\": \"Platinum Rewards Card\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_009: the customer passes their own user_id and the exact card name. The user_id is copied from the customer's own information. The card name is the exact documented card name from doc_credit_cards_platinum_rewards_card_008."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "give_discoverable_user_tool",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "get_referral_link",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Business Gold Rewards Card: the customer's terms ($200 for $7,500 spend within 90 days) match the documented program. Rejecting it depends on the current date, from get_current_time, being after the 2025-09-15 cutoff. If the date were before the cutoff, the referral tool would be given for the Business Gold Rewards Card instead, and the conversation would stop there.",
+     "Weekly limit: the general doc says the 3rd+ referral bonus in a rolling 7-day window is auto-denied, which is a 'reason to believe the referral will be automatically rejected'. Checking this would need a referral-history lookup and identity verification. The reference path has no lookups, so I assume the limit is not hit and no verification is needed just to hand over the user tool.",
+     "No transfer to a human: the general referral doc explicitly says not to transfer when declining a referral for a missing program or mismatched terms, and the customer is satisfied once she gets the Platinum link.",
+     "Whether give_discoverable_user_tool should also pass an arguments string (e.g. the user_id and card_name) is unspecified. Only the tool name is listed here."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "give_discoverable_user_tool",
+      "arguments_json": "{\"discoverable_tool_name\": \"get_referral_link\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_009, 'How the user generates their referral link': provide the customer with get_referral_link and have them run it; 'Agents must not generate the link on the customer's behalf.' The tool is given only for the Platinum Rewards Card. Under the pre-check in the same doc, the agent first declines the four earlier cards and does not transfer. Crypto-Cash Back has no documented referral program. Business Gold Rewards matches the stated terms, but the program accepts no new referrals after 2025-09-15, so it is treated as expired and the referral would be automatically rejected. EcoCard's documented bonus is 50, not the claimed $200. Silver Zoom's documented terms are $150 for $7,500 spend, not the claimed $100 for $3,000, and it also ended on 2025-10-01. Platinum's documented terms ($100 bonus, $1,500 spend within 90 days) match the customer's claim exactly (doc_credit_cards_platinum_rewards_card_008)."
+     },
+     {
+      "actor": "customer",
+      "tool": "get_referral_link",
+      "arguments_json": "{\"user_id\": \"890389b165\", \"card_name\": \"Platinum Rewards Card\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_009: the customer passes their own user_id and the exact card name. The card name is the card whose documented terms matched the customer's claim (doc_credit_cards_platinum_rewards_card_008). The user_id comes from the customer."
+     }
+    ]
+   }
+  }
+ },
+ "task_026": {
+  "verdict": "under-determined",
+  "gold_writes": 9,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "give_discoverable_user_tool",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "differs",
+      "diff": {
+       "user_id": [
+        "<customer's verified user_id>",
+        "755bcb4d5d"
+       ],
+       "transaction_id": [
+        "<transaction_id of each transaction whose rewards_earned differs from the correctly recalculated value>",
+        "txn_a8f1c2d3e403"
+       ]
+      }
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "No lookup facts were provided, so the user_id and the specific mis-rewarded transaction_ids cannot be copied. The agent must first verify identity using DOB 08/11/1997 and phone 713-555-0963, then review the transaction history to identify each discrepant transaction and pass those IDs to the customer, who has none of her own.",
+     "Phase 2: the customer claims the disputes were 'all approved and resolved' right after submission. The tool response says disputes are 'queued for review'. Per doc _004, the agent may only call update_transaction_rewards_3847 after looking up resolved and approved disputes in cash_back_disputes. My reading is that the disputes will still be pending, so no update_transaction_rewards_3847 calls are listed and the agent should decline to update.",
+     "If any disputes are actually in resolved/approved status, the agent would call update_transaction_rewards_3847(transaction_id, new_rewards_earned='X points'). X would be independently recalculated from card type, category, exclusions and promo eligibility, without using the expected_rewards field. These calls cannot be specified without lookup data.",
+     "Whether the Business Silver double cash back promo applies depends on the account opening date, which is unknown. Converting a cash back percentage into whole 'points' is also not explicitly defined in the documents; the likely reading is 1 point per $0.01."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "give_discoverable_user_tool",
+      "arguments_json": "{\"discoverable_tool_name\": \"submit_cash_back_dispute_0589\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_003: for a cash back discrepancy on any credit card transaction, the agent provides the user the tool submit_cash_back_dispute_0589(user_id, transaction_id) rather than submitting it themselves. Policy: give a user discoverable tool when the KB explicitly names a tool for the action the user wants to perform."
+     },
+     {
+      "actor": "customer",
+      "tool": "submit_cash_back_dispute_0589",
+      "arguments_json": "{\"user_id\": \"<customer's verified user_id>\", \"transaction_id\": \"<transaction_id of each transaction whose rewards_earned differs from the correctly recalculated value>\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_003: the customer runs the tool with their own user_id and the specific transaction_id. The agent must confirm the transaction_id is correct first. A transaction is mis-rewarded when its posted rewards do not match the documented rate for its card. Business Silver: 10% on travel/software and 1% otherwise (doc _002), with the merchant exclusions in doc _005, doubled only within 6 months of an account opened during the 2024-11-14 to 2025-11-14 promo (doc _012). Silver: 4% on travel/software and 1% otherwise (docs _001/_002). One call is made per incorrect transaction."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "give_discoverable_user_tool",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "submit_cash_back_dispute_0589",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     },
+     {
+      "tool": "update_transaction_rewards_3847",
+      "status": "missing",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Missing lookup data. No lookup results were provided, so the user_id, transactions, card-opening dates, merchants, categories and amounts are unknown. Any customer-side submit_cash_back_dispute_0589 calls and agent-side update_transaction_rewards_3847 calls therefore cannot be listed with concrete arguments.",
+     "Identifying wrong transactions. Agent first needs identity verification (DOB 08/11/1997 plus phone 713-555-0963 are 2 of the required values). The agent would then review transaction history to find which transactions have incorrect cash back.",
+     "Rates for recalculation. Business Silver earns 10% on travel/software and 1% on everything else (doc_002). Merchants on the exclusion list in doc_005 earn only 1%. Purchases in the first 6 months after account opening earn 2x, provided the account was opened between 2024-11-14 and 2025-11-14 (doc_012). Silver earns 4% on travel/software and 1% otherwise. New values must be formatted as 'X points' (doc_004).",
+     "Customer can't supply transaction IDs. The customer has no transaction IDs. doc_003 says the agent should confirm the customer has the correct transaction_id before submitting. My best reading is that the agent tells the customer the correct transaction_ids found during the lookup so they can submit disputes.",
+     "Phase 2 update calls. The customer will claim the disputes were approved. doc_004 requires the agent to check the resolved disputes in the cash_back_disputes database before updating anything. Updates (update_transaction_rewards_3847) should be made only for transactions whose disputes are actually resolved and approved there. Newly submitted disputes are only 'queued for review', so a correct agent should most likely make no updates unless the database shows them resolved."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "give_discoverable_user_tool",
+      "arguments_json": "{\"discoverable_tool_name\": \"submit_cash_back_dispute_0589\"}",
+      "rule": "doc_credit_cards_credit_cards_(general)_003: when a customer believes their cash back on a transaction is wrong, the tool to provide to the user is submit_cash_back_dispute_0589(user_id, transaction_id). Policy: give a user discoverable tool when the customer wants to perform an action and the KB names a tool for it."
+     }
+    ]
+   }
+  }
+ },
+ "task_048": {
+  "verdict": "under-determined",
+  "gold_writes": 6,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "close_credit_card_account_7834",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "pay_credit_card_from_checking_9182",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "log_credit_card_closure_reason_4521",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "apply_for_credit_card",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "log_credit_card_closure_reason_4521",
+      "status": "differs",
+      "diff": {
+       "closure_reason": [
+        "not_using_card",
+        "unhappy_with_rewards"
+       ]
+      }
+     },
+     {
+      "tool": "apply_statement_credit_8472",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [
+     "give_discoverable_user_tool"
+    ],
+    "open_points": [
+     "Crypto card closure reason: the customer's wording ('crypto rewards program isn't really worth it') could be logged as 'unhappy_with_rewards' instead of 'not_using_card'. The chosen code is 'not_using_card' because she says she doesn't use cryptocurrency and the expected follow-up is the keep-the-card-active reminder.",
+     "Retention Step 5 allows either 500 bonus points or a $5 statement credit for an Entry-tier card. The statement credit is chosen because the customer explicitly accepts a statement credit, and no points-awarding tool is documented.",
+     "apply_for_credit_card is not explicitly named in the provided KB documents as a user discoverable tool. It is assumed to be the tool given to the customer to apply for the Silver Rewards Card.",
+     "No current date was given. The Green card's 09/15/2025 closure record is assumed to be within the past year, consistent with replacement order dates in November 2025. All accounts are assumed to be over 60 days old.",
+     "EcoCard cannot be closed because a replacement order is in SHIPPED status, a non-final state. No state-changing action is taken for it.",
+     "Gold card: the balance is paid and the reason logged, but the card is not closed because the customer chooses to apply for the Silver Rewards Card instead. The documents do not say whether the Gold card should be closed after the new application."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "close_credit_card_account_7834",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_e3f4a5b6c7_green\", \"user_id\": \"e3f4a5b6c7\"}",
+      "rule": "The account meets every eligibility check in Retention Protocol Step 1 and Closure Process step 2: $0.00 balance, no disputes, no pending replacement, and open since 02/15/2024 (over 60 days). Retention Step 2 found a closure reason record dated 09/15/2025, which is within the past year. The rule is to skip retention offers and proceed directly to closure (Step 6). Therefore no new reason is logged and no offer is made."
+     },
+     {
+      "actor": "agent",
+      "tool": "pay_credit_card_from_checking_9182",
+      "arguments_json": "{\"user_id\": \"e3f4a5b6c7\", \"checking_account_id\": \"07\", \"credit_card_account_id\": \"cc_e3f4a5b6c7_gold\", \"amount\": 175.00}",
+      "rule": "Retention Step 1 item 4 requires the Gold card's outstanding balance to be paid before closure. The customer authorizes payment from checking. Under doc_009, the amount equals the full $175.00 balance, which does not exceed the checking balance of $3,650.00 or the card balance."
+     },
+     {
+      "actor": "agent",
+      "tool": "log_credit_card_closure_reason_4521",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_e3f4a5b6c7_gold\", \"user_id\": \"e3f4a5b6c7\", \"closure_reason\": \"found_better_card\"}",
+      "rule": "Retention Step 2 found no prior closure records for the Gold card, so the agent continues to Step 3: ask the reason and log it. The customer says she found a card at another bank paying 3.25% on travel and software. That maps to 'found_better_card'."
+     },
+     {
+      "actor": "agent",
+      "tool": "give_discoverable_user_tool",
+      "arguments_json": "{\"discoverable_tool_name\": \"apply_for_credit_card\"}",
+      "rule": "For 'Found a better card', Retention Step 4 says: if Rho-Bank offers a card with similar or better benefits, offer to help the customer apply instead of closing. The Silver Rewards Card pays 4% on travel and software with a $0 annual fee (silver_rewards_card_001/002). That beats the competitor's 3.25%. The Gold card is therefore kept, not closed."
+     },
+     {
+      "actor": "customer",
+      "tool": "apply_for_credit_card",
+      "arguments_json": "{\"card_type\": \"Silver Rewards Card\", \"customer_name\": \"Valentina Kostopoulos\", \"annual_income\": 125000, \"rho_bank_subscription\": false}",
+      "rule": "The customer applies for the recommended Silver Rewards Card using her own known details. She has no Rho-Bank+ subscription."
+     },
+     {
+      "actor": "agent",
+      "tool": "log_credit_card_closure_reason_4521",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_e3f4a5b6c7_crypto\", \"user_id\": \"e3f4a5b6c7\", \"closure_reason\": \"not_using_card\"}",
+      "rule": "The Crypto card passes all Step 1 checks and has no closure history (Step 2), so the reason is logged under Step 3. The customer says she doesn't use cryptocurrency much and the program isn't worth it. This is read as 'not_using_card', which triggers the Step 4 reminder about benefits and recurring subscriptions."
+     },
+     {
+      "actor": "agent",
+      "tool": "apply_statement_credit_8472",
+      "arguments_json": "{\"user_id\": \"e3f4a5b6c7\", \"credit_card_account_id\": \"cc_e3f4a5b6c7_crypto\", \"amount\": 5.00, \"reason\": \"retention_offer\"}",
+      "rule": "The customer still wants to close after Step 4, so Retention Step 5 requires one retention offer by tier. Crypto-Cash Back is Entry tier per doc_015, so the offer is 500 points or a $5 statement credit. The customer accepts the statement credit and keeps the card. The reason is 'retention_offer' per doc_017's enum."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "close_credit_card_account_7834",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "pay_credit_card_from_checking_9182",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "log_credit_card_closure_reason_4521",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "apply_for_credit_card",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "log_credit_card_closure_reason_4521",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "apply_statement_credit_8472",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [
+     "give_discoverable_user_tool"
+    ],
+    "open_points": [
+     "Crypto card closure reason: the customer's wording ('rewards program isn't worth it', 'don't use cryptocurrency much') could be read as 'not_using_card' instead of 'unhappy_with_rewards'. The script's mention of subscription suggestions hints at 'not_using_card'.",
+     "Entry-tier retention offer: Step 5 allows either 500 bonus points or a $5 statement credit. The $5 statement credit is assumed because the customer accepts a statement credit.",
+     "Card tiers are only defined in the provisional-credit document (general_015). That list is used to classify Crypto-Cash Back as Entry tier for the retention offer.",
+     "Green card: the prior closure record from 09/15/2025 is assumed to be within the past year of the current date, which justifies skipping retention and logging. The current date should be confirmed with get_current_time.",
+     "No closure of the Gold card is made, because the customer chose to apply for the Silver card instead of closing it. No retention offer is made on Gold, because the concern was resolved in Step 4."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "close_credit_card_account_7834",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_e3f4a5b6c7_green\", \"user_id\": \"e3f4a5b6c7\"}",
+      "rule": "Closure Process (logistics_002) and Retention Protocol Step 1: the Green card meets every eligibility requirement. It has a $0.00 balance, no disputes, no pending replacement, and it was opened 02/15/2024, which is more than 60 days ago. Retention Step 2 also applies: a closure reason record dated 09/15/2025 exists within the past year. So retention and reason logging are skipped and the agent proceeds directly to closure (Step 6)."
+     },
+     {
+      "actor": "agent",
+      "tool": "pay_credit_card_from_checking_9182",
+      "arguments_json": "{\"user_id\": \"e3f4a5b6c7\", \"checking_account_id\": \"07\", \"credit_card_account_id\": \"cc_e3f4a5b6c7_gold\", \"amount\": 175.00}",
+      "rule": "Retention Step 1.4: the outstanding balance must be paid before closure or retention. Per logistics_009, the amount equals the full outstanding Gold balance of $175.00. This does not exceed the $3,650 in checking account 07, and the customer authorized the payment. The EcoCard gets no write call because its replacement order is SHIPPED, which is non-final, so closure is blocked (replacements_005, Retention Step 1.2)."
+     },
+     {
+      "actor": "agent",
+      "tool": "log_credit_card_closure_reason_4521",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_e3f4a5b6c7_gold\", \"user_id\": \"e3f4a5b6c7\", \"closure_reason\": \"found_better_card\"}",
+      "rule": "Retention Step 2 found no prior closure records, so Step 3 applies: ask for the reason and log it. The customer found a competitor card offering 3.25% on travel and software, which maps to 'found_better_card'."
+     },
+     {
+      "actor": "agent",
+      "tool": "give_discoverable_user_tool",
+      "arguments_json": "{\"discoverable_tool_name\": \"apply_for_credit_card\"}",
+      "rule": "Retention Step 4, 'Found a better card': if Rho-Bank offers a card with similar or better benefits, offer to help the customer apply instead of closing. The Silver Rewards Card qualifies: it offers 4% on travel and software (silver_002) with a $0 annual fee (silver_001), which beats the competitor's 3.25%. The customer wants to apply."
+     },
+     {
+      "actor": "customer",
+      "tool": "apply_for_credit_card",
+      "arguments_json": "{\"card_type\": \"Silver Rewards Card\", \"customer_name\": \"Valentina Kostopoulos\", \"annual_income\": 125000, \"rho_bank_subscription\": false}",
+      "rule": "The customer applies for the Silver Rewards Card instead of closing the Gold card. All values come from the customer's own facts: income $125,000 and no Rho-Bank+ subscription."
+     },
+     {
+      "actor": "agent",
+      "tool": "log_credit_card_closure_reason_4521",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_e3f4a5b6c7_crypto\", \"user_id\": \"e3f4a5b6c7\", \"closure_reason\": \"unhappy_with_rewards\"}",
+      "rule": "The Crypto card is eligible: no replacement order, $0 balance, opened 08/05/2024, and no disputes. It has no prior closure records, so Retention Step 3 applies: log the reason. The customer said the crypto rewards program isn't worth it to her, which maps to 'unhappy_with_rewards'."
+     },
+     {
+      "actor": "agent",
+      "tool": "apply_statement_credit_8472",
+      "arguments_json": "{\"user_id\": \"e3f4a5b6c7\", \"credit_card_account_id\": \"cc_e3f4a5b6c7_crypto\", \"amount\": 5.00, \"reason\": \"retention_offer\"}",
+      "rule": "Retention Step 5: the customer still wants to close after her concern was addressed, so the agent makes one tier-based offer. Crypto-Cash Back is Entry tier (general_015 tier list), so the offer is 500 bonus points or a $5 statement credit. The customer accepts the statement credit and keeps the card. The reason is 'retention_offer' (general_017 enum)."
+     }
+    ]
+   }
+  }
+ },
+ "task_066": {
+  "verdict": "derivable",
+  "gold_writes": 4,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "apply_for_credit_card",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_bank_account_7392",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Diamond Elite Card gives +0.6% on Green savings, but its eligibility and annual fee are not in the provided documents. Silver Rewards ($0 fee, +0.45%) was chosen because the extra 0.15% on $6,000 is only $9 a year and would be outweighed by any fee; this depends on the undocumented Diamond Elite terms.",
+     "Savings products such as Diamond Elite, Platinum, Platinum Plus and Gold Plus, and checking accounts such as Purple, Gold Years and Light Green, appear in pairing lists but their rates and minimums are not documented here. The Green savings + Evergreen + Silver Rewards combination (5.0%) is the best combination that the documents can support.",
+     "No opening-deposit transfer is made. Light Blue has a $0 balance and the customer will deposit the $6,000 externally. The agent should tell the customer about the 30-day funding window (doc 002 step 5).",
+     "The 14-day tenure check and the 30-day early-closure-fee check assume get_current_time shows a date well after 11/01/2024. waive_early_closure_fee is omitted because no fee should apply.",
+     "No document marks apply_for_credit_card as a discoverable tool to give, and the customer states they already have it. If it had to be given, it would be give_discoverable_user_tool('apply_for_credit_card').",
+     "No document describes a procedure specifically for opening personal checking accounts. The checking account is opened with open_bank_account_4821 with account_type 'checking', following the savings procedure's naming convention."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"rp65a7b3c4\", \"account_type\": \"savings\", \"account_class\": \"Green Account\"}",
+      "rule": "Order: doc_bank_accounts_(general)_002 requires an active checking account held for at least 14 days, so savings must be opened while the Light Blue account (opened 11/01/2024) is still open, before it is closed and before any new checking account exists. Choice: among the documented savings accounts whose minimum balance fits $6,000, Green Account (savings) has the best rate. It has a 4.0% base and a $500 minimum (Green savings docs 001/003). Gold has 5.5% but needs a $10,000 minimum and a $10 monthly fee. Silver Plus needs $2,500 and Silver needs $1,000, and neither has a documented rate or checking boost exceeding Green's. Bronze is 2.0%. account_class uses the full official name ending in 'Account' (doc 002 step 3/4)."
+     },
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"rp65a7b3c4\", \"account_type\": \"checking\", \"account_class\": \"Evergreen Account\"}",
+      "rule": "doc_bank_accounts_(general)_012 lists Evergreen Account (checking) + Green Account (savings) as a qualifying pairing. doc_checking_accounts_evergreen_account_001 gives a +0.55% boost for linking Green savings. That is the highest documented checking boost for Green savings, and Evergreen is also a premium-tier upgrade over the entry-tier Light Blue."
+     },
+     {
+      "actor": "customer",
+      "tool": "apply_for_credit_card",
+      "arguments_json": "{\"card_type\": \"Silver Rewards Card\", \"customer_name\": \"Riley Parker\", \"annual_income\": 75000, \"rho_bank_subscription\": false}",
+      "rule": "doc_savings_accounts_green_account_(savings)_003 gives these card bonuses on Green savings: Silver Rewards +0.45%, EcoCard +0.5%, Diamond Elite +0.6%. EcoCard has a $50 annual fee (doc_credit_cards_ecocard_001), and 0.5% of $6,000 is only $30, so it loses money. Silver Rewards has a $0 annual fee (doc_credit_cards_silver_rewards_card_001), giving +0.45%. Total APY is 4.0% + 0.55% + 0.45% = 5.0%. Name, income and subscription status are copied from the customer."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_bank_account_7392",
+      "arguments_json": "{\"account_id\": \"chk_rp65a7b3c4\", \"reason\": \"Customer upgrading to a new checking account (Evergreen Account)\"}",
+      "rule": "doc_bank_accounts_(general)_005: the account status is OPEN and current_holdings is $0.00. Light Blue is entry tier, with a $15 early-closure fee only if closed within 30 days and a 0-day notice period. It was opened 11/01/2024, so no fee applies and the balance must be $0, which it is. Closure is done last so the 14-day checking-tenure requirement for the savings opening is satisfied first."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "apply_for_credit_card",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_bank_account_7392",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "No opening-deposit transfer (transfer_funds_between_bank_accounts_7291) is listed. Light Blue holds $0 and the customer will deposit the $6,000 externally, so the agent should only state the 30-day funding window per doc_002.",
+     "Diamond Elite Card (+0.6% on Green savings) is higher than Silver Rewards, but no document gives its fee or eligibility. Silver Rewards was chosen as the best verifiable no-fee option.",
+     "Base APYs for the Silver and Silver Plus savings accounts are not documented. Blue checking + Silver Plus combinations therefore cannot be compared and were excluded.",
+     "apply_for_credit_card is described as a tool the customer already has. No document instructs giving it via give_discoverable_user_tool, so no give call is listed.",
+     "The current date was not shown. The Light Blue 14-day tenure and the 30-day early-closure fee window are assumed to have passed, given the 11/01/2024 opening date. The waive_early_closure_fee flag is omitted.",
+     "No document covering the opening of checking accounts was provided. The Evergreen account_class string is inferred from the 'Account' naming convention."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"rp65a7b3c4\", \"account_type\": \"savings\", \"account_class\": \"Green Account\"}",
+      "rule": "Savings must be opened first. doc_..._002 requires an active checking account held for at least 14 days, and only the Light Blue account (opened 11/01/2024) qualifies. A new checking account would have 0 days of tenure, so Light Blue cannot be closed first. The class is chosen to maximize APY on $6,000. Gold is excluded because it needs a $10,000 minimum (gold_account_001). Bronze pays only 2.0%. Silver and Silver Plus have no base APY documented. Green Account (savings) needs a $500 minimum, pays a 4.0% base (green_savings_003), and gets a +0.55% Evergreen linked boost (doc_012, evergreen_001). account_type is 'savings' and account_class is the full name ending in 'Account', per doc_002 step 4."
+     },
+     {
+      "actor": "customer",
+      "tool": "apply_for_credit_card",
+      "arguments_json": "{\"card_type\": \"Silver Rewards Card\", \"customer_name\": \"Riley Parker\", \"annual_income\": 75000, \"rho_bank_subscription\": false}",
+      "rule": "Card APY bonuses on Green Account (savings) are listed in green_savings_003. EcoCard gives +0.5% but has a $50 annual fee (ecocard_001); 0.5% of $6,000 is $30, which does not cover the fee. Diamond Elite (+0.6%) has no documented terms or fee, so it cannot be verified. Silver Rewards gives +0.45% with a $0 annual fee (silver_rewards_card_001), making it the best documented no-fee option. Effective rate: 4.0 + 0.55 + 0.45 = 5.0%. Name, income and subscription status are copied from the customer."
+     },
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"rp65a7b3c4\", \"account_type\": \"checking\", \"account_class\": \"Evergreen Account\"}",
+      "rule": "doc_012 pairing #3 (Evergreen checking + Green savings) qualifies for a boost. evergreen_001 sets that boost at +0.55%. This makes Evergreen the checking account that maximizes the savings APY. It is also a premium-tier upgrade over the entry-tier Light Blue (doc_005)."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_bank_account_7392",
+      "arguments_json": "{\"account_id\": \"chk_rp65a7b3c4\", \"reason\": \"Customer upgrading to a new checking account (Evergreen)\"}",
+      "rule": "doc_005 pre-closure checks are met: status is OPEN and current_holdings is $0.00. The Light Blue entry tier charges a $15 early-closure fee only within 30 days; the account was opened 11/01/2024, so presumably no fee applies. Notice period is 0 days. Closure comes last so that the savings eligibility under doc_002 is satisfied while Light Blue is still active."
+     }
+    ]
+   }
+  }
+ },
+ "task_070": {
+  "verdict": "derivable",
+  "gold_writes": 1,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "The current date (from get_current_time) determines which promotion applies. The October promo (doc_014, 10/12-11/12/2025) puts Lime Green first and Hunter Green second. Lime Green is not confirmed to have $0 overdraft fees, so under the October promo alone the pick would be Hunter Green. The November promo (doc_013, 11/01-11/30/2025) puts Sky Blue first. The promos overlap from 11/01 to 11/12. I assumed the November promo governs, giving Sky Blue.",
+     "Sky Blue's eligibility requires the company to be within 4 years of formation. The customer did not state Brightwave Digital's age. If the business is older than 4 years, Hunter Green would be the recommendation instead.",
+     "Sky Blue's rebate cap is 'up to 15' per month. I read this as meeting the 'at least $15' requirement exactly.",
+     "The exact account_class string may need to be 'Sky Blue' or a fuller official name. I used 'Sky Blue' as the docs name it."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"224959b99e\", \"account_type\": \"business_checking\", \"account_class\": \"Sky Blue\"}",
+      "rule": "Opening a business checking account (doc_bank_accounts_(general)_003): the customer is verified and the lookup shows they qualify. They have an OPEN personal checking account (Green Account, $2,850, which is at least $500), no CLOSED accounts, and 0 business checking accounts, which is under the limit of 6. account_type is 'business_checking' per the tool enum. On account_class, the customer's requirements are: ATM rebate of at least $15/mo, $0 overdraft fee, minimum balance under $10k, and APY of at least 1%. Sky Blue meets all of them ($15 rebate cap, $0 overdraft, funding requirement 0, 1.25% APY). Hunter Green also meets them ($20 rebate, $0 overdraft, $5k is only a fee waiver, 1.0% APY). Lime Green states no overdraft fee, so it cannot be confirmed to meet the zero-overdraft requirement. All other accounts fail: Navy Blue and Cobalt Blue have 0.5% APY, and True Blue, World Blue and Beige require minimum balances of $10k or more. When multiple accounts qualify, the November 2025 promotion (doc_013, active 11/01-11/30/2025) says to recommend Sky Blue first. The customer accepts the single recommendation and asks to open it."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "The recommendation depends on the current date returned by get_current_time. Under the November promotion (11/01\u201311/30/2025), Sky Blue has priority. If the date is 10/12\u201310/31 (October promotion only), Lime Green fails the overdraft requirement, so Hunter Green would be recommended (account_class 'Hunter Green'). If no promotion is active, either qualifier could be chosen.",
+     "The two promotions overlap from 11/01 to 11/12/2025. Doc_014 puts Lime Green first (it fails) and then Hunter Green; doc_013 puts Sky Blue first. The documents do not resolve this conflict. Best reading: the newer November notice prevails, giving Sky Blue.",
+     "Sky Blue requires the company to be within 4 years of formation. The customer never states when Brightwave Digital was formed. Her 3-year personal relationship suggests it is likely within 4 years, but this is unconfirmed; if it is ineligible, Hunter Green is the fallback.",
+     "Sky Blue's ATM rebate is exactly 'up to 15 per month' and Hunter Green's APY is exactly 1.0%. Both are treated as meeting the customer's 'at least' thresholds.",
+     "The exact account_class string may need to be 'Sky Blue' or 'Sky Blue Account'. The KB gives examples as bare names (Navy Blue, Cobalt Blue, True Blue), so 'Sky Blue' is used.",
+     "No transfer to a human and no user discoverable tools are needed; the customer makes no tool calls."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"224959b99e\", \"account_type\": \"business_checking\", \"account_class\": \"Sky Blue\"}",
+      "rule": "Eligibility per doc_bank_accounts_(general)_003: customer verified (2 of DOB/email/phone/address); has an OPEN personal checking account (Green Account, id 05); 0 business checking accounts (under 6); no CLOSED accounts; checking balance $2,850 is at least $500. account_type 'business_checking' because the customer asked for a business checking account. The account_class is chosen against the customer's four requirements: ATM rebate of at least $15/mo, $0 overdraft fee, minimum balance under $10,000, and APY of at least 1%. Sky Blue meets all four: rebate up to $15, overdraft fee $0.00, funding requirement 0, APY 1.25% (sky_blue_001/007/010). Hunter Green also meets all four: rebate $20, overdraft $0.00, $5,000 is only a fee-waiver threshold, APY 1.0% (hunter_green_001/010). Lime Green fails because no $0 overdraft fee is documented. Cobalt Blue and Navy Blue fail on APY. True Blue, World Blue and Beige fail on minimum balance. With more than one qualifier, the November 2025 promotion (doc_013, 11/01\u201311/30) puts Sky Blue first. The current date comes from get_current_time per policy guideline 4. A single recommendation is given as the customer requested."
+     }
+    ]
+   }
+  }
+ },
+ "task_071": {
+  "verdict": "not derivable as gold",
+  "gold_writes": 2,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "open_bank_account_4821",
+      "status": "differs",
+      "diff": {
+       "account_type": [
+        "savings",
+        "business_savings"
+       ]
+      }
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Current date is assumed to be mid-November 2025 (Cobalt Blue opened 09/15/2025, described as '~2 months ago'). On that date the November promotions apply (Sky Blue; Gold Saver Account), and the October ones (Lime Green; Gold Plus Saver), which ended 11/12, do not. The agent should confirm this with get_current_time.",
+     "Sky Blue eligibility requires the company to be within 4 years of formation. The studio's formation date is not given, though the business checking account is only 2 months old. Assumed to be satisfied.",
+     "For the savings account_type, doc_004 says to use 'savings', while the tool enum offers 'business_savings'. I followed the KB document; 'business_savings' is a plausible alternative.",
+     "Exact account_class string for the checking account: 'Sky Blue' (the documents never give a longer official name).",
+     "Opening-deposit transfer for the savings account: doc_004 says the agent must ask whether to transfer the opening deposit from Cobalt Blue (biz_chk_yt71c9e4f2). The customer's script does not answer, and no Gold Saver minimum opening deposit is documented, so no transfer_funds_between_bank_accounts_7291 call is listed. If she agrees, the source would be biz_chk_yt71c9e4f2, the destination the new savings account_id, and the amount whatever is confirmed with her.",
+     "Lime Green (min balance $5k, APY 1.5%) and Hunter Green (APY 1.0%, $0 overdraft fee) might also qualify if their undocumented mobile-deposit limits (and Lime Green's overdraft fee) are adequate. Even so, Sky Blue would still rank first under the November promotion."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"yt71c9e4f2\", \"account_type\": \"business_checking\", \"account_class\": \"Sky Blue\"}",
+      "rule": "Business checking opening procedure (doc_..._003): she is eligible because Green Account personal checking is OPEN with $3,150 (at least $500), she has 1 business checking account (6 or fewer), and no CLOSED accounts. Sky Blue meets all four stated requirements: $25,000 daily mobile deposit (at least $10k), $0.00 overdraft fee, no minimum balance or funding requirement (under $10k), and 1.25% APY (at least 1%). Lime Green and Hunter Green have no documented mobile-deposit limit or overdraft data (Lime Green), and Navy Blue, Cobalt Blue, True Blue, World Blue and Beige fail on APY or minimum balance. The November 2025 business checking promotion (doc_013, active 11/01 to 11/30) ranks Sky Blue first among qualifying accounts. The October promotion ended 11/12. account_type is business_checking per the tool enum."
+     },
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"yt71c9e4f2\", \"account_type\": \"savings\", \"account_class\": \"Gold Saver Account\"}",
+      "rule": "Business savings opening procedure (doc_..._004): she is eligible because Cobalt Blue business checking is OPEN, opened 09/15/2025 (at least 30 days), and holds $12,500 (at least $2,500). She has 0 business savings accounts and no negative balances. Gold Saver Account meets all requirements: same-day ACH Yes, $15 domestic wire fee (no more than $15), and no stated minimum balance (under $50k). The November 2025 savings promotion (doc_015) ranks Gold Saver Account first. Silver Plus Saver lacks a documented wire fee. Gold Plus Saver lacks documented same-day ACH. Platinum Reserve and Diamond Vault minimums exceed $50k. account_type 'savings' follows doc_004's instruction 'Set account_type to savings', and the account_class is the exact official name ending in 'Account'."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "open_bank_account_4821",
+      "status": "differs",
+      "diff": {
+       "account_type": [
+        "savings",
+        "business_savings"
+       ]
+      }
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "account_type for the business savings account: doc_004 explicitly says to set account_type to 'savings', but the tool enum also offers 'business_savings'. I followed the KB instruction ('savings').",
+     "Current date assumed to be about mid-November 2025, based on Cobalt Blue opening 09/15/2025 'about 2 months ago'. The agent must call get_current_time. This means the November promotions apply (Sky Blue; Gold Saver Account) and the October ones (ended 11/12) do not. Even under the October promotions, Lime Green and Gold Plus Saver could not be shown to meet all requirements (Lime Green has no documented mobile deposit or overdraft terms; Gold Plus Saver has a $25k minimum but its same-day ACH is undocumented). So the recommendations would likely stand.",
+     "Sky Blue requires the company to be within 4 years of formation. Aurora Design Co's formation date is never stated; I assumed it qualifies (the customer has banked with Rho for about 3 years).",
+     "Opening deposit for the savings account: doc_004 requires asking whether to transfer the opening deposit from the qualifying business checking (biz_chk_yt71c9e4f2). The customer script does not address this, and no Gold Saver minimum opening deposit is documented. So no transfer_funds_between_bank_accounts_7291 call is listed. If the customer declines, the agent should tell them they have 30 days to fund the account. If they accept, the source would be biz_chk_yt71c9e4f2, the amount would be confirmed with the customer, and the destination would be the new savings account_id.",
+     "Lime Green (1.5% APY, $5,000 minimum) and Hunter Green ($0 overdraft, 1.0% APY, $5,000 waiver) may also qualify, but their mobile deposit limits are undocumented. Under the November promotion, Sky Blue takes priority either way."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"yt71c9e4f2\", \"account_type\": \"business_checking\", \"account_class\": \"Sky Blue\"}",
+      "rule": "Eligibility per doc_..._003 is met: verified; Green Account personal checking is OPEN; 1 business checking (at most 6); no CLOSED accounts; personal checking balance $3,150 is at least $500. Sky Blue meets every stated checking requirement: $25,000 daily mobile deposit limit (doc sky_blue_007), $0.00 overdraft fee and $0 funding requirement (sky_blue_001), 1.25% APY. Rivals fail or are unproven: Navy Blue and Cobalt Blue 0.5% APY; True Blue $25k minimum; World Blue $10k minimum; Beige $250k; Lime Green and Hunter Green lack documented mobile deposit and overdraft terms. The November 2025 promotion (doc_013, active 11/01-11/30; the current date is about mid-Nov 2025 since Cobalt Blue opened 09/15/2025 'about 2 months ago') puts Sky Blue first. account_type is business_checking per the tool enum."
+     },
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"yt71c9e4f2\", \"account_type\": \"savings\", \"account_class\": \"Gold Saver Account\"}",
+      "rule": "Eligibility per doc_..._004 is met: OPEN Cobalt Blue business checking, opened 09/15/2025 (at least 30 days) with a $12,500 balance (at least $2,500); 0 business savings accounts; no negative balances. Gold Saver Account meets every stated savings requirement: same-day ACH 'Yes' and a $15 domestic wire fee, which is not more than $15 (gold_saver_006); no minimum balance is documented. The November 2025 savings promotion (doc_015) ranks Gold Saver Account first. doc_004 Tool Instructions say 'Set account_type to savings' and to use the exact official name ending in 'Account'."
+     }
+    ]
+   }
+  }
+ },
+ "task_075": {
+  "verdict": "under-determined",
+  "gold_writes": 1,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "differs",
+      "diff": {
+       "user_id": [
+        "<Marco Vitiello's user_id from the identity-verification lookup>",
+        "mv93f8a7b2"
+       ]
+      }
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "user_id is not given in the facts; it would come from the verification read tool (no lookups in the reference path), so a placeholder is used.",
+     "Whether the out-of-network ATM fee applies on top of the foreign ATM fee for withdrawals abroad is not stated explicitly. I assume both apply because the customer explicitly says the ATMs are out-of-network and abroad. Even under the alternative reading, Green Fee-Free still ties at $0 with Purple and Bluest. Under that reading it remains the most sensible choice: Bluest needs a $75,000 opening deposit, and Purple's rebates only matter for third-party fees, which the customer did not mention.",
+     "The eligibility checks (no more than 4 personal checking accounts, none closed for cause in the past 6 months) cannot be confirmed from the provided facts; I assume the customer is eligible. Age is 31, so that requirement is met.",
+     "Green Fee-Free has a $22.50 monthly maintenance fee, waived with a $150 minimum daily balance. This is not an ATM fee and is not part of the customer's stated criterion."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"<Marco Vitiello's user_id from the identity-verification lookup>\", \"account_type\": \"checking\", \"account_class\": \"Green Fee-Free Account\"}",
+      "rule": "Opening Personal Checking Accounts (doc_bank_accounts_(general)_001): verify identity, check eligibility, confirm the customer's chosen account_class using the full official name ending in 'Account', then use open_bank_account_4821. account_type is 'checking' because the customer asked for a new personal checking account. The account_class comes from comparing the Rho-Bank ATM fees for 18 withdrawals of $350 each at foreign out-of-network ATMs. Green Fee-Free charges $0 out-of-network and $0 foreign (doc 005/003), for $0 in total, and its $500 daily limit covers $350. Purple charges $0 foreign but $2.50 per out-of-network withdrawal (doc 012), $45 in total, and its rebates cover only operator fees. Bluest charges $0 foreign but $2.00 per out-of-network withdrawal (doc 010), $36 in total, its rebates cover third-party fees, and it requires a $75,000 opening deposit. Light Blue costs 4 x $4 x 3 = $48. Evergreen costs $7 x 18 = $126. Blue and Green (checking) cost $10.50 x 18 = $189. Dark Green is ineligible at age 26 or older, has a $300 daily limit and costs $108. Light Green has a $150 daily limit and costs $90. Gold Years requires age 62 or older. The customer accepts the recommendation."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "open_bank_account_4821",
+      "status": "differs",
+      "diff": {
+       "user_id": [
+        "<Marco Vitiello's user_id from verification lookup>",
+        "mv93f8a7b2"
+       ]
+      }
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "The user_id is not given in the supplied facts (no lookups in the reference path). It must come from the customer lookup made during verification with 2 of DOB, email, phone, address.",
+     "Whether a foreign out-of-network withdrawal incurs both the foreign ATM fee and the out-of-network fee is not stated explicitly. I read the customer's 'out of network ATMs abroad' as triggering both, which makes Purple ($45) and Bluest ($36) worse than Green Fee-Free ($0). If only foreign fees counted, Green Fee-Free, Purple and Bluest would tie at $0. Green Fee-Free still wins or ties, and it has no $75,000 opening deposit like Bluest.",
+     "The eligibility checks (no more than 4 personal checking accounts, no checking closed for cause in the past 6 months) cannot be confirmed from the supplied facts. I assume they pass.",
+     "No transfer to a human and no user discoverable tool is needed in this scenario."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "open_bank_account_4821",
+      "arguments_json": "{\"user_id\": \"<Marco Vitiello's user_id from verification lookup>\", \"account_type\": \"checking\", \"account_class\": \"Green Fee-Free Account\"}",
+      "rule": "Opening procedure (doc_bank_accounts_bank_accounts_(general)_001): verify identity, check eligibility (customer is 31, so 18+), confirm the account_class using the full official name ending in 'Account', then use open_bank_account_4821. account_type is 'checking' because the customer asked for a personal checking account. account_class is the account with the lowest Rho-Bank fees for 18 out-of-network foreign withdrawals of $350 (6 per month for 3 months). Green Fee-Free charges $0.00 for out-of-network and $0.00 for foreign withdrawals (doc _005 and _003), and its $500 daily ATM limit covers $350, so the total is $0. Purple charges $0 foreign but $2.50 per out-of-network withdrawal (doc purple_012), so $45, and its rebates cover only operator fees. Bluest charges $0 foreign but $2.00 per out-of-network withdrawal, so $36, and also needs a $75,000 opening deposit. Light Blue: 2 free per month, then $4 foreign plus $2.50 out-of-network. Light Green's $150 daily limit is too low for $350, and its fee would be $5 each. Evergreen: 2%, minimum $3, so $7 each, $126. Blue and Green (checking): 3%, minimum $5, so $10.50 each, $189. Dark Green is limited to ages up to 26 and Gold Years to 62+, so the customer is ineligible for both."
+     }
+    ]
+   }
+  }
+ },
+ "task_078": {
+  "verdict": "under-determined",
+  "gold_writes": 8,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<ACTIVE Green Account card_id returned by get_debit_cards_by_account_id_7823(chk_mc78a5b9d2_2)>",
+        "dbc_mc78a5b9d2_green"
+       ]
+      }
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<ACTIVE Light Green Account card_id returned by get_debit_cards_by_account_id_7823(chk_mc78a5b9d2_3)>",
+        "dbc_mc78a5b9d2_lg"
+       ]
+      }
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<Green Account card_id>",
+        "dbc_mc78a5b9d2_green"
+       ]
+      }
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<Green Account card_id>",
+        "dbc_mc78a5b9d2_green"
+       ]
+      }
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "The card_ids for the Green and Light Green Account debit cards were not in the provided lookups, so placeholders are used.",
+     "doc_025 Requirement 3 allows closing only ACTIVE or PENDING cards, but the cards were frozen first at the customer's request. I read this as requiring an unfreeze immediately before each close. Alternatively, the close tool may accept FROZEN cards, in which case the unfreeze calls should be dropped.",
+     "The Light Green card is not closed and no Light Green replacement is ordered. Pending transactions (btxn_3e4b057911a1, btxn_9034c8e42248) block closure under doc_025 Requirement 4, because the lost reason only bypasses Requirement 6. The card stays frozen until they settle.",
+     "No Light Blue replacement is ordered. Entry tier has a 2-replacement limit and both 'lost' cards were issued within 12 months. The customer declines the $25 excess fee and will wait until about 03/15/2026; the 48-hour post-closure waiting period also applies.",
+     "The Green Account card replacement history was not provided. I assume fewer than 3 replacements in the last 12 months, so no excess_replacement_fee applies.",
+     "No credit cards were found, so no cross-product credit card replacement is offered under doc_030.",
+     "No transfer to a human is needed."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_mc78a5b9d2_lb\"}",
+      "rule": "doc_026 Freezing Steps: the customer asks to freeze all cards immediately. The Light Blue card dbc_mc78a5b9d2_lb is ACTIVE and owned by mc78a5b9d2, so it meets the freezing requirements."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"<ACTIVE Green Account card_id returned by get_debit_cards_by_account_id_7823(chk_mc78a5b9d2_2)>\"}",
+      "rule": "doc_026 Freezing Steps: the customer asks to freeze all three cards. The card must be ACTIVE and owned by the customer."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"<ACTIVE Light Green Account card_id returned by get_debit_cards_by_account_id_7823(chk_mc78a5b9d2_3)>\"}",
+      "rule": "doc_026 Freezing Steps: the customer asks to freeze all three cards. The card must be ACTIVE and owned by the customer."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_mc78a5b9d2_lb\"}",
+      "rule": "doc_025 Requirement 3: a card can only be closed if it is ACTIVE or PENDING, and it is now FROZEN. Unfreezing is allowed by doc_026 because the card is FROZEN and account chk_mc78a5b9d2_1 is OPEN. This is done immediately before closing."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_mc78a5b9d2_lb\", \"reason\": \"lost\"}",
+      "rule": "doc_025: the customer confirms the wallet is definitely gone, so the reason is 'lost'. Lost cards are closed immediately (doc_026: close rather than freeze when confirmed lost). chk_mc78a5b9d2_1 has no pending transactions. Doc_029 Entry tier: two 'lost' replacements were issued within 12 months (03/15/2025 and 07/25/2025), so no replacement is ordered. The customer declines the $25 excess fee and will wait until the 03/15/2025 card ages out around 03/15/2026."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"<Green Account card_id>\"}",
+      "rule": "doc_025 Requirement 3: a card must be ACTIVE or PENDING to be closed, and it is now FROZEN. Unfreezing is allowed by doc_026 because the card is FROZEN and the linked account is OPEN. This is done immediately before closing."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"<Green Account card_id>\", \"reason\": \"lost\"}",
+      "rule": "doc_025: the customer confirms the card is lost, so the reason is 'lost'. All transactions on chk_mc78a5b9d2_2 are posted, so there are no pending transactions blocking closure."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\": \"chk_mc78a5b9d2_2\", \"user_id\": \"mc78a5b9d2\", \"delivery_option\": \"EXPEDITED\", \"delivery_fee\": 15, \"card_design\": \"CLASSIC\", \"design_fee\": 0, \"shipping_address\": \"3245 Sunset Boulevard, San Diego, CA 92103\"}",
+      "rule": "doc_029 Mid tier (Green Account per doc_005): there is no waiting period after closure, and expedited shipping has a delivery_fee of $15, which the customer requested and agreed to. The customer wants the best design that is free, and only CLASSIC has design_fee $0 for Mid tier. The customer must be told that fees are deducted from the checking account. No excess_replacement_fee applies, assuming fewer than 3 replacements in 12 months."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<ACTIVE card_id returned by get_debit_cards_by_account_id_7823 for chk_mc78a5b9d2_2 (Green Account)>",
+        "dbc_mc78a5b9d2_green"
+       ]
+      }
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<ACTIVE card_id returned by get_debit_cards_by_account_id_7823 for chk_mc78a5b9d2_3 (Light Green Account)>",
+        "dbc_mc78a5b9d2_lg"
+       ]
+      }
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<Green Account card_id>",
+        "dbc_mc78a5b9d2_green"
+       ]
+      }
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "differs",
+      "diff": {
+       "card_id": [
+        "<Green Account card_id>",
+        "dbc_mc78a5b9d2_green"
+       ]
+      }
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Green and Light Green debit card IDs and their card histories were not provided in the lookups. Placeholders are used, and the Green replacement count is assumed to be under the mid-tier limit of 3, so no excess fee applies.",
+     "Doc 025 requires ACTIVE/PENDING status to close, but the cards are frozen first at the customer's request. I unfreeze immediately before closing. An alternative reading is to close the frozen cards directly, or to skip freezing because doc 026 recommends closing once loss is confirmed.",
+     "Light Blue (entry tier): two lost-replacement cards were issued 03/15/2025 and 07/25/2025, so the 2-per-12-month limit is reached. The customer declines the $25 excess fee and chooses to wait until the oldest ages out on about 03/15/2026, so no Light Blue replacement order is placed. The 48-hour post-closure wait would also apply.",
+     "Light Green: pending transactions (btxn_3e4b057911a1, btxn_9034c8e42248) block closure under Doc 025 Requirement 4; the 'lost' reason bypasses only Requirement 6. The card stays frozen and is not closed or replaced.",
+     "Doc 030: the cross-product check finds no credit cards, so no credit card replacement is offered. No transfer to a human is needed."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_mc78a5b9d2_lb\"}",
+      "rule": "Doc 026 Freezing: the customer asks to freeze because the wallet was misplaced/lost, and the Light Blue card is ACTIVE. Card_id is copied from the get_debit_cards_by_account_id_7823 lookup for chk_mc78a5b9d2_1."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"<ACTIVE card_id returned by get_debit_cards_by_account_id_7823 for chk_mc78a5b9d2_2 (Green Account)>\"}",
+      "rule": "Doc 026 Freezing: the customer asks to freeze all three cards. The card must be ACTIVE and owned by the customer."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"<ACTIVE card_id returned by get_debit_cards_by_account_id_7823 for chk_mc78a5b9d2_3 (Light Green Account)>\"}",
+      "rule": "Doc 026 Freezing: the customer asks to freeze all three cards. The card must be ACTIVE and owned by the customer."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_mc78a5b9d2_lb\"}",
+      "rule": "Doc 025 Requirement 3: a card must be ACTIVE or PENDING to be closed, so the FROZEN card is returned to ACTIVE immediately before closing it. Doc 026 Unfreezing requirements are met: the card is FROZEN and the account is OPEN."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_mc78a5b9d2_lb\", \"reason\": \"lost\"}",
+      "rule": "Doc 025: the customer confirms the wallet is definitely gone, so reason is 'lost'. Account chk_mc78a5b9d2_1 has no pending transactions (all posted). Doc 026: if the card is confirmed lost, recommend closing."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"<Green Account card_id>\"}",
+      "rule": "Doc 025 Requirement 3: the card must be ACTIVE or PENDING to be closed, so the frozen card is reactivated immediately before closure."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"<Green Account card_id>\", \"reason\": \"lost\"}",
+      "rule": "Doc 025: reason 'lost' because the customer confirmed it. All Green account transactions are posted, so there are no pending transactions."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\": \"chk_mc78a5b9d2_2\", \"user_id\": \"mc78a5b9d2\", \"delivery_option\": \"EXPEDITED\", \"delivery_fee\": 15, \"card_design\": \"CLASSIC\", \"design_fee\": 0, \"shipping_address\": \"3245 Sunset Boulevard, San Diego, CA 92103\"}",
+      "rule": "Doc 029 MID TIER (the Green Account is mid tier per doc 005): there is no waiting period after closure, and expedited delivery_fee is $15 (the customer requests expedited and accepts fees). The customer wants the best free design: for mid tier only CLASSIC is $0, so design_fee is 0. The agent must inform the customer that fees are deducted from the checking account before ordering. No excess_replacement_fee, assuming fewer than 3 replacements in the last 12 months."
+     }
+    ]
+   }
+  }
+ },
+ "task_081": {
+  "verdict": "under-determined",
+  "gold_writes": 15,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_replacement_credit_card_7291",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_replacement_credit_card_7291",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Gold card CryptoMiner Pro $299.99 txn id>",
+        "txn_dc7e5b05300c"
+       ],
+       "purchase_date": [
+        "<transaction date>",
+        "11/12/2025"
+       ],
+       "issue_noticed_date": [
+        "<today from get_current_time>",
+        "11/14/2025"
+       ]
+      }
+     },
+     {
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Gold card FastCrypto Exchange $199.99 txn id>",
+        "txn_754027c485bf"
+       ],
+       "purchase_date": [
+        "<transaction date>",
+        "11/11/2025"
+       ],
+       "issue_noticed_date": [
+        "<today from get_current_time>",
+        "11/14/2025"
+       ]
+      }
+     },
+     {
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<EcoCard SuperGaming Online $149.95 txn id>",
+        "txn_39c2ddb4e1d2"
+       ],
+       "purchase_date": [
+        "<transaction date>",
+        "11/13/2025"
+       ],
+       "issue_noticed_date": [
+        "<today from get_current_time>",
+        "11/14/2025"
+       ]
+      }
+     },
+     {
+      "tool": "transfer_to_human_agents",
+      "status": "differs",
+      "diff": {
+       "reason": [
+        "customer_requested_human_agent",
+        null
+       ]
+      }
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Freeze vs. close: doc_026 says to recommend closing over freezing when a card is confirmed stolen. The script nevertheless has the customer request a freeze first, so the freeze calls follow the customer's explicit request.",
+     "doc_025 requires the card to be ACTIVE or PENDING to close. Closing the frozen Blue and GFF cards therefore requires unfreezing them first; this unfreeze-then-close sequence is my reading.",
+     "No replacement order is placed for the Green Fee-Free card. Entry tier (doc_029) imposes a 48-hour waiting period after closure and allows standard shipping only, so the agent must tell the customer to reorder after 48 hours.",
+     "Credit card transaction IDs and purchase dates for the three disputed charges are not in the provided lookup facts, so placeholders are used. issue_noticed_date is 'today' and must come from get_current_time.",
+     "Provisional credit for the third dispute: 'has not filed more than 2 disputes in the past 12 months' still holds with 2 prior (same-session) disputes, so it is marked true. An alternative reading counting the in-session filings would make the third ineligible; in that case apply eligibility to the two largest charges first, per the customer's preference.",
+     "The transfer reason enum is not in the provided documents; 'customer_requested_human_agent' is a best guess.",
+     "The customer's request_human_agent_transfer calls are a tracking tool, not one given by the agent, so they are not listed as state-changing customer actions.",
+     "The dispute tool lists 'reversal_of_charge' in the KB but not in the tool schema; 'full_refund' is used per the customer's request."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_blue\"}",
+      "rule": "The customer explicitly asks to freeze all debit cards and accepts the freeze offer. Freezing requirements are met: the customer is verified and owns the card, and the card is ACTIVE (doc_026). The card_id comes from the debit card lookup for chk_tm92c4d7e8_blue."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_gff\"}",
+      "rule": "Same as above (doc_026 freezing requirements). The card is ACTIVE and the customer requested the freeze."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_green\"}",
+      "rule": "Same as above (doc_026 freezing requirements). The card is ACTIVE and the customer requested the freeze."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_green\"}",
+      "rule": "The customer found the Green Account card and asks to unfreeze it. Unfreezing requirements are met: the customer is verified and owns the card, the card is FROZEN, and the linked account chk_tm92c4d7e8_green is OPEN (doc_026)."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_blue\"}",
+      "rule": "doc_025 requirement 3: a debit card can only be closed while ACTIVE or PENDING. The frozen Blue card must therefore be returned to ACTIVE before it can be closed."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_blue\", \"reason\": \"stolen\"}",
+      "rule": "The customer confirms the card was stolen. doc_026 says to close confirmed lost/stolen cards rather than freeze them. doc_025: the reason is 'stolen' per the customer's statement. There are no pending transactions (all Blue transactions are posted), and the stolen reason bypasses the minimum card age requirement."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_gff\"}",
+      "rule": "doc_025 requirement 3: a card must be ACTIVE or PENDING to be closed, so the frozen GFF card must be unfrozen first."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_gff\", \"reason\": \"stolen\"}",
+      "rule": "Same as the Blue closure (doc_025): reason 'stolen' per the customer's statement, and there are no pending transactions on chk_tm92c4d7e8_gff."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\": \"chk_tm92c4d7e8_blue\", \"user_id\": \"tm92c4d7e8\", \"delivery_option\": \"EXPEDITED\", \"delivery_fee\": 15, \"card_design\": \"CLASSIC\", \"design_fee\": 0, \"shipping_address\": \"7845 Maple Street, Denver, CO 80202\"}",
+      "rule": "doc_029 places the Blue Account in MID TIER: no waiting period, expedited delivery_fee $15, CLASSIC design_fee $0. Replacement history count is 0 because the only prior card has issue_reason new_account, so no excess_replacement_fee applies. doc_023 eligibility is met: the account is OPEN, older than 3 business days, has no active card after closure, and the balance is at least $25. The customer chose expedited and classic and accepted the fee."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_replacement_credit_card_7291",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_tm92c4d7e8_gold\", \"user_id\": \"tm92c4d7e8\", \"shipping_address\": \"7845 Maple Street, Denver, CO 80202\", \"reason\": \"stolen\", \"expedited_shipping\": true}",
+      "rule": "credit_card_replacements_001: the reason is 'stolen' per the customer, and expedited shipping is strongly recommended for stolen cards. The customer requested expedited. The Gold Rewards Card is premium tier, so expedited shipping costs $0 (doc_002)."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_replacement_credit_card_7291",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_tm92c4d7e8_eco\", \"user_id\": \"tm92c4d7e8\", \"shipping_address\": \"7845 Maple Street, Denver, CO 80202\", \"reason\": \"stolen\", \"expedited_shipping\": true}",
+      "rule": "credit_card_replacements_001/002: the EcoCard is entry tier, so expedited shipping costs $15. The customer consented to the fee. The reason is 'stolen'."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "arguments_json": "{\"transaction_id\": \"<Gold card CryptoMiner Pro $299.99 txn id>\", \"card_action\": \"cancel_and_reissue\", \"card_last_4_digits\": \"3829\", \"full_name\": \"Taylor Morrison\", \"user_id\": \"tm92c4d7e8\", \"phone\": \"720-555-0348\", \"email\": \"taylor.morrison@outlook.com\", \"address\": \"7845 Maple Street, Denver, CO 80202\", \"contacted_merchant\": false, \"purchase_date\": \"<transaction date>\", \"issue_noticed_date\": \"<today from get_current_time>\", \"dispute_reason\": \"unauthorized_fraudulent_charge\", \"resolution_requested\": \"full_refund\", \"eligible_for_provisional_credit\": true}",
+      "rule": "card_action is cancel_and_reissue because a replacement was already ordered via order_replacement_credit_card_7291 (doc_014 item 2). The customer said the charge was unauthorized, they did not contact the merchant, they want a full refund, and they noticed it today. Provisional credit (doc_015): the account was opened 05/10/2022 (at least 60 days), the reason is fraud, $299.99 falls between $25 and the $10000 Gold limit, there are 0 prior disputes, and merchant contact is not required for fraud."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "arguments_json": "{\"transaction_id\": \"<Gold card FastCrypto Exchange $199.99 txn id>\", \"card_action\": \"cancel_and_reissue\", \"card_last_4_digits\": \"3829\", \"full_name\": \"Taylor Morrison\", \"user_id\": \"tm92c4d7e8\", \"phone\": \"720-555-0348\", \"email\": \"taylor.morrison@outlook.com\", \"address\": \"7845 Maple Street, Denver, CO 80202\", \"contacted_merchant\": false, \"purchase_date\": \"<transaction date>\", \"issue_noticed_date\": \"<today from get_current_time>\", \"dispute_reason\": \"unauthorized_fraudulent_charge\", \"resolution_requested\": \"full_refund\", \"eligible_for_provisional_credit\": true}",
+      "rule": "Same as the first dispute (doc_014/doc_015). Prior disputes would be 1, which does not exceed 2. $199.99 falls within the Gold limit."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "arguments_json": "{\"transaction_id\": \"<EcoCard SuperGaming Online $149.95 txn id>\", \"card_action\": \"cancel_and_reissue\", \"card_last_4_digits\": \"5147\", \"full_name\": \"Taylor Morrison\", \"user_id\": \"tm92c4d7e8\", \"phone\": \"720-555-0348\", \"email\": \"taylor.morrison@outlook.com\", \"address\": \"7845 Maple Street, Denver, CO 80202\", \"contacted_merchant\": false, \"purchase_date\": \"<transaction date>\", \"issue_noticed_date\": \"<today from get_current_time>\", \"dispute_reason\": \"unauthorized_fraudulent_charge\", \"resolution_requested\": \"full_refund\", \"eligible_for_provisional_credit\": true}",
+      "rule": "doc_015: the EcoCard was opened 09/15/2023 (at least 60 days), the reason is fraud, and $149.95 falls between $25 and the $2500 entry limit. Prior disputes would be 2, which is 'not more than 2', so the customer remains eligible. card_action is cancel_and_reissue because the EcoCard replacement was ordered."
+     },
+     {
+      "actor": "agent",
+      "tool": "transfer_to_human_agents",
+      "arguments_json": "{\"summary\": \"Customer Taylor Morrison (tm92c4d7e8) reported stolen wallet. Froze 3 debit cards; unfroze Green (found). Closed Blue and Green Fee-Free debit cards as stolen; ordered expedited Blue replacement (GFF replacement subject to 48-hour entry-tier wait). Ordered expedited replacements for Gold Rewards and EcoCard. Filed 3 unauthorized-charge disputes (CryptoMiner Pro $299.99, FastCrypto Exchange $199.99, SuperGaming Online $149.95). Customer requested human agent 4 times to confirm setup.\", \"reason\": \"customer_requested_human_agent\"}",
+      "rule": "Policy guideline 6: the issue was within the agent's capabilities, so the first three requests are declined. After the 4th request for a human agent, the agent may invoke transfer_to_human_agents. The reason code should be taken from the KB transfer-reason enum."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "freeze_debit_card_3892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_replacement_credit_card_7291",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_replacement_credit_card_7291",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Gold txn id for CryptoMiner Pro $299.99>",
+        "txn_dc7e5b05300c"
+       ],
+       "purchase_date": [
+        "<transaction date>",
+        "11/12/2025"
+       ],
+       "issue_noticed_date": [
+        "<today from get_current_time>",
+        "11/14/2025"
+       ]
+      }
+     },
+     {
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Gold txn id for FastCrypto Exchange $199.99>",
+        "txn_754027c485bf"
+       ],
+       "purchase_date": [
+        "<transaction date>",
+        "11/11/2025"
+       ],
+       "issue_noticed_date": [
+        "<today from get_current_time>",
+        "11/14/2025"
+       ]
+      }
+     },
+     {
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<EcoCard txn id for SuperGaming Online $149.95>",
+        "txn_39c2ddb4e1d2"
+       ],
+       "purchase_date": [
+        "<transaction date>",
+        "11/13/2025"
+       ],
+       "issue_noticed_date": [
+        "<today from get_current_time>",
+        "11/14/2025"
+       ],
+       "eligible_for_provisional_credit": [
+        false,
+        true
+       ]
+      }
+     },
+     {
+      "tool": "transfer_to_human_agents",
+      "status": "differs",
+      "diff": {
+       "reason": [
+        "customer_request",
+        null
+       ]
+      }
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "No Green Fee-Free replacement order is listed. doc_029 sets an ENTRY TIER 48-hour waiting period after card closure (and standard shipping only), so the customer must be told to order after 48 hours with STANDARD shipping at $0.",
+     "Freezing first and then closing: doc_025 requires ACTIVE/PENDING status to close, so I added unfreezes of Blue and Green Fee-Free before closing. Alternatively, an agent could recommend closing instead of freezing from the start (doc_026: 'If customer confirms the card is lost/stolen, recommend closing'), which would avoid the freeze/unfreeze of those cards.",
+     "Provisional credit for the third dispute: doc_015 says 'has not filed more than 2 disputes in the past 12 months'. Read literally at the time of the third filing (2 prior), the EcoCard dispute could also be eligible (true). I followed the reading that a limit binds after two, applied to the largest charges.",
+     "Credit card transaction IDs and purchase dates are not in the provided lookups (no credit-card transaction lookup tool is listed); placeholders are used. issue_noticed_date should be today's date obtained via get_current_time.",
+     "The transfer reason enum is not found in the provided documents; 'customer_request' is a best guess.",
+     "Customer-side request_human_agent_transfer calls are tracking-only and not tools given by the agent, so they are not listed. No discoverable user tools are given in this scenario."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_blue\"}",
+      "rule": "doc_026 Freezing Steps: after verification and the customer's request ('freeze all three'), use freeze_debit_card_3892 on the card_id. The card is ACTIVE, so the freezing requirement is met."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_gff\"}",
+      "rule": "doc_026 Freezing Steps: the card is ACTIVE and the customer asked to freeze all three debit cards."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_green\"}",
+      "rule": "doc_026 Freezing Steps: the card is ACTIVE and the customer asked to freeze all three debit cards."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_green\"}",
+      "rule": "doc_026 Unfreezing Requirements/Steps: the customer found the Green card. The card is FROZEN and the account is OPEN, so unfreeze it."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_blue\"}",
+      "rule": "doc_025 Requirement 3: a debit card must be ACTIVE or PENDING to be closed. The frozen Blue card must be returned to ACTIVE before close_debit_card_4721."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_blue\", \"reason\": \"stolen\"}",
+      "rule": "doc_026 Freezing vs Closing: confirmed stolen cards are closed. doc_025: the reason is 'stolen' (customer says the wallet was stolen), which bypasses the min-age rule. There are no pending transactions (all posted)."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_gff\"}",
+      "rule": "doc_025 Requirement 3: the card must be ACTIVE or PENDING to be closed, so unfreeze the frozen Green Fee-Free card first."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_tm92c4d7e8_gff\", \"reason\": \"stolen\"}",
+      "rule": "doc_025 Closing Steps: the reason is 'stolen' per the customer. All transactions are posted, so there are none pending."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\": \"chk_tm92c4d7e8_blue\", \"user_id\": \"tm92c4d7e8\", \"delivery_option\": \"EXPEDITED\", \"delivery_fee\": 15, \"card_design\": \"CLASSIC\", \"design_fee\": 0, \"shipping_address\": \"7845 Maple Street, Denver, CO 80202\"}",
+      "rule": "doc_029: the Blue Account is MID TIER (doc_005), with no waiting period and expedited delivery_fee $15. MID TIER CLASSIC design_fee is $0. No excess fee applies: existing cards have issue_reason new_account, which does not count toward the replacement limit. The customer chose expedited and classic; the address is the confirmed one on file."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_replacement_credit_card_7291",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_tm92c4d7e8_gold\", \"user_id\": \"tm92c4d7e8\", \"shipping_address\": \"7845 Maple Street, Denver, CO 80202\", \"reason\": \"stolen\", \"expedited_shipping\": true}",
+      "rule": "credit_card_replacements_001/002: the reason is 'stolen'. Expedited is requested and recommended for stolen cards. The Gold Rewards Card is premium tier, so expedited shipping is $0."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_replacement_credit_card_7291",
+      "arguments_json": "{\"credit_card_account_id\": \"cc_tm92c4d7e8_eco\", \"user_id\": \"tm92c4d7e8\", \"shipping_address\": \"7845 Maple Street, Denver, CO 80202\", \"reason\": \"stolen\", \"expedited_shipping\": true}",
+      "rule": "credit_card_replacements_001/002: the reason is 'stolen'. The EcoCard is entry tier, so expedited costs $15, which the customer accepts."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "arguments_json": "{\"transaction_id\": \"<Gold txn id for CryptoMiner Pro $299.99>\", \"card_action\": \"cancel_and_reissue\", \"card_last_4_digits\": \"3829\", \"full_name\": \"Taylor Morrison\", \"user_id\": \"tm92c4d7e8\", \"phone\": \"720-555-0348\", \"email\": \"taylor.morrison@outlook.com\", \"address\": \"7845 Maple Street, Denver, CO 80202\", \"contacted_merchant\": false, \"purchase_date\": \"<transaction date>\", \"issue_noticed_date\": \"<today from get_current_time>\", \"dispute_reason\": \"unauthorized_fraudulent_charge\", \"resolution_requested\": \"full_refund\", \"eligible_for_provisional_credit\": true}",
+      "rule": "doc_014: card_action is cancel_and_reissue because a replacement was ordered via order_replacement_credit_card_7291. The reason is fraud and a full refund is requested, per the customer. doc_015: the account is older than 60 days, the reason is fraud, the amount is between $25 and the $10000 limit, and there are 0 prior disputes, so eligible. Filed first because the customer prioritises the biggest charges."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "arguments_json": "{\"transaction_id\": \"<Gold txn id for FastCrypto Exchange $199.99>\", \"card_action\": \"cancel_and_reissue\", \"card_last_4_digits\": \"3829\", \"full_name\": \"Taylor Morrison\", \"user_id\": \"tm92c4d7e8\", \"phone\": \"720-555-0348\", \"email\": \"taylor.morrison@outlook.com\", \"address\": \"7845 Maple Street, Denver, CO 80202\", \"contacted_merchant\": false, \"purchase_date\": \"<transaction date>\", \"issue_noticed_date\": \"<today from get_current_time>\", \"dispute_reason\": \"unauthorized_fraudulent_charge\", \"resolution_requested\": \"full_refund\", \"eligible_for_provisional_credit\": true}",
+      "rule": "doc_015: there is 1 prior dispute (fewer than 2) and all other criteria are met, so eligible. doc_014: cancel_and_reissue because the card was replaced."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_credit_card_transaction_dispute_4829",
+      "arguments_json": "{\"transaction_id\": \"<EcoCard txn id for SuperGaming Online $149.95>\", \"card_action\": \"cancel_and_reissue\", \"card_last_4_digits\": \"5147\", \"full_name\": \"Taylor Morrison\", \"user_id\": \"tm92c4d7e8\", \"phone\": \"720-555-0348\", \"email\": \"taylor.morrison@outlook.com\", \"address\": \"7845 Maple Street, Denver, CO 80202\", \"contacted_merchant\": false, \"purchase_date\": \"<transaction date>\", \"issue_noticed_date\": \"<today from get_current_time>\", \"dispute_reason\": \"unauthorized_fraudulent_charge\", \"resolution_requested\": \"full_refund\", \"eligible_for_provisional_credit\": false}",
+      "rule": "doc_015 criterion 4: the limit on previous disputes in 12 months, read with the two disputes just filed, makes this third dispute ineligible. It is applied to the smallest charge per the customer's priority. doc_014: cancel_and_reissue because the EcoCard was replaced."
+     },
+     {
+      "actor": "agent",
+      "tool": "transfer_to_human_agents",
+      "arguments_json": "{\"summary\": \"Wallet stolen. Froze all 3 debit cards, then unfroze Green (card found). Closed Blue and Green Fee-Free debit cards as stolen. Ordered an expedited classic replacement for Blue. Green Fee-Free replacement is subject to the 48-hour entry-tier wait. Ordered expedited replacements for the Gold and EcoCard credit cards. Filed 3 fraud disputes. Customer requested a human 4 times to confirm setup.\", \"reason\": \"customer_request\"}",
+      "rule": "Policy guideline 6: the issue was within the agent's capabilities, so the first three requests were declined. After the 4th request for a human agent, the agent may transfer."
+     }
+    ]
+   }
+  }
+ },
+ "task_082": {
+  "verdict": "under-determined",
+  "gold_writes": 6,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "pin_compromised": [
+        "yes_observed",
+        "yes_shared"
+       ],
+       "provisional_credit_eligible": [
+        true,
+        false
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "provisional_credit_eligible": [
+        false,
+        true
+       ],
+       "customer_max_liability_amount": [
+        89.99,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "customer_max_liability_amount": [
+        100.0,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "discovery_date": [
+        "01/09/2026",
+        "11/14/2025"
+       ]
+      }
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [
+     "close_debit_card_4721",
+     "order_debit_card_5739"
+    ],
+    "open_points": [
+     "Current date is unknown. The customer gives 11/14 as 'today' for ElectroniX but 'January 9th' for CryptoGems. I assumed the 60-day window holds for all four disputes, which is true if today is 11/14/2025. If today is 01/09/2026, ElectroniX (63 days old) and the ATM claim (61 days old) would fail the 60-day pre-filing rule and could not be filed. The CryptoGems discovery_date is copied as 01/09/2026 from the customer.",
+     "ElectroniX pin_compromised: the PIN was written on a note in the lost wallet. None of the enum values fits exactly. I chose 'yes_observed' rather than 'yes_shared'; choosing 'yes_shared' would make provisional credit not required.",
+     "FitLife card_in_possession and pin_compromised: the customer stresses he had the card and no PIN was involved when the charge occurred, but he no longer has the card now. I set true and 'no'.",
+     "Liability amounts depend on the statement date, which is unknown. I measured from discovery to reporting and capped at the disputed amount (FitLife 89.99, ATM 100). Using the $50 tier for those would change the values.",
+     "ElectroniX transaction_type: in-store with the PIN likely used (pin_purchase) vs signature_purchase. I chose pin_purchase.",
+     "Replacement card delivery option and design are not stated by the customer. I defaulted to STANDARD and CLASSIC with no fees.",
+     "Blue card close reason: 'lost' vs 'fraud_suspected'. I chose 'lost'.",
+     "No recurring block was set: the customer did not request one and the Blue card is being closed. No transfer to a human: the issues are within the agent's capabilities and the customer asked only once."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_b17aa1648835\",\"account_id\":\"chk_mc47a2b9e1_blue\",\"card_id\":\"dbc_mc47a2b9e1_blue\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"card_present_fraud\",\"transaction_date\":\"11/07/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":347.5,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":false,\"pin_compromised\":\"yes_observed\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":50,\"card_action\":\"close_and_reissue\"}",
+      "rule": "Doc 031: an unauthorized transaction where fraud is suspected and the physical card was used must be card_present_fraud. Here the card was lost and a stranger made an in-store charge. transaction_type is 'determine from user circumstances': the thief had the card and the PIN, so pin_purchase. card_in_possession=false because the card was lost. pin_compromised: the PIN was on a note in the lost wallet, so it was compromised but not voluntarily shared. police_report_filed=false because the police-report step applies only to fraud over $500. written_statement=true because the customer agreed to use this conversation. Doc 032: provisional credit is required since the report is timely, the category qualifies, there is a written statement and the account is OPEN. Liability: reported the day it was discovered, so within 2 business days, giving $50. Card action mapping: card_present_fraud \u2192 close_and_reissue."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_d1f51e0a0db9\",\"account_id\":\"chk_mc47a2b9e1_blue\",\"card_id\":\"dbc_mc47a2b9e1_blue\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"recurring_charge_after_cancellation\",\"transaction_date\":\"11/10/2025\",\"discovery_date\":\"11/11/2025\",\"disputed_amount\":89.99,\"transaction_type\":\"recurring_payment\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":true,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":89.99,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 034: a charge after cancelling with the merchant must use recurring_charge_after_cancellation. Doc 031: transaction_type is recurring_payment. contacted_merchant=true because the customer called FitLife on 11/11. Doc 032: this category is on the 'provisional credit NOT REQUIRED' list, so false. Liability: discovered 11/11 and reported 11/14, which is more than 2 business days (11/11 is a bank holiday), so the $500 tier applies. That cap exceeds the $89.99 disputed amount, so liability is capped at 89.99. Doc 031 mapping: card_action keep_active, recorded per its own category under the multiple-disputes rule."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\":\"dbc_mc47a2b9e1_blue\",\"reason\":\"lost\"}",
+      "rule": "Doc 031 multiple-disputes rule: after filing, perform the most severe action across the card's disputes. close_and_reissue outranks keep_active. Doc 025: the customer reports the card lost, so reason='lost'. Eligibility holds: the card is ACTIVE, no transactions are pending, and lost cards bypass the minimum-age rule."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\":\"chk_mc47a2b9e1_blue\",\"user_id\":\"mc47a2b9e1\",\"delivery_option\":\"STANDARD\",\"delivery_fee\":0,\"card_design\":\"CLASSIC\",\"design_fee\":0,\"shipping_address\":\"1847 Pine Street, Seattle, WA 98101\"}",
+      "rule": "Doc 031: close_and_reissue requires a replacement, and the customer asked for a new card. Doc 023 eligibility is met: OPEN checking account opened 2021, balance over $25, no active card after the closure, customer over 18, US address. The customer stated no preference, so the defaults apply: STANDARD (free) and CLASSIC (no fee). The address on file is used."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_3bd1ba6ad800\",\"account_id\":\"chk_mc47a2b9e1_gff\",\"card_id\":\"dbc_mc47a2b9e1_gff\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"atm_cash_discrepancy\",\"transaction_date\":\"11/09/2025\",\"discovery_date\":\"11/09/2025\",\"disputed_amount\":100.0,\"transaction_type\":\"atm_withdrawal\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":100.0,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031/033: the ATM dispensed the wrong amount at a Rho-Bank ATM, so atm_cash_discrepancy with type atm_withdrawal. The disputed amount is $100, the cash not received ($200 requested minus $100 dispensed). Doc 032: atm_cash_discrepancy is a required-credit category, the report is timely, there is a written statement and the account is OPEN, so provisional credit = true. Doc 033: no affidavit is needed because the amount does not exceed $200. Liability: discovered 11/09 and reported 11/14, more than 2 business days, so the $500 tier applies, capped at the $100 disputed amount. Mapping: keep_active."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_d74e8a798f95\",\"account_id\":\"chk_mc47a2b9e1_gff\",\"card_id\":\"dbc_mc47a2b9e1_gff\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"card_not_present_fraud\",\"transaction_date\":\"11/12/2025\",\"discovery_date\":\"01/09/2026\",\"disputed_amount\":523.17,\"transaction_type\":\"online_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":50,\"card_action\":\"close_and_reissue\"}",
+      "rule": "Doc 031: an online transaction the customer did not make, with fraud suspected, must be card_not_present_fraud with type online_purchase. Fraud over $500 requires asking about a police report: none has been filed, so false and the agent recommends filing one. Doc 032: all required conditions are met, so provisional credit = true. Liability: reported on the discovery day, so within 2 business days, giving $50. Mapping: close_and_reissue."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\":\"dbc_mc47a2b9e1_gff\",\"reason\":\"fraud_suspected\"}",
+      "rule": "Doc 031 multiple-disputes rule: the most severe action for the card is close_and_reissue, which outranks keep_active. Doc 025: the card number was compromised by online fraud, so reason='fraud_suspected'. The agent also recommends a password change."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\":\"chk_mc47a2b9e1_gff\",\"user_id\":\"mc47a2b9e1\",\"delivery_option\":\"STANDARD\",\"delivery_fee\":0,\"card_design\":\"CLASSIC\",\"design_fee\":0,\"shipping_address\":\"1847 Pine Street, Seattle, WA 98101\"}",
+      "rule": "Doc 031: close_and_reissue, and the customer wants a reissued card with a new number. Doc 023 eligibility is met. Defaults apply: STANDARD (free) and CLASSIC (no fee), shipped to the address on file."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "pin_compromised": [
+        "yes_observed",
+        "yes_shared"
+       ],
+       "provisional_credit_eligible": [
+        true,
+        false
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "provisional_credit_eligible": [
+        false,
+        true
+       ],
+       "customer_max_liability_amount": [
+        89.99,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "customer_max_liability_amount": [
+        100,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [
+     "close_debit_card_4721",
+     "order_debit_card_5739"
+    ],
+    "open_points": [
+     "Current date is not given (get_current_time output is missing). The customer says 'today' is both November 14th and January 9th. I assumed 11/14/2025, so the CryptoGems discovery date is recorded as 11/14/2025. If today is actually 01/09/2026, ElectroniX (63 days) and the ATM withdrawal (61 days) fail the 60-day pre-filing rule, FitLife sits at exactly 60 days, and discovery dates and liability amounts would change.",
+     "ElectroniX pin_compromised: the PIN was written on a note in the lost wallet. I chose 'yes_observed', but 'yes_shared' (which would remove provisional credit eligibility under doc 032) or 'unknown' are possible readings. transaction_type 'pin_purchase' versus 'signature_purchase' is also inferred.",
+     "ElectroniX liability: I used $50 because it was reported the same day as discovered. A $500 cap is arguable since the card was lost about 3 days earlier and not reported.",
+     "FitLife card_in_possession: I set it to true because the customer had the card when charged, but the card is lost now. pin_compromised is set to 'no' for this recurring charge even though the card's PIN is now exposed.",
+     "Liability for non-fraud disputes (FitLife, ATM): I applied the Reg E timing caps limited to the disputed amount. Recording $0 might also be argued because these are not unauthorized transfers.",
+     "Tier-based open-dispute limits: the documents give no mapping of Blue or Green Fee-Free accounts to tiers. Two disputes per account was assumed to be within any tier limit.",
+     "Replacement card delivery and design are not specified by the customer, so I used the STANDARD/CLASSIC defaults with no fees.",
+     "I made no recurring-payment block, because the customer did not ask to block future charges and the Blue card is being closed. The customer's opening request for a human is a single ask on an issue within the agent's capabilities, so no transfer."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_b17aa1648835\",\"account_id\":\"chk_mc47a2b9e1_blue\",\"card_id\":\"dbc_mc47a2b9e1_blue\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"card_present_fraud\",\"transaction_date\":\"11/07/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":347.5,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":false,\"pin_compromised\":\"yes_observed\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":50,\"card_action\":\"close_and_reissue\"}",
+      "rule": "Doc 031: an unauthorized transaction with fraud suspected on a physical, in-store card uses 'card_present_fraud'. The card was lost, so card_in_possession is false. The PIN was written on a note in the lost wallet, so it was exposed but not voluntarily shared, giving 'yes_observed'. A thief holding the PIN means 'pin_purchase'. A police report is only required for fraud over $500, and this is $347.50. The customer agreed to a written statement, so written_statement_provided is true. Card action follows the mapping card_present_fraud \u2192 close_and_reissue. Doc 032: provisional credit is eligible because reporting was timely, the category qualifies, a written statement was given and the account is OPEN. Doc 031 liability: reported the same day it was noticed, so the cap is $50 maximum."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_d1f51e0a0db9\",\"account_id\":\"chk_mc47a2b9e1_blue\",\"card_id\":\"dbc_mc47a2b9e1_blue\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"recurring_charge_after_cancellation\",\"transaction_date\":\"11/10/2025\",\"discovery_date\":\"11/11/2025\",\"disputed_amount\":89.99,\"transaction_type\":\"recurring_payment\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":true,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":89.99,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 034: a charge after a cancelled subscription is 'recurring_charge_after_cancellation', and doc 031 classifies an automatic payment as 'recurring_payment'. The customer still had the card when charged and no PIN was involved. The customer called the merchant on 11/11, so contacted_merchant is true. Card action follows the mapping recurring_charge_after_cancellation \u2192 keep_active. Doc 032: provisional credit is NOT required for this category, so eligibility is false. Liability: the charge was noticed on 11/11 and reported on 11/14, more than 2 business days later (11/11 is Veterans Day). That makes the cap $500, which is above the disputed amount, so liability is the disputed amount, 89.99."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_3bd1ba6ad800\",\"account_id\":\"chk_mc47a2b9e1_gff\",\"card_id\":\"dbc_mc47a2b9e1_gff\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"atm_cash_discrepancy\",\"transaction_date\":\"11/09/2025\",\"discovery_date\":\"11/09/2025\",\"disputed_amount\":100,\"transaction_type\":\"atm_withdrawal\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":100,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031/033: a Rho-Bank ATM that dispensed the wrong amount is 'atm_cash_discrepancy' with type 'atm_withdrawal'. The disputed amount is the shortfall: $200 requested minus $100 received equals $100. Because it is not over $200, doc 033 requires no affidavit. Card action follows the mapping atm_cash_discrepancy \u2192 keep_active. Doc 032: provisional credit is required because the category qualifies, reporting is within 60 days, a written statement was given and the account is OPEN. Liability: the shortfall was noticed on 11/09 and reported on 11/14, more than 2 business days later. That makes the cap $500, which is above the disputed amount, so liability is $100."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_d74e8a798f95\",\"account_id\":\"chk_mc47a2b9e1_gff\",\"card_id\":\"dbc_mc47a2b9e1_gff\",\"user_id\":\"mc47a2b9e1\",\"dispute_category\":\"card_not_present_fraud\",\"transaction_date\":\"11/12/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":523.17,\"transaction_type\":\"online_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":50,\"card_action\":\"close_and_reissue\"}",
+      "rule": "Doc 031: an online transaction the customer didn't make, with fraud suspected, is 'card_not_present_fraud' and 'online_purchase'. Card action follows the mapping card_not_present_fraud \u2192 close_and_reissue. The amount is over $500, so the agent asks about a police report. None has been filed yet, so police_report_filed is false and the agent recommends filing one. Doc 032: provisional credit is eligible because the category qualifies, reporting is timely, a written statement was given and the account is OPEN. Liability: discovered and reported 'today', within 2 business days, so the cap is $50."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\":\"dbc_mc47a2b9e1_blue\",\"reason\":\"lost\"}",
+      "rule": "Doc 031 multiple-disputes rule: after filing, perform the most severe card action for the card. The Blue card's disputes map to close_and_reissue and keep_active, so close_and_reissue applies. Doc 025: the customer lost the card, so the reason is 'lost', which bypasses the minimum card age."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\":\"chk_mc47a2b9e1_blue\",\"user_id\":\"mc47a2b9e1\",\"delivery_option\":\"STANDARD\",\"delivery_fee\":0,\"card_design\":\"CLASSIC\",\"design_fee\":0,\"shipping_address\":\"1847 Pine Street, Seattle, WA 98101\"}",
+      "rule": "Doc 031: close_and_reissue requires a replacement, and the customer asked for a new card. Doc 023: STANDARD delivery is free and CLASSIC design is the default with no fee. The customer stated no other preference. The address is the verified address on file."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\":\"dbc_mc47a2b9e1_gff\",\"reason\":\"fraud_suspected\"}",
+      "rule": "Doc 031 multiple-disputes rule: the Green card's disputes map to close_and_reissue (card_not_present_fraud) and keep_active (ATM), so the most severe action is close_and_reissue. Doc 025: the reason is 'fraud_suspected' because the card number was compromised while the card is still in hand."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\":\"chk_mc47a2b9e1_gff\",\"user_id\":\"mc47a2b9e1\",\"delivery_option\":\"STANDARD\",\"delivery_fee\":0,\"card_design\":\"CLASSIC\",\"design_fee\":0,\"shipping_address\":\"1847 Pine Street, Seattle, WA 98101\"}",
+      "rule": "Doc 031: close_and_reissue requires a replacement with a new number, as the customer requested. Doc 023: STANDARD delivery is free and CLASSIC design is the default with no fee. The address is the verified address on file."
+     }
+    ]
+   }
+  }
+ },
+ "task_083": {
+  "verdict": "under-determined",
+  "gold_writes": 4,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<QUICKCASH ATM #7749 11/08/2025 withdrawal id from get_bank_account_transactions_9173 on Blue checking account>",
+        "btxn_36fd10197841"
+       ],
+       "account_id": [
+        "<Blue checking account_id>",
+        "chk_dk83f5c2a1_blue"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Premium Photo Frames Online 11/02/2025 transaction id from get_bank_account_transactions_9173 on Blue checking account>",
+        "btxn_5230e065a1e7"
+       ],
+       "account_id": [
+        "<Blue checking account_id>",
+        "chk_dk83f5c2a1_blue"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<earliest of the two $67.25 Austin Coffee Roasters 11/11/2025 transactions from get_bank_account_transactions_9173 on Green Fee-Free checking account>",
+        "btxn_d937eaa1d21d"
+       ],
+       "account_id": [
+        "<Green Fee-Free checking account_id>",
+        "chk_dk83f5c2a1_gff"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ],
+       "provisional_credit_eligible": [
+        false,
+        true
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<GameStop $475.00 11/09/2025 transaction id from get_bank_account_transactions_9173 on Green Fee-Free checking account>",
+        "btxn_333f5b136543"
+       ],
+       "account_id": [
+        "<Green Fee-Free checking account_id>",
+        "chk_dk83f5c2a1_gff"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ]
+      }
+     }
+    ],
+    "extra": [
+     "freeze_debit_card_3892"
+    ],
+    "open_points": [
+     "ATM disputed_amount: read as the $150 shortfall ($250 requested minus $100 dispensed) rather than the $250 receipt amount; at $150 the >$200 affidavit requirement (doc_033) would not apply. If $250 is used, customer_max_liability_amount would be $250 and the affidavit notice applies.",
+     "ATM provisional_credit_eligible: set true per doc_033 third-party ATM rule ('Provisional credit is still required'), although doc_032 lists 'customer has not contacted merchant first (for non-fraud disputes)' as a not-required condition and the customer contacted no one.",
+     "customer_max_liability_amount: doc rules are keyed to 'within 2 business days of statement' but no statement date is known; computed from discovery date to reporting date 11/14/2025 and capped at the disputed amount. Business-day counts (e.g., 11/11 Veterans Day) don't change outcomes.",
+     "Goods-not-received discovery_date is not stated by the customer; 11/10/2025 (date of merchant contact) used as best reading.",
+     "GameStop transaction_type assumed 'pin_purchase' since the nephew was given the PIN; not explicitly confirmed.",
+     "Customer asks for a new card number on the Green card, but the mapping/most-severe rule yields freeze only; no reissue tool is documented, so no close/reissue call is made.",
+     "Account IDs, user ID and transaction IDs require lookups not present in the reference path; placeholders used. Account tier dispute limits (2 disputes per account) and OPEN status assumed satisfied."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<QUICKCASH ATM #7749 11/08/2025 withdrawal id from get_bank_account_transactions_9173 on Blue checking account>\",\"account_id\":\"<Blue checking account_id>\",\"card_id\":\"dbc_dk83f5c2a1_blue\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"atm_cash_discrepancy\",\"transaction_date\":\"11/08/2025\",\"discovery_date\":\"11/08/2025\",\"disputed_amount\":150.0,\"transaction_type\":\"atm_withdrawal\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":150.0,\"card_action\":\"keep_active\"}",
+      "rule": "doc_031: category 'atm_cash_discrepancy' = ATM dispensed wrong amount; transaction_type 'atm_withdrawal'; disputed_amount = cash not received ($250 requested - $100 dispensed). doc_033 Third-Party ATM: 'Provisional credit is still required within 10 business days'; doc_032 required conditions met (atm_cash_discrepancy category, timely, written statement agreed per doc_031 item 14, account open). Liability: reported 11/14, more than 2 business days after 11/08 discovery -> $500 cap, limited by disputed amount ($150). Card action mapping atm_cash_discrepancy -> keep_active. Police report only for fraud >$500 (item 13)."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<Premium Photo Frames Online 11/02/2025 transaction id from get_bank_account_transactions_9173 on Blue checking account>\",\"account_id\":\"<Blue checking account_id>\",\"card_id\":\"dbc_dk83f5c2a1_blue\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"goods_services_not_received\",\"transaction_date\":\"11/02/2025\",\"discovery_date\":\"11/10/2025\",\"disputed_amount\":189.5,\"transaction_type\":\"online_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":true,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":189.5,\"card_action\":\"keep_active\"}",
+      "rule": "doc_031: 'goods_services_not_received' = paid but never received; 'online_purchase' for online order; contacted_merchant true (called 11/10). doc_032: provisional credit NOT REQUIRED for 'goods_services_not_received' -> false. Liability: reported 11/14, beyond 2 business days of 11/10 -> $500 cap limited by disputed amount $189.50. Mapping goods_services_not_received -> keep_active."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<earliest of the two $67.25 Austin Coffee Roasters 11/11/2025 transactions from get_bank_account_transactions_9173 on Green Fee-Free checking account>\",\"account_id\":\"<Green Fee-Free checking account_id>\",\"card_id\":\"dbc_dk83f5c2a1_gff\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"duplicate_charge\",\"transaction_date\":\"11/11/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":67.25,\"transaction_type\":\"signature_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":50.0,\"card_action\":\"keep_active\"}",
+      "rule": "doc_031: 'Dispute the earliest (first) transaction when multiple duplicates exist'; 'duplicate_charge'; 'signature_purchase' (swiped and signed). doc_032: provisional credit NOT REQUIRED when 'Customer has not contacted merchant first (for non-fraud disputes)' -> false. Liability: reported same day as discovery (within 2 business days) -> $50. Mapping duplicate_charge -> keep_active."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<GameStop $475.00 11/09/2025 transaction id from get_bank_account_transactions_9173 on Green Fee-Free checking account>\",\"account_id\":\"<Green Fee-Free checking account_id>\",\"card_id\":\"dbc_dk83f5c2a1_gff\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"unauthorized_transaction\",\"transaction_date\":\"11/09/2025\",\"discovery_date\":\"11/12/2025\",\"disputed_amount\":475.0,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"yes_shared\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":50.0,\"card_action\":\"freeze_pending_investigation\"}",
+      "rule": "doc_031 item 5: 'Only use unauthorized_transaction when fraud is NOT suspected (e.g., family member used card without permission)'; pin_compromised 'yes_shared' (customer shared PIN); in-store with shared PIN -> 'pin_purchase'. doc_032: provisional credit NOT REQUIRED when pin_compromised = 'yes_shared' -> false. Liability: discovered 11/12, reported 11/14 (within 2 business days) -> $50. Police report recommendation applies to fraud >$500 only -> false. Mapping unauthorized_transaction -> freeze_pending_investigation."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\":\"dbc_dk83f5c2a1_gff\"}",
+      "rule": "doc_031 'Multiple Disputes on Same Card': after filing, perform the MOST SEVERE action across the card's disputes; Green card has keep_active (duplicate) and freeze_pending_investigation (unauthorized) -> call freeze_debit_card_3892 once. Blue card disputes are both keep_active -> no card action call."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Blue account txn id: QUICKCASH ATM #7749, 11/08/2025, -250.00>",
+        "btxn_36fd10197841"
+       ],
+       "account_id": [
+        "<Blue checking account id>",
+        "chk_dk83f5c2a1_blue"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Blue account txn id: Premium Photo Frames Online, 11/02/2025, -189.50>",
+        "btxn_5230e065a1e7"
+       ],
+       "account_id": [
+        "<Blue checking account id>",
+        "chk_dk83f5c2a1_blue"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Green Fee-Free account txn id: EARLIEST of the two Austin Coffee Roasters 11/11/2025 -67.25 charges>",
+        "btxn_d937eaa1d21d"
+       ],
+       "account_id": [
+        "<Green Fee-Free checking account id>",
+        "chk_dk83f5c2a1_gff"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ],
+       "provisional_credit_eligible": [
+        false,
+        true
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "transaction_id": [
+        "<Green Fee-Free account txn id: GameStop, 11/09/2025, -475.00>",
+        "btxn_333f5b136543"
+       ],
+       "account_id": [
+        "<Green Fee-Free checking account id>",
+        "chk_dk83f5c2a1_gff"
+       ],
+       "user_id": [
+        "<Diana Kowalski user_id>",
+        "dk83f5c2a1"
+       ]
+      }
+     }
+    ],
+    "extra": [
+     "freeze_debit_card_3892"
+    ],
+    "open_points": [
+     "ATM disputed_amount: I used the $150 shortfall, but the transaction posted as $250. If $250 is used, the liability cap becomes min(500, 250) = 250. Also, the affidavit (required over $200) would then apply; with $150 no affidavit is needed.",
+     "customer_max_liability_amount: Doc 031 measures timing from the statement date, but no statement dates were looked up. I measured from discovery to the report on 11/14 instead, and capped each tier at the disputed amount. 11/11 (Veterans Day) may or may not count as a business day, but this does not change any tier here.",
+     "GameStop liability: the documents do not say that a voluntarily shared PIN removes Reg E liability limits, so I applied the $50 tier. An alternative reading is unlimited liability (-1).",
+     "Provisional credit for the third-party ATM: I set it to true based on Doc 033 ('Provisional credit is still required'), even though contacted_merchant is false. One could argue the 'no merchant contact' exclusion applies, which would make it false.",
+     "Goods/services discovery_date is not stated by the customer. I used 11/10/2025, the date of merchant contact and refusal.",
+     "GameStop transaction_type: I assumed 'pin_purchase' since the nephew had the PIN. 'signature_purchase' is possible if he signed instead.",
+     "The customer wants a new card number for the Green card. The documents map the actions only to freeze_pending_investigation, and no close/reissue tool is listed, so only a freeze is performed.",
+     "account_id, user_id and transaction_id values are placeholders, because no lookup results were provided. All four disputes depend on open-dispute tier limits (2 per account at minimum, so 2 per account is fine) and on both accounts being OPEN."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<Blue account txn id: QUICKCASH ATM #7749, 11/08/2025, -250.00>\",\"account_id\":\"<Blue checking account id>\",\"card_id\":\"dbc_dk83f5c2a1_blue\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"atm_cash_discrepancy\",\"transaction_date\":\"11/08/2025\",\"discovery_date\":\"11/08/2025\",\"disputed_amount\":150.0,\"transaction_type\":\"atm_withdrawal\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":150.0,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031: category 'atm_cash_discrepancy' covers an ATM that dispensed the wrong amount. transaction_type is 'atm_withdrawal'. disputed_amount is the $150 shortfall ($250 requested minus $100 dispensed). card_in_possession is true, pin_compromised is 'no', and contacted_merchant is false, all per the customer's answers. police_report_filed is false. written_statement_provided is true because the customer agreed to use this conversation. Doc 032: provisional credit is required for 'atm_cash_discrepancy' when reporting is timely, a written statement exists and the account is open. Doc 033: for third-party ATM disputes, provisional credit is still required within 10 business days, so eligible = true. Liability: the issue was noticed on Sat 11/08 and reported on 11/14, which is more than 2 business days, so the $500 tier applies; this is capped at the $150 disputed amount. card_action follows the mapping atm_cash_discrepancy \u2192 keep_active."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<Blue account txn id: Premium Photo Frames Online, 11/02/2025, -189.50>\",\"account_id\":\"<Blue checking account id>\",\"card_id\":\"dbc_dk83f5c2a1_blue\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"goods_services_not_received\",\"transaction_date\":\"11/02/2025\",\"discovery_date\":\"11/10/2025\",\"disputed_amount\":189.5,\"transaction_type\":\"online_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":true,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":189.5,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031: category 'goods_services_not_received' applies because the item was paid for but never received. transaction_type is 'online_purchase' (card not present). contacted_merchant is true because the customer called the merchant on 11/10. Doc 032: 'goods_services_not_received' is listed under 'Provisional Credit is NOT REQUIRED', so eligible = false. Liability: discovery was taken as 11/10, when the merchant refused a refund. Reporting on 11/14 is more than 2 business days later, so the $500 tier applies, capped at the $189.50 disputed amount. card_action follows the mapping goods_services_not_received \u2192 keep_active."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<Green Fee-Free account txn id: EARLIEST of the two Austin Coffee Roasters 11/11/2025 -67.25 charges>\",\"account_id\":\"<Green Fee-Free checking account id>\",\"card_id\":\"dbc_dk83f5c2a1_gff\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"duplicate_charge\",\"transaction_date\":\"11/11/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":67.25,\"transaction_type\":\"signature_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":50.0,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031: 'Dispute the earliest (first) transaction when multiple duplicates exist.' Category is 'duplicate_charge'. transaction_type is 'signature_purchase' because the customer swiped and signed. contacted_merchant is false. Doc 032: 'Customer has not contacted merchant first (for non-fraud disputes)' falls under NOT REQUIRED, so eligible = false. Liability: discovered and reported on 11/14, which is within 2 business days, so the cap is $50. card_action follows the mapping duplicate_charge \u2192 keep_active."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"<Green Fee-Free account txn id: GameStop, 11/09/2025, -475.00>\",\"account_id\":\"<Green Fee-Free checking account id>\",\"card_id\":\"dbc_dk83f5c2a1_gff\",\"user_id\":\"<Diana Kowalski user_id>\",\"dispute_category\":\"unauthorized_transaction\",\"transaction_date\":\"11/09/2025\",\"discovery_date\":\"11/12/2025\",\"disputed_amount\":475.0,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"yes_shared\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":50.0,\"card_action\":\"freeze_pending_investigation\"}",
+      "rule": "Doc 031: 'Only use unauthorized_transaction when fraud is NOT suspected (e.g., family member used card without permission)'. Here the nephew exceeded his permission, so the category is 'unauthorized_transaction'. transaction_type is 'pin_purchase' because this was an in-store GameStop purchase with the shared PIN. pin_compromised is 'yes_shared' because the customer voluntarily shared the PIN. police_report_filed is false; a police report is only recommended for fraud disputes over $500, which does not apply here. Doc 032: 'Customer shared their PIN voluntarily (yes_shared)' falls under NOT REQUIRED, so eligible = false. Liability: discovered on Wed 11/12 and reported on Fri 11/14, which is within 2 business days, so the cap is $50. card_action follows the mapping unauthorized_transaction \u2192 freeze_pending_investigation."
+     },
+     {
+      "actor": "agent",
+      "tool": "freeze_debit_card_3892",
+      "arguments_json": "{\"card_id\":\"dbc_dk83f5c2a1_gff\"}",
+      "rule": "Doc 031, Multiple Disputes on Same Card: after filing all disputes, perform the MOST SEVERE action across the card's disputes. For the Green Fee-Free card, the duplicate maps to keep_active and the unauthorized dispute maps to freeze_pending_investigation, so the card is frozen once. For the Blue card, both disputes map to keep_active, so no card action is taken."
+     }
+    ]
+   }
+  }
+ },
+ "task_084": {
+  "verdict": "not derivable as gold",
+  "gold_writes": 4,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "provisional_credit_eligible": [
+        false,
+        true
+       ],
+       "customer_max_liability_amount": [
+        47.5,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "customer_max_liability_amount": [
+        100.0,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Docs do not map 'Evergreen Account' or 'Light Blue Account' to Entry/Mid/Premium/Elite tiers. Light Blue is assumed to be Entry (max 2 open disputes), so only one more dispute is allowed alongside the existing open dispute dsp_5a5e134f5b86. The EveryonePay $275 dispute (btxn_b1f6e32g5f78) is therefore NOT filed now; the customer will file it later. If Light Blue were Mid tier or higher, it should also be filed as card_not_present_fraud / person_to_person / close_and_reissue / provisional credit true / liability 275.",
+     "Replacement card for Light Blue: if the account is Entry tier, doc 029 imposes a 48-hour waiting period after closure before a replacement can be ordered. order_debit_card_5739 was therefore not called; the customer should be told to order after 48 hours. If the tier has no waiting period, the order would be order_debit_card_5739(account_id chk_e5a31c7d82, user_id a7c2f85d91, STANDARD, delivery_fee 0, CLASSIC, design_fee 0, shipping address '4521 Lakeview Drive, Chicago, IL 60614').",
+     "Duplicate charge: both Bella's Bistro charges are dated 11/06. btxn_e8c3b09d2c45 was chosen as the 'earliest' because it appears later in the reverse-chronological list.",
+     "Duplicate charge provisional credit: doc 032 lists duplicate_charge among the REQUIRED categories, but also says credit is not required when the merchant was not contacted for non-fraud disputes. Read as false.",
+     "customer_max_liability_amount was read as min(timing cap, disputed amount). The statement date is unknown, so the $500 cap was assumed for all disputes. For TechWorld, an alternative reading is 500 (the customer's phrasing).",
+     "pin_compromised for the Evergreen merchant-error disputes is assumed 'no'; the customer script has no explicit answer to the PIN-compromise question."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_e8c3b09d2c45\",\"account_id\":\"chk_b8d92f4c17\",\"card_id\":\"dbc_f4a72c9e55\",\"user_id\":\"a7c2f85d91\",\"dispute_category\":\"duplicate_charge\",\"transaction_date\":\"11/06/2025\",\"discovery_date\":\"11/10/2025\",\"disputed_amount\":47.5,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":47.5,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031 pre-filing checks pass: customer verified, amount at least $1.00, transaction under 60 days old, Evergreen account OPEN with 0 open disputes. transaction_id: doc 031 says 'Dispute the earliest (first) transaction when multiple duplicates exist'. Transactions are listed in reverse chronological order (doc 018), so of the two 11/06 Bella's Bistro charges the lower-listed btxn_e8c3b09d2c45 is the earliest. Category: 'duplicate_charge' means the same transaction was charged multiple times. transaction_type: in-store purchase with PIN gives 'pin_purchase'. pin_compromised is 'no' because this is a merchant error, not a compromise. contacted_merchant is false per the customer. police_report_filed is false because this is not a fraud dispute over $500. written_statement_provided is true because the customer agrees to use this conversation (doc 031 #14). provisional_credit_eligible is false: doc 032 says provisional credit is NOT REQUIRED when the 'Customer has not contacted merchant first (for non-fraud disputes)'. customer_max_liability_amount: the report is past the 2-business-day window, so the cap is $500 (doc 031), limited to the disputed amount of $47.50. card_action: doc 031 mapping is 'duplicate_charge' \u2192 'keep_active'."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_f9d4c10e3d56\",\"account_id\":\"chk_b8d92f4c17\",\"card_id\":\"dbc_f4a72c9e55\",\"user_id\":\"a7c2f85d91\",\"dispute_category\":\"incorrect_amount\",\"transaction_date\":\"11/08/2025\",\"discovery_date\":\"11/09/2025\",\"disputed_amount\":100.0,\"transaction_type\":\"signature_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":true,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":100.0,\"card_action\":\"keep_active\"}",
+      "rule": "Category: 'incorrect_amount' means charged a different amount than expected (doc 031). disputed_amount is $100, the overcharge (189.23 - 89.23). transaction_type: in-store purchase with signature gives 'signature_purchase'. contacted_merchant is true (called on 11/09). written_statement_provided is true because the customer agreed. provisional_credit_eligible is false: doc 032 lists 'incorrect_amount' as NOT REQUIRED. customer_max_liability_amount: the report is more than 2 business days after discovery, so the cap is $500, limited to the $100 disputed. card_action: doc 031 mapping is 'incorrect_amount' \u2192 'keep_active'. Both Evergreen disputes are keep_active, so no card action is performed on the Evergreen card (most-severe rule)."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_c2g7f43h6g89\",\"account_id\":\"chk_e5a31c7d82\",\"card_id\":\"dbc_82b5d1a6f3\",\"user_id\":\"a7c2f85d91\",\"dispute_category\":\"card_present_fraud\",\"transaction_date\":\"10/05/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":412.88,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"unknown\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":412.88,\"card_action\":\"close_and_reissue\"}",
+      "rule": "Dispute limit (doc 031 #4): Light Blue already has 1 OPEN dispute (dsp_5a5e134f5b86), and the limit is assumed to be 2 (Entry tier). That leaves only one more dispute, and the customer chooses the TechWorld charge over EveryonePay. The transaction is 40 days old, within the 60-day limit. Category: fraud suspected at an in-store/physical transaction gives 'card_present_fraud' (doc 031). transaction_type: in-person purchase with PIN gives 'pin_purchase'. pin_compromised is 'unknown' because the customer is unsure. police_report_filed is false; the customer has not filed one, and $412.88 is under the $500 recommendation threshold. written_statement_provided is true because the customer agreed. provisional_credit_eligible is true: doc 032 conditions are all met (reported within 60 days, fraud category, written statement, account OPEN), and the merchant-contact exclusion applies only to non-fraud disputes. customer_max_liability_amount: the report is past 2 business days but within 60 days, so the cap is $500, limited to the disputed amount of $412.88. card_action: doc 031 mapping is 'card_present_fraud' \u2192 'close_and_reissue'."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\":\"dbc_82b5d1a6f3\",\"reason\":\"fraud_suspected\"}",
+      "rule": "Doc 031 Note: the agent must separately perform the card action after filing. The most severe action for the Light Blue card is close_and_reissue. Reason is 'fraud_suspected' because of the fraudulent charge (doc 025). The card is ACTIVE, has no pending transactions (all posted), and is older than 14 days."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "provisional_credit_eligible": [
+        false,
+        true
+       ],
+       "customer_max_liability_amount": [
+        47.5,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "customer_max_liability_amount": [
+        100.0,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "Replacement for the Light Blue card: close_and_reissue implies ordering a new card (order_debit_card_5739 for chk_e5a31c7d82, STANDARD, $0 delivery, CLASSIC, $0 design, ship to 4521 Lakeview Drive, Chicago, IL 60614). However, the dispute limit hit (max 2) implies Light Blue is Entry Tier, and doc 029 imposes a 48-hour waiting period after closure before an Entry Tier replacement can be ordered. I therefore did not list the order call; if Light Blue is not Entry Tier, the order should be placed immediately with tier-appropriate fees.",
+     "Account tier mapping (Evergreen/Light Blue to Entry/Mid/Premium/Elite) is not stated in the documents. The Light Blue limit of one additional dispute is inferred from the scenario; Evergreen is assumed to allow at least 2 disputes.",
+     "The EveryonePay $275 dispute (btxn_b1f6e32g5f78) is not filed now because of the Light Blue open-dispute limit. The customer chose to defer it until the existing dispute closes.",
+     "Provisional credit for the duplicate charge: doc 032's REQUIRED list includes duplicate_charge, but its NOT REQUIRED list includes 'customer has not contacted merchant first (for non-fraud disputes)'. I read the exception as controlling and set it to false.",
+     "customer_max_liability_amount: I capped the tier amount ($50/$500) at the disputed amount, per the tool description. It could alternatively be read as the raw tier value (e.g., 500 for TechWorld, as the customer phrases it). The timing basis (statement vs discovery date) is also ambiguous; I treated TechWorld as $500 tier per the customer's acknowledgment of late reporting.",
+     "pin_compromised for the two Evergreen merchant-error disputes is not explicitly given by the customer; I set it to 'no'."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_e8c3b09d2c45\",\"account_id\":\"chk_b8d92f4c17\",\"card_id\":\"dbc_f4a72c9e55\",\"user_id\":\"a7c2f85d91\",\"dispute_category\":\"duplicate_charge\",\"transaction_date\":\"11/06/2025\",\"discovery_date\":\"11/10/2025\",\"disputed_amount\":47.5,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":47.5,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031: 'Dispute the earliest (first) transaction when multiple duplicates exist'. Transactions are listed in reverse chronological order (doc 018), so of the two identical 11/06 Bella's Bistro charges, btxn_e8c3b09d2c45 (listed second) is the earlier one. The category is 'duplicate_charge' because the same transaction was charged multiple times. The transaction type is 'pin_purchase' because it was an in-store purchase with PIN. The card_action follows the mapping duplicate_charge\u2192keep_active. The written statement is set to true because the customer agreed to use the conversation. On provisional credit, doc 032 says it is NOT REQUIRED when the 'Customer has not contacted merchant first (for non-fraud disputes)', so it is false. On liability, the customer reported on 11/14, more than 2 business days after discovering the charge on 11/10, so the $500 tier applies; this is capped at the disputed amount ($47.50), per the tool definition 'based on ... reporting timing rules and the disputed amount'. pin_compromised is set to 'no' because this is a merchant error and the PIN was not compromised."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_f9d4c10e3d56\",\"account_id\":\"chk_b8d92f4c17\",\"card_id\":\"dbc_f4a72c9e55\",\"user_id\":\"a7c2f85d91\",\"dispute_category\":\"incorrect_amount\",\"transaction_date\":\"11/08/2025\",\"discovery_date\":\"11/09/2025\",\"disputed_amount\":100.0,\"transaction_type\":\"signature_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"no\",\"contacted_merchant\":true,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":false,\"customer_max_liability_amount\":100.0,\"card_action\":\"keep_active\"}",
+      "rule": "Doc 031: the category is 'incorrect_amount' because the customer was charged a different amount than expected. The disputed amount is the $100 overcharge ($189.23 charged minus $89.23 owed). The transaction type is 'signature_purchase' because it was an in-store purchase with signature. The card_action follows the mapping incorrect_amount\u2192keep_active. Doc 032 lists 'incorrect_amount' under Provisional Credit NOT REQUIRED, so provisional_credit_eligible is false. On liability, the customer reported on 11/14, more than 2 business days after discovering the issue on 11/09, so the $500 tier applies, capped at the $100 disputed amount. The customer contacted Whole Foods on 11/09, so contacted_merchant is true. The written statement is true because the customer agreed."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\":\"btxn_c2g7f43h6g89\",\"account_id\":\"chk_e5a31c7d82\",\"card_id\":\"dbc_82b5d1a6f3\",\"user_id\":\"a7c2f85d91\",\"dispute_category\":\"card_present_fraud\",\"transaction_date\":\"10/05/2025\",\"discovery_date\":\"11/14/2025\",\"disputed_amount\":412.88,\"transaction_type\":\"pin_purchase\",\"card_in_possession\":true,\"pin_compromised\":\"unknown\",\"contacted_merchant\":false,\"police_report_filed\":false,\"written_statement_provided\":true,\"provisional_credit_eligible\":true,\"customer_max_liability_amount\":412.88,\"card_action\":\"close_and_reissue\"}",
+      "rule": "Doc 031 pre-filing requirements: the transaction is 40 days old, which is within 60 days, and the account is OPEN. Light Blue already has one OPEN dispute (dsp_5a5e134f5b86), so under the per-account limit only one more dispute fits; the customer chose this one to prioritise. The category is card_present_fraud because fraud is suspected on an in-store/physical transaction ('USE THIS when fraud suspected and card was physically present'). The transaction type is pin_purchase, matching the customer's account of an in-store purchase with PIN. pin_compromised is 'unknown' because the customer is unsure. The card_action follows the mapping card_present_fraud\u2192close_and_reissue. No police report is needed, since the recommendation applies only to fraud over $500. Provisional credit is true because doc 032's REQUIRED conditions are all met: reporting is within 60 days of the statement, the category qualifies, the written statement was agreed, and the account is OPEN. Liability falls in the $500 tier because the report was late relative to the statement (the customer acknowledges this); it is capped at the disputed amount of $412.88."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\":\"dbc_82b5d1a6f3\",\"reason\":\"fraud_suspected\"}",
+      "rule": "Doc 031 note says the agent must separately perform the indicated card action after filing. The most severe action for the Light Blue card is close_and_reissue (from the card_present_fraud dispute). Doc 025 lists 'fraud_suspected' as the reason for suspected fraud/unauthorized transactions. The card is ACTIVE, was issued 09/20/2023 so it is older than 14 days, and has no pending transactions. The Evergreen card needs no action because its disputes map to keep_active."
+     }
+    ]
+   }
+  }
+ },
+ "task_087": {
+  "verdict": "under-determined",
+  "gold_writes": 6,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "clear_debit_card_fraud_alert_4892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "differs",
+      "diff": {
+       "customer_max_liability_amount": [
+        499.99,
+        50
+       ]
+      }
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "The documents never say which tier the Evergreen Account belongs to. If it is Elite tier, the best free option would be RUSH delivery ($0) with PREMIUM or CUSTOM design ($0).",
+     "customer_max_liability_amount depends on the current date (from get_current_time) and the statement date, neither of which is given. I chose the 60-day tier ($500) capped at $499.99. If the customer's 11/06 fraud-alert text counts as timely notice, the answer would be $50.",
+     "provisional_credit_eligible depends on the 'Debit Card Provisional Credit Guidelines', which are not provided. I assumed true because a written statement was given and the dispute was reported within 60 days.",
+     "The open-dispute limit for the Evergreen tier could not be checked, since there is no tier mapping or dispute-count data.",
+     "Doc 039 says to escalate to the security team when a customer reports transactions they did not make. I chose to file the dispute and close/reissue the card instead of transferring. A transfer would require asking the customer first, and the customer does not request one.",
+     "The customer-initiated fraud alert on the Evergreen card is deliberately not cleared, because the customer did not confirm all transactions were legitimate; the card is closed anyway."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_blue\"}",
+      "rule": "CODE 05 check, step 1: the Blue card status is FROZEN and the customer asks to unfreeze it, so follow the unfreezing protocol (doc 026). The requirements are met: customer verified, card FROZEN, linked account OPEN."
+     },
+     {
+      "actor": "agent",
+      "tool": "clear_debit_card_fraud_alert_4892",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_blue\", \"reason\": \"velocity_clear\"}",
+      "rule": "CODE 05 check, step 4: velocity_blocked is TRUE, so offer to lift it after identity verification. Doc 039 says to clear a velocity block when the customer gives a reasonable explanation (here, about 5 stores in an hour for office supplies). The reason 'velocity_clear' is the value doc 039 defines for velocity blocks."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_gff\"}",
+      "rule": "CODE 05 check, step 1: the Green Fee-Free card status is FROZEN and the customer asks to unfreeze it. Doc 026 unfreeze requirements are met: verified, FROZEN, account OPEN. There is no fraud alert or velocity block on this card."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\": \"btxn_70fb52ef4e29\", \"account_id\": \"chk_mt35a7c9d2_evergreen\", \"card_id\": \"dbc_mt35a7c9d2_evergreen\", \"user_id\": \"mt35a7c9d2\", \"dispute_category\": \"card_present_fraud\", \"transaction_date\": \"11/06/2025\", \"discovery_date\": \"11/06/2025\", \"disputed_amount\": 499.99, \"transaction_type\": \"pin_purchase\", \"card_in_possession\": true, \"pin_compromised\": \"no\", \"contacted_merchant\": false, \"police_report_filed\": false, \"written_statement_provided\": true, \"provisional_credit_eligible\": true, \"customer_max_liability_amount\": 499.99, \"card_action\": \"close_and_reissue\"}",
+      "rule": "CODE 05 check, step 3: the Evergreen card has a customer_initiated fraud alert. The customer does not confirm all transactions (the TechZone $499.99 charge was not him), so the alert is not cleared and a dispute is filed instead (doc 031).\n- dispute_category: fraud is suspected on an in-store/physical transaction, so 'card_present_fraud'.\n- transaction_type: the customer says it was a PIN purchase, so 'pin_purchase'.\n- card_in_possession and pin_compromised: taken from the customer's answers.\n- contacted_merchant: false; this is only required for non-fraud disputes.\n- police_report_filed: false; a police report is only asked about for fraud over $500, and $499.99 is not over $500.\n- written_statement_provided: true, because the customer agrees to use the conversation as the statement.\n- customer_max_liability_amount: reported after 2 but within 60 days, so the $500 tier applies, capped at the disputed amount.\n- card_action: the mapping card_present_fraud \u2192 close_and_reissue."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_evergreen\", \"reason\": \"fraud_suspected\"}",
+      "rule": "Doc 031 note: the agent must separately perform the card_action ('close_and_reissue') after filing. Doc 025 closing steps: the reason 'fraud_suspected' matches unauthorized charges, the card is ACTIVE, and there are no pending transactions."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\": \"chk_mt35a7c9d2_evergreen\", \"user_id\": \"mt35a7c9d2\", \"delivery_option\": \"EXPEDITED\", \"delivery_fee\": 0, \"card_design\": \"PREMIUM\", \"design_fee\": 0, \"shipping_address\": \"2847 Pine Street, Apt 12B, Seattle, WA 98101\", \"excess_replacement_fee\": 0}",
+      "rule": "close_and_reissue requires a replacement card. The customer asks for 'the best option that is free' and confirms the address on file. Under doc 029, assuming Evergreen is PREMIUM tier, EXPEDITED shipping is $0 and PREMIUM design is $0 (RUSH would cost $35). There are no prior replacements (issue_reason new_account does not count), so there is no excess fee."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "clear_debit_card_fraud_alert_4892",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "unfreeze_debit_card_3893",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "close_debit_card_4721",
+      "status": "match",
+      "diff": {}
+     },
+     {
+      "tool": "order_debit_card_5739",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "The documents do not say which tier the Evergreen Account belongs to. I assumed Premium tier, giving EXPEDITED delivery and PREMIUM design, both free. If it is Elite tier, the best free option would be RUSH with PREMIUM (or CUSTOM) at $0.",
+     "customer_max_liability_amount: the Reg E timing is measured from the statement date, which is not given. The customer reported the fraud on the same day (11/06), so I chose $50.",
+     "provisional_credit_eligible: the 'Debit Card Provisional Credit Guidelines' are not in the provided documents. I set it to true because a written statement was provided and the report was timely.",
+     "The Security Alerts doc says to escalate to the security team when a customer reports transactions they did not make. I instead followed the dispute + close_and_reissue path and did not transfer, since the customer never requested one and policy requires asking before transferring.",
+     "card_present_fraud versus card_not_present_fraud: the charge was described as an in-store PIN purchase while the customer still had his card, so I chose card_present_fraud.",
+     "The Evergreen fraud alert is not cleared, because the customer did not confirm that all transactions were legitimate."
+    ],
+    "calls": [
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_blue\"}",
+      "rule": "CODE 05 step 1: the Blue card status is FROZEN and the customer asks to unfreeze it. The unfreeze protocol applies: customer verified, owner, card FROZEN, account OPEN."
+     },
+     {
+      "actor": "agent",
+      "tool": "clear_debit_card_fraud_alert_4892",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_blue\", \"reason\": \"velocity_clear\"}",
+      "rule": "CODE 05 step 4: velocity_blocked is TRUE, so the agent informs the customer and lifts the block after identity verification. Security Alerts doc: clear a velocity block when the customer gives a reasonable explanation (5 stores in an hour for a home office setup). Reason 'velocity_clear' is the reason for velocity blocks."
+     },
+     {
+      "actor": "agent",
+      "tool": "unfreeze_debit_card_3893",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_gff\"}",
+      "rule": "CODE 05 step 1: the Green Fee-Free card status is FROZEN and the customer asks to unfreeze it. All unfreeze requirements are met; there is no fraud alert or velocity block."
+     },
+     {
+      "actor": "agent",
+      "tool": "file_debit_card_transaction_dispute_6281",
+      "arguments_json": "{\"transaction_id\": \"btxn_70fb52ef4e29\", \"account_id\": \"chk_mt35a7c9d2_evergreen\", \"card_id\": \"dbc_mt35a7c9d2_evergreen\", \"user_id\": \"mt35a7c9d2\", \"dispute_category\": \"card_present_fraud\", \"transaction_date\": \"11/06/2025\", \"discovery_date\": \"11/06/2025\", \"disputed_amount\": 499.99, \"transaction_type\": \"pin_purchase\", \"card_in_possession\": true, \"pin_compromised\": \"no\", \"contacted_merchant\": false, \"police_report_filed\": false, \"written_statement_provided\": true, \"provisional_credit_eligible\": true, \"customer_max_liability_amount\": 50, \"card_action\": \"close_and_reissue\"}",
+      "rule": "Evergreen fraud alert is customer_initiated, but the customer says the TECHZONE charge was not his, so the alert is not cleared (CODE 05 step 3) and a dispute is filed. Category: fraud is suspected on an in-store transaction, so 'card_present_fraud'. Transaction type: the customer says it was a PIN purchase, so 'pin_purchase'. Discovery date: the fraud text on 11/06. Police report: only needed for fraud over $500, and $499.99 is not over $500. Contacted merchant: only required for non-fraud disputes. Written statement: the customer agreed to use the conversation. Max liability: reported within 2 business days, so $50. Card action: card_present_fraud maps to 'close_and_reissue'."
+     },
+     {
+      "actor": "agent",
+      "tool": "close_debit_card_4721",
+      "arguments_json": "{\"card_id\": \"dbc_mt35a7c9d2_evergreen\", \"reason\": \"fraud_suspected\"}",
+      "rule": "Dispute doc: the agent must separately perform the card_action ('close_and_reissue') after filing. Closing doc: the reason is fraud_suspected because the charge was unauthorized. The card is ACTIVE with no pending transactions."
+     },
+     {
+      "actor": "agent",
+      "tool": "order_debit_card_5739",
+      "arguments_json": "{\"account_id\": \"chk_mt35a7c9d2_evergreen\", \"user_id\": \"mt35a7c9d2\", \"delivery_option\": \"EXPEDITED\", \"delivery_fee\": 0, \"card_design\": \"PREMIUM\", \"design_fee\": 0, \"shipping_address\": \"2847 Pine Street, Apt 12B, Seattle, WA 98101\"}",
+      "rule": "close_and_reissue requires a replacement. The customer wants the best free option and confirmed the address on file. Under the Replacement Options by Tier doc, if Evergreen is Premium tier, EXPEDITED shipping is $0 and the PREMIUM design is $0. Prior cards have issue_reason new_account, so no replacement-limit fee applies."
+     }
+    ]
+   }
+  }
+ },
+ "task_099": {
+  "verdict": "derivable",
+  "gold_writes": 1,
+  "runs": {
+   "1": {
+    "rows": [
+     {
+      "tool": "submit_referral",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "No provided document states that submit_referral must be handed to the user via give_discoverable_user_tool. The customer script says Kenji already has access to it, so no give call is listed. If the knowledge base turns out to require it, give_discoverable_user_tool('submit_referral') would come before the customer's call.",
+     "Annual referral caps are read as per-program limits, so World Blue starts at 0 of 12. If the cap were instead read as counting all of Kenji's referrals (14 in 2025), World Blue would be capped. In that case Lime Green would also be capped, and the next option would need re-evaluation.",
+     "The current date is not given, so the rolling 9-day window check relies on get_current_time. It is assumed the last referral (10/30/2025) is more than about 9 days ago, consistent with the customer saying it was about 15 days ago. Either way, only one referral could fall in that window, so the cap of 2 is not reached.",
+     "World Blue is described as for 'international businesses'. Following the documents and the scenario note, it is treated as open to any business. No document makes international activity an eligibility condition."
+    ],
+    "calls": [
+     {
+      "actor": "customer",
+      "tool": "submit_referral",
+      "arguments_json": "{\"user_id\": \"ky83m9p2t6\", \"account_type\": \"World Blue Account\"}",
+      "rule": "user_id is copied from the customer's verified profile. account_type is World Blue Account for these reasons. (1) Eligibility is checked first (doc_047). Kenji's last referral was 10/30/2025, about 15 days ago, so fewer than 2 bonuses fall in the rolling 9-day window. The partner is a new customer, lives at a different address and has a different owner. Kenji's earliest checking account was opened 11/10/2023, which meets every tenure threshold (60/90/120 days, measured from the oldest checking account per doc_047/048). (2) Each program has its own limit. World Blue has 0 of 12 used (doc_world_blue_007). (3) Ranked by referrer bonus with a $30,000 deposit: Beige $500 needs $100,000 (doc_beige_012), so it fails. True Blue $350 needs $50,000 (doc_true_blue_002), so it fails. World Blue $300 needs $25,000 within 90 days (doc_world_blue_001), which $30,000 meets. The other options pay less: Lime Green $200, Cobalt Blue and Sky Blue $150, Hunter Green $175 (9 of 10 used), Navy Blue $100. So World Blue gives the highest referrer bonus Kenji can actually earn."
+     }
+    ]
+   },
+   "2": {
+    "rows": [
+     {
+      "tool": "submit_referral",
+      "status": "match",
+      "diff": {}
+     }
+    ],
+    "extra": [],
+    "open_points": [
+     "None of the provided KB documents names submit_referral as a user-discoverable tool. The customer script says the customer already has access to it, so no give_discoverable_user_tool call is listed. If the grader expects the agent to hand it over, add give_discoverable_user_tool(discoverable_tool_name='submit_referral').",
+     "Annual referral caps are read as applying per account program. On that reading, the 9 Hunter Green referrals (out of 10) and the 14 referrals in total this year do not block a World Blue referral, since none are World Blue. No document states an overall cap across programs.",
+     "The current date should come from get_current_time to confirm the rolling 9-day window. The customer says the last referral was about 15 days ago, which is consistent with the 10/30/2025 record, so the window cap is not reached.",
+     "World Blue copy describes referrals of 'international businesses'. This is read as descriptive wording, not an eligibility requirement. The stated qualification rules are only 90 days of referrer tenure and a $25,000 deposit within 90 days, both of which are met.",
+     "Doc_047 requires the referred person to be a new Rho-Bank customer with no accounts in the past 12 months. This is assumed true for the colleague's new LLC, because the customer scenario gives no contrary information."
+    ],
+    "calls": [
+     {
+      "actor": "customer",
+      "tool": "submit_referral",
+      "arguments_json": "{\"user_id\": \"ky83m9p2t6\", \"account_type\": \"World Blue Account\"}",
+      "rule": "The user_id is copied from the customer's record. The account_type is the business account that pays the highest referrer bonus among the accounts the referral can still qualify for. The customer is eligible to refer. The earliest checking account (Navy Blue) was opened 11/10/2023, which meets every tenure threshold of 60, 90 or 120 days (doc_047, 'Referrer tenure policy'). The most recent referral was 10/30/2025, so fewer than 2 bonuses fall in the rolling 9-day window (doc_047). The two parties do not share an address, and the business has a different owner (doc_047, 'Eligibility restrictions'). The referred business will deposit $30,000. That rules out True Blue, which needs a $50,000 deposit (true_blue_002), and Beige, which needs $100,000 (beige_012). World Blue needs a $25,000 deposit, and its referrer bonus is $300 (world_blue_001 and world_blue_007). This is higher than Lime Green ($200), Hunter Green ($175), Cobalt Blue and Sky Blue ($150 each), and Navy Blue ($100). The customer has made 0 of the 12 World Blue referrals allowed per calendar year."
+     }
+    ]
+   }
+  }
+ }
+}

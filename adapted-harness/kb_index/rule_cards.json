@@ -1,0 +1,49 @@
+{
+ "_about": "Curated rule cards: resolutions of rules that are split or conflicting across KB documents. Each card cites KB quotes only (checked by verify_rule_cards.py). Provenance records how the card was found, so its effect on DEV is not mistaken for an independent result.",
+ "cards": [
+  {
+   "id": "debit-liability-anchor",
+   "applies_to_tool": "file_debit_card_transaction_dispute_6281",
+   "argument": "customer_max_liability_amount",
+   "rule": "Measure liability timing from the statement date showing the transaction, not from when the customer noticed it. Statements are monthly. A transaction not yet shown on an issued statement (current month) is reported within the first window: maximum liability $50. A transaction shown on a previous monthly statement and reported within 60 days of that statement: maximum $500, never more than the disputed amount. Reported more than 60 days after that statement: unlimited (-1).",
+   "conflict": "doc 031's lead sentence and consumer doc 037 describe timing from when the customer noticed or reported; doc 031's tier labels and doc 032 anchor it on the statement date. Doc 032 defines the anchor explicitly, so it governs.",
+   "sources": [
+    {
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+     "quote": "Customer reported the unauthorized transaction within 60 days of the statement date showing the transaction"
+    },
+    {
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Reported within 2 business days of statement: Maximum liability $50"
+    },
+    {
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+     "quote": "Reported within 60 days of statement: Maximum liability $500"
+    },
+    {
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_037",
+     "quote": "your liability is limited based on how quickly you report it"
+    }
+   ],
+   "provenance": "Found while diagnosing DEV task_087 (and consistent with DEV 082/084 gold values). DEV-derived; not checked against TEST."
+  },
+  {
+   "id": "atm-provisional-credit",
+   "applies_to_tool": "file_debit_card_transaction_dispute_6281",
+   "argument": "provisional_credit_eligible",
+   "rule": "For an atm_cash_discrepancy at a Rho-Bank ATM where the transaction record confirms the discrepancy, provisional credit is issued: set provisional_credit_eligible true. The 'has not contacted merchant first' condition does not apply, because the bank itself is the ATM operator.",
+   "conflict": "doc 032 lists 'Customer has not contacted merchant first (for non-fraud disputes)' as a reason credit is not required; doc 033 states that for a confirmed Rho-Bank ATM cash discrepancy provisional credit is issued immediately. Doc 033 covers this exact situation, so its narrower scope governs.",
+   "sources": [
+    {
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_033",
+     "quote": "If discrepancy confirmed, provisional credit is issued immediately (no waiting period)"
+    },
+    {
+     "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+     "quote": "Customer has not contacted merchant first (for non-fraud disputes)"
+    }
+   ],
+   "provenance": "Found while testing provisional-credit hypotheses on DEV disputes (082, 083). KB-backed by doc 033; DEV-informed; not checked against TEST."
+  }
+ ]
+}

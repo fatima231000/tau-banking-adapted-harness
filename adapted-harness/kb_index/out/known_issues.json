@@ -1,0 +1,3793 @@
+{
+ "model": "claude-opus-5-5",
+ "tools": {
+  "activate_debit_card_8291": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_024",
+    "doc_bank_accounts_bank_accounts_(general)_028",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_031"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Tool selection (whether activate_debit_card_8291 is the right variant)",
+     "kind": "cross_document_dependency",
+     "description": "Using 8291 depends on the card's issue_reason being 'new_account' or 'first_card'. Doc 024 names two possible sources for that value: the debit_cards issue_reason field or the debit_card_orders order reason. It does not say which one wins if they differ. Its own step 2, and doc 028, point to the debit_cards issue_reason returned by get_debit_cards_by_account_id_7823.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Check the debit_cards table for the 'issue_reason' field or debit_card_orders table for the order reason."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Look up the card in the debit_cards table and check the 'issue_reason' field to determine which activation tool to use"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Before activating a card: Look up the issue_reason to determine which activation tool to use"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 024 step 2 and doc 028 settle it: call get_debit_cards_by_account_id_7823 and use the debit_cards issue_reason. Use 8291 only if that value is new_account or first_card."
+    },
+    {
+     "id": "I2",
+     "topic": "Cards reissued after a fraud dispute (close_and_reissue)",
+     "kind": "cross_document_dependency",
+     "description": "Doc 031's dispute flow can close a card and issue a replacement. The customer may then call to activate a 'new' card. Under doc 024, a fraud replacement is not a first-time card, so it must not use 8291 even though the customer sees it as new.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_present_fraud' \u2192 'close_and_reissue'"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "activate_debit_card_8292: Use for REPLACEMENT cards (replacing lost/stolen/fraud cards, issue_reason = 'lost', 'stolen', or 'fraud')"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 024 decides: route by issue_reason. A fraud/lost/stolen replacement goes to 8292, not 8291."
+    },
+    {
+     "id": "I3",
+     "topic": "card_id selection and PENDING status precondition",
+     "kind": "cross_document_dependency",
+     "description": "The card lookup can return several cards for one account. Doc 024 requires the card being activated to be PENDING. Doc 028 also lists a FROZEN status, and doc 024 does not say how to handle it beyond 'not already ACTIVE'.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 024 settles which card to use: the card_id must be the one in PENDING status. FROZEN or CLOSED cards do not qualify."
+    },
+    {
+     "id": "I4",
+     "topic": "Linked checking account must be OPEN",
+     "kind": "cross_document_dependency",
+     "description": "Doc 024 requires the linked checking account to be OPEN. That status is not returned by the debit card lookup. It comes from get_all_user_accounts_by_user_id_3847 in doc 009.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The linked checking account must still be OPEN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "returns all account information including:\n- account_id\n- account_type\n- account_class\n- status"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 009 resolves it: check the account status with get_all_user_accounts_by_user_id_3847 before activating."
+    },
+    {
+     "id": "I5",
+     "topic": "last_4_digits / expiration_date verification and lockout",
+     "kind": "cross_document_dependency",
+     "description": "Before calling, the customer-supplied last 4 digits and MM/YY expiration date must match the record and the card must not be expired. The reference values come from doc 028. Doc 024 locks the card after 2 incorrect attempts, so the agent should check the values before calling the tool. The KB does not define what counts as 'expired' for an MM/YY date, such as whether the card is valid through the end of that month.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Verify the card details match the customer's account"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "card_number_last_4: Last 4 digits of the card number"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Card must not be expired (check expiration_date)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "pin argument validity",
+     "kind": "ambiguity",
+     "description": "The PIN must be exactly 4 digits and not 'sequential like 1234 or repeating like 1111'. The KB does not say whether descending sequences (4321), partial repeats (1112) or patterns like 1212 are disallowed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "activate_debit_card_8292": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_024",
+    "doc_bank_accounts_bank_accounts_(general)_028",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_031"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Tool selection (8292 vs 8291/8293) via issue_reason",
+     "kind": "cross_document_dependency",
+     "description": "Whether activate_debit_card_8292 is the right tool depends entirely on the card's issue_reason, which the activation procedure says to read from the debit_cards table but which is only exposed by the lookup tool documented in a different document. The procedure also offers an alternative source, debit_card_orders, without mapping order reasons to tools or saying which source wins if they differ.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Check the debit_cards table for the 'issue_reason' field or debit_card_orders table for the order reason."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "activate_debit_card_8292: Use for REPLACEMENT cards (replacing lost/stolen/fraud cards, issue_reason = 'lost', 'stolen', or 'fraud')"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Before activating a card: Look up the issue_reason to determine which activation tool to use"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_024 step 2 and doc_028 both direct the agent to look up the card with get_debit_cards_by_account_id_7823 and use its issue_reason field. Use 8292 only when issue_reason is lost, stolen or fraud."
+    },
+    {
+     "id": "I2",
+     "topic": "Fraud-dispute reissued card: 'fraud' (8292) vs 'bank_reissue' (8293)",
+     "kind": "ambiguity",
+     "description": "After a fraud dispute, the card action is 'close_and_reissue', which is a bank-performed reissue. The activation doc classifies 'bank-initiated' cards as REISSUED (8293) but fraud replacements as REPLACEMENT (8292). The documents do not say which issue_reason such a card receives, so an agent reasoning from the scenario could pick the wrong variant.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_present_fraud' \u2192 'close_and_reissue'"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "activate_debit_card_8293: Use for REISSUED cards (expiration renewal, damaged card, design upgrade, or bank-initiated, issue_reason = 'expired', 'damaged', 'upgrade', or 'bank_reissue')"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_024 says to always verify the issue_reason field rather than infer it. The stored issue_reason value ('fraud' vs 'bank_reissue') decides the tool."
+    },
+    {
+     "id": "I3",
+     "topic": "card_id selection and PENDING status precondition",
+     "kind": "cross_document_dependency",
+     "description": "The activation doc requires the card to be PENDING. The lookup tool may return multiple cards, including old closed and active ones, with statuses ACTIVE, PENDING, FROZEN or CLOSED. The agent must pick the PENDING replacement card's card_id and must not activate ACTIVE, FROZEN or CLOSED cards.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_024 requires PENDING status. Pass the card_id of the PENDING card returned by get_debit_cards_by_account_id_7823 (doc_028)."
+    },
+    {
+     "id": "I4",
+     "topic": "Linked checking account must be OPEN",
+     "kind": "cross_document_dependency",
+     "description": "The activation precondition requires the linked checking account to be OPEN. Account status is not returned by the debit card lookup; it comes from get_all_user_accounts_by_user_id_3847, which is documented separately.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The linked checking account must still be OPEN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "The tool requires the customer's user_id and returns all account information including:"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Check the status of the card's account_id via get_all_user_accounts_by_user_id_3847 (doc_009) before calling 8292."
+    },
+    {
+     "id": "I5",
+     "topic": "pin argument validity",
+     "kind": "ambiguity",
+     "description": "The PIN rules forbid 'sequential like 1234' and 'repeating like 1111' but do not define the boundaries. It is unclear whether descending sequences (4321) or partial repeats (1122) are disallowed. The 'Required Information from Customer' list also omits the PIN entirely, although the tool requires it.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The 3-digit CVV on the back of the card"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Card detail verification, expiration check and lockout before calling",
+     "kind": "ambiguity",
+     "description": "Step 6 requires verifying card details against the account, but the lookup returns only card_number_last_4 and expiration_date, not the CVV, so the CVV cannot be verified beforehand. The 'not expired' check needs a current date that is not defined, and it is unclear whether MM/YY means the end of that month. Two incorrect detail attempts lock the card, so an agent must not keep retrying.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Verify the card details match the customer's account"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Card must not be expired (check expiration_date)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "card_number_last_4: Last 4 digits of the card number"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "activate_debit_card_8293": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_024",
+    "doc_bank_accounts_bank_accounts_(general)_028",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_031"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Tool selection for issue_reason = 'bank_reissue'",
+     "kind": "conflict",
+     "description": "The tool-selection section and the tool description route 'bank_reissue' cards to 8293, but the step-8 list of reissued reasons leaves out bank_reissue. An agent following step 8 alone may doubt whether 8293 applies.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "activate_debit_card_8293: Use for REISSUED cards (expiration renewal, damaged card, design upgrade, or bank-initiated, issue_reason = 'expired', 'damaged', 'upgrade', or 'bank_reissue')"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "For reissued cards (expired/damaged/upgrade): activate_debit_card_8293"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "The tool-selection section of doc_bank_accounts_bank_accounts_(general)_024, which matches the tool description, explicitly includes 'bank_reissue', so 8293 is correct for bank_reissue."
+    },
+    {
+     "id": "I2",
+     "topic": "Cards issued via dispute card_action 'close_and_reissue'",
+     "kind": "cross_document_dependency",
+     "description": "The dispute procedure calls fraud replacements 'close_and_reissue'. That wording may lead an agent to treat such cards as 'reissued' and call 8293. Under the activation procedure, however, fraud/lost/stolen replacements belong to 8292, so the issue_reason field must decide.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_present_fraud' \u2192 'close_and_reissue'"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "activate_debit_card_8292: Use for REPLACEMENT cards (replacing lost/stolen/fraud cards, issue_reason = 'lost', 'stolen', or 'fraud')"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Before activating a card: Look up the issue_reason to determine which activation tool to use"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_bank_accounts_bank_accounts_(general)_024 says to always check the issue_reason field. Fraud-driven reissues carry 'fraud' and go to 8292, not 8293."
+    },
+    {
+     "id": "I3",
+     "topic": "card_id selection when multiple cards exist",
+     "kind": "cross_document_dependency",
+     "description": "The lookup tool may return several cards for an account, such as old closed cards plus the current one. The correct card_id depends on the activation requirement that the card be PENDING.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Per doc_bank_accounts_bank_accounts_(general)_024, use the card with status PENDING whose issue_reason is a reissue reason."
+    },
+    {
+     "id": "I4",
+     "topic": "Linked checking account must be OPEN",
+     "kind": "cross_document_dependency",
+     "description": "Activation requires the linked checking account to be OPEN. The debit card lookup does not return account status; it must be obtained from the account retrieval tool in another document.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "The linked checking account must still be OPEN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "returns all account information including:\n- account_id\n- account_type\n- account_class\n- status"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Use get_all_user_accounts_by_user_id_3847 (doc_bank_accounts_bank_accounts_(general)_009) to check the status of the account_id returned by the card lookup."
+    },
+    {
+     "id": "I5",
+     "topic": "pin argument validity",
+     "kind": "ambiguity",
+     "description": "The tool only says '4-digit PIN'. The procedure also bans 'sequential like 1234' or 'repeating like 1111' PINs but does not define the full scope, for example whether descending sequences like 4321 or partial repeats are disallowed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Verification mismatch / incorrect detail attempts before calling",
+     "kind": "ambiguity",
+     "description": "Step 6 requires verifying the details against the account, and two incorrect submissions lock the card. The documents do not say whether a mismatch found in the lookup counts as an attempt, or whether the agent should call the tool with unverified details. The lookup exposes only the last 4 digits and expiration date, not the CVV.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "Verify the card details match the customer's account"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_024",
+       "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "apply_checking_account_credit_5829": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_017",
+    "doc_bank_accounts_bank_accounts_(general)_018",
+    "doc_bank_accounts_bank_accounts_(general)_009"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "credit_type when combining fee refunds and missing rebates",
+     "kind": "ambiguity",
+     "description": "Only one credit call is allowed per account, so mixed corrections must be combined and given a single credit_type chosen by 'majority'. The documents do not say whether the majority is counted by number of corrections or by dollar amount, and they give no tie-break rule. Either reading can produce a different credit_type.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "combine them into a single credit with the total amount and use the credit_type that applies to the majority of the corrections."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "credit_type: Must be one of 'rebate_credit' or 'fee_refund'"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "amount for fee mischarges (net correction vs. overcharged fee amount)",
+     "kind": "conflict",
+     "description": "The fee-mischarge section requires a net correction across all fee discrepancies, so undercharges would offset overcharges. The procedure and restrictions instead describe the amount as the fee that was overcharged, or the exact fee amount. A net correction could also be zero or negative, but the tool requires an amount greater than 0, and no rule covers that case.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "Ensure the credit amount reflects the net correction across all identified fee discrepancies"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "Calculate the correct credit amount based on the rebate policy or fee that was overcharged"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "The credit amount must match the exact rebate or fee amount - do not round or estimate."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "The specific Fee mischarges section of doc_bank_accounts_bank_accounts_(general)_017 governs: identify all fee discrepancies and credit the net correction. The non-positive net case remains unaddressed."
+    },
+    {
+     "id": "I3",
+     "topic": "one call per account and 14-day cooldown",
+     "kind": "cross_document_dependency",
+     "description": "Doc 017 limits the tool to one call per account per interaction and enforces a 14-day cooldown after a credit. Detecting a recent credit, or confirming that a rebate was not already applied, depends on the transaction history tool in doc 018. That doc lists rebate_credit, fee_refund and fee_rebate transaction types along with dates.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "After a credit is applied to a checking account, the system enforces a 14-day cooldown period before another credit can be applied to that same account."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_018",
+       "quote": "Returns: A list of all transactions for the account. Transactions are returned in reverse chronological order (most recent first)."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Use get_bank_account_transactions_9173 (doc_bank_accounts_bank_accounts_(general)_018) to check dates and the types rebate_credit, fee_refund and fee_rebate before calling."
+    },
+    {
+     "id": "I4",
+     "topic": "rebate eligibility and rebate amount",
+     "kind": "ambiguity",
+     "description": "Credit eligibility and the rebate amount depend on 'documented rebate policies', but no rebate policy is included in the KB. The rebate amount therefore cannot be determined from these documents.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "Verify the customer is eligible for the rebate based on documented rebate policies"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "Ensure the rebate amount matches what is specified in the applicable rebate policy"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "which fee transactions count (fee schedule and pending status)",
+     "kind": "ambiguity",
+     "description": "Fee discrepancies must be judged against a 'documented fee schedule' that is not in the KB. Transactions can also be 'pending' or 'posted', and the documents do not say whether pending fees count as charged.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "If any fees on the customer's account do not match the correct amounts per the documented fee schedule"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_018",
+       "quote": "**status**: Transaction status, either 'posted' or 'pending'"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "account_id must be a checking account",
+     "kind": "cross_document_dependency",
+     "description": "The tool may credit only checking accounts. Doc 017 gives no way to verify the account type; verification relies on get_all_user_accounts_by_user_id_3847 in doc 009, which returns account_type and status.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_017",
+       "quote": "Confirm the account is a checking account (credits cannot be applied to savings or other account types)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "The tool requires the customer's user_id and returns all account information including:"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Check account_type via get_all_user_accounts_by_user_id_3847 per doc_bank_accounts_bank_accounts_(general)_009 before calling."
+    }
+   ]
+  },
+  "apply_credit_card_account_flag_6147": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_003",
+    "doc_credit_cards_credit_card_account_logistics_002",
+    "doc_credit_cards_credit_card_replacements_005",
+    "doc_credit_cards_credit_cards_(general)_016"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Waiver eligibility: 2+ years tenure",
+     "kind": "ambiguity",
+     "description": "The waiver depends on the customer having been a customer for 2+ years. The documents never say whether this means overall customer tenure or the age of this card account, or which date it is measured from. Eligibility documents only define account age (60 days).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If they have been a customer for 2+ years, offer to waive their annual fee for one year as a loyalty benefit."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "Account age at least 60 days"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Pending replacement card gate before retention/flag",
+     "kind": "conflict",
+     "description": "The retention protocol blocks the process when a replacement has not been received or activated. The replacement-order document allows proceeding once orders are delivered or cancelled. A delivered but unactivated card is therefore treated differently, which changes whether retention and the flag may proceed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_005",
+       "quote": "If all orders are final (delivered or cancelled), proceed with standard closure checks."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Pending dispute check (account-level rule vs user-level tool)",
+     "kind": "cross_document_dependency",
+     "description": "Step 1 requires that this account has no active or pending disputes. The only dispute tool returns all of the user's disputes, keyed by user_id. Its statuses (open, under_review, closed) do not map explicitly to 'active or pending', and no rule says how to attribute disputes to this account (e.g., via card_last4).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Pending disputes: The account must not have any active or pending transaction disputes."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_016",
+       "quote": "Call it with the user's user_id to get a list of all disputes filed by that user"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_016",
+       "quote": "status (for example: open, under_review, closed)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Abuse-prevention check precedes flag",
+     "kind": "cross_document_dependency",
+     "description": "The flag may only be applied if no closure reason records exist for the account in the past year. Those records are created by the Step 3 logging tool. The agent must therefore run the history check before logging the reason, or the check will find the record just created.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Ask the customer why they want to close their account. Then log it using log_credit_card_closure_reason_4521."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_003 orders Step 2 (history check) before Step 3 (logging) and says to skip retention, including the waiver, if records are found."
+    },
+    {
+     "id": "I5",
+     "topic": "expiration_date",
+     "kind": "ambiguity",
+     "description": "The expiration date is 'a year from today'. It is not specified whether this means the same calendar date next year or 365 days, nor how to handle Feb 29.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "expiration_date (string, required): Set to a date a year from today in MM/DD/YYYY format."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "reason argument",
+     "kind": "ambiguity",
+     "description": "The tool offers both 'retention_offer' and 'loyalty_benefit', and the waiver is given in a retention context, so either could seem to apply.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "reason (string, required): Use 'loyalty_benefit' for long-tenured customers."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_003 specifies 'loyalty_benefit' for the annual fee waiver and flag_type 'annual_fee_waived'."
+    }
+   ]
+  },
+  "apply_savings_account_credit_6831": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_043",
+    "doc_bank_accounts_bank_accounts_(general)_044",
+    "doc_bank_accounts_bank_accounts_(general)_045",
+    "doc_bank_accounts_bank_accounts_(general)_046",
+    "doc_bank_accounts_bank_accounts_(general)_012"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "amount (interest_correction calculation)",
+     "kind": "ambiguity",
+     "description": "The credit amount for an interest correction depends on an APY difference, but the boost percentages for each checking-savings pairing are not given in the KB. Doc 012 defers them to savings-account documentation that is not included, so the expected interest, and therefore the amount, cannot be fully determined from these documents.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_012",
+       "quote": "For the exact APY boost percentages for each pairing, please refer to the specific savings account documentation."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+       "quote": "calculate the correct interest amount based on documented APY rates and bonuses, determine the difference between expected and actual interest."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "amount (expected APY stacking rules)",
+     "kind": "cross_document_dependency",
+     "description": "Computing the correct interest_correction amount requires combining several rules. Doc 044 says to add all applicable components. Docs 045 and 046 limit this: only the highest credit card bonus and only the highest checking boost apply, though these still stack with relationship and tier bonuses. Naively summing every component would overstate the amount.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "Calculate the expected APY by adding all applicable components"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_045",
+       "quote": "Only the HIGHEST credit card APY bonus is applied to the savings account."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_046",
+       "quote": "Only the HIGHEST checking account APY boost is applied to the savings account."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Docs 045 and 046 decide this. Add base and tier rate, the relationship bonus, the single highest qualifying checking boost (only from pairings listed in doc 012), and the single highest credit card bonus."
+    },
+    {
+     "id": "I3",
+     "topic": "goodwill_credit approval threshold",
+     "kind": "ambiguity",
+     "description": "Goodwill credits 'typically' require supervisor approval above $25, which leaves it unclear whether a goodwill credit over $25 may be applied without approval. 'Significant inconvenience' and 'exceptional circumstances' are also undefined.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+       "quote": "Goodwill credits should be rare and typically require supervisor approval for amounts over $25."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Ordering of credit vs discrepancy report",
+     "kind": "cross_document_dependency",
+     "description": "For interest corrections, the credit must be applied before the discrepancy report is submitted. Doc 043 says 'should also submit' after the credit, while doc 044 says the report 'must' be submitted and the credit always comes first.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+       "quote": "For interest corrections, after applying the credit, you should also submit an interest discrepancy report using submit_interest_discrepancy_report_7294"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "Important: Always apply the credit to the customer's account BEFORE submitting the report."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 044 decides the order: call apply_savings_account_credit_6831 first, then submit_interest_discrepancy_report_7294."
+    },
+    {
+     "id": "I5",
+     "topic": "credit_type classification for wrong checking-boost selection",
+     "kind": "cross_document_dependency",
+     "description": "Doc 046 classifies a case where the system selected the wrong checking account boost as an interest correction. This determines credit_type='interest_correction' rather than 'goodwill_credit'.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_046",
+       "quote": "If the system selected the wrong checking account, calculate the correct APY and apply an interest correction"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 046 decides it: use credit_type 'interest_correction'."
+    },
+    {
+     "id": "I6",
+     "topic": "amount (interest period / dollar conversion)",
+     "kind": "ambiguity",
+     "description": "The documents work in APY percentages but the tool needs a dollar amount. No document says how to convert an APY difference into dollars, for example which balance and which accrual period to use.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "amount_difference (number): The dollar amount difference between expected and actual interest credited"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+       "quote": "Calculate the correct credit amount based on the discrepancy or fee"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "apply_statement_credit_8472": {
+   "docs": [
+    "doc_credit_cards_credit_cards_(general)_017",
+    "doc_credit_cards_credit_card_account_logistics_003",
+    "doc_credit_cards_credit_cards_(general)_014",
+    "doc_credit_cards_credit_cards_(general)_025",
+    "doc_bank_accounts_bank_accounts_(general)_030"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "amount (retention offer by card tier)",
+     "kind": "ambiguity",
+     "description": "The retention credit amount depends on the card tier, but no document says how to tell whether a card is entry, mid, or premium. 'Premium and above' is also not defined. The protocol offers points or a credit, and nothing says which to apply if the customer does not choose. The reason value, 'retention_offer', is clear from the tool's enum. The amount is not.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Entry-tier cards: Offer 500 bonus points or a $5 statement credit"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Mid-tier cards: Offer 2,000 bonus points or a $20 statement credit"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Premium and above: Offer 5,000 bonus points or a $50 statement credit"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Eligibility gating before a retention_offer credit",
+     "kind": "cross_document_dependency",
+     "description": "The credit tool's procedure has no preconditions. The retention protocol allows a retention credit only after several checks: closure eligibility (no pending disputes, no pending replacement card, account age of at least 60 days, no balance), no closure-reason records in the past year, logging the reason, and addressing the concern. A pending dispute filed through the dispute procedure, or a replacement card ordered through the lost/stolen protocol, blocks the retention offer entirely.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If any requirement is not met, explain what must be resolved and do not proceed with retention offers."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+       "quote": "First unlock the tool using unlock_discoverable_agent_tool, then call it using call_discoverable_agent_tool"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "The retention protocol (doc_credit_cards_credit_card_account_logistics_003) decides this. Apply a retention_offer credit only after Steps 1\u20134 pass, and make only one offer."
+    },
+    {
+     "id": "I3",
+     "topic": "amount (goodwill credit for negative experience)",
+     "kind": "ambiguity",
+     "description": "The protocol suggests a 'modest goodwill credit' for service complaints but gives no dollar amount or ceiling. 'Consider' does not settle whether the credit should be given at all. The reason would presumably be 'goodwill_adjustment'.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Consider offering a modest goodwill credit for service-related complaints."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+       "quote": "'goodwill_adjustment': One-time courtesy credit for customer satisfaction"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Annual fee: waiver flag vs annual_fee_reversal credit",
+     "kind": "conflict",
+     "description": "Two remedies exist for annual fee concerns. The retention protocol uses an account flag (apply_credit_card_account_flag_6147) for long-tenured customers and a downgrade for others. Separately, it mentions a possible full refund of a recently posted fee if the account is closed within 37 days. The tool also accepts 'annual_fee_reversal'. No document says when to issue an annual_fee_reversal statement credit instead of the flag, or what amount to use.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "offer to waive their annual fee for one year as a loyalty benefit. Use apply_credit_card_account_flag_6147"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "advise that a full refund may be available if the closure occurs within 37 days of the fee being charged."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+       "quote": "'annual_fee_reversal': Reversal of an annual fee charge"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Late fee / interest reversal eligibility and amount",
+     "kind": "ambiguity",
+     "description": "The customer-facing article promises case-by-case consideration of late fee and interest reversals. No internal criteria exist for approving them or for setting the amount, such as the full fee or a partial amount.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_025",
+       "quote": "If you've been a customer in good standing and accidentally missed a payment due date, we understand that life happens. Reach out to us and we'll see what we can do."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_025",
+       "quote": "we do carefully consider each situation on a case-by-case basis"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "credit_card_account_id selection",
+     "kind": "ambiguity",
+     "description": "The account ID comes from get_credit_card_accounts_by_user. That call returns both active and closed accounts. No document says which account to credit when there are several, or whether a closed account may be credited.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+       "quote": "This can be found by calling get_credit_card_accounts_by_user."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_030",
+       "quote": "This will return all active and closed credit card accounts."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "approve_credit_limit_increase_5847": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_007",
+    "doc_credit_cards_credit_card_account_logistics_006",
+    "doc_credit_cards_credit_card_replacements_001"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "new_credit_limit (value and type)",
+     "kind": "cross_document_dependency",
+     "description": "The approval tool needs the new total limit, but the request is captured as an increase amount. The agent must add the requested increase to the current limit rather than pass the increase itself. The KB also types new_credit_limit as float while the tool takes an integer. A percentage-based maximum (25% or 50%) can produce a non-whole-dollar amount, and no document says how to round it.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "requested_increase_amount (integer, required): The dollar amount by which to increase the credit limit (e.g., 1000 for a $1,000 increase)."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "new_credit_limit (float, required): The new total credit limit to set."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Entry-tier cards: Maximum increase of 25% of current credit limit per request."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Eligibility thresholds (account age, cooldown period, utilization)",
+     "kind": "ambiguity",
+     "description": "Step 2 requires the agent to check minimum account age, the cooldown period and the maximum utilization by card tier. None of these values is defined in any document, so the agent cannot determine whether to approve or deny.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "Account Age: Verify the account has been open for the minimum required days for their card tier."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "check if the customer has submitted a request within the cooldown period for their card tier"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "Verify current utilization is below the maximum threshold for their card tier."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Maximum increase and payment history criteria (Step 0 / empty Step 3)",
+     "kind": "cross_document_dependency",
+     "description": "Step 0 refers to a tier maximum without defining it. Step 3 (Verify Payment History and Requested Amount) is empty. Both the maximum increase percentages and the required consecutive on-time payment months are defined only in doc 006, and they must be satisfied before approving.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "## Step 3: Verify Payment History and Requested Amount\n\n."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Entry-tier cards: Requires 6 consecutive months of on-time payments."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Mid-tier cards: Maximum increase of 50% of current credit limit per request."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_006 defines the payment history months (Entry 6, Mid 3, Premium 3) and the maximum increase (Entry 25%, Mid/Premium 50% of the current limit)."
+    },
+    {
+     "id": "I4",
+     "topic": "Card tier classification",
+     "kind": "cross_document_dependency",
+     "description": "All CLI limits depend on whether a card is entry, mid or premium tier. The mapping of card products to tiers appears only in the replacement card document.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Entry-tier (Bronze Rewards, EcoCard, Business Bronze)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Mid-tier (Silver Rewards, Business Silver, Green Rewards, Silver Zoom)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Premium-tier and above (Gold, Platinum, Diamond Elite)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_replacements_001 lists which card products belong to each tier."
+    },
+    {
+     "id": "I5",
+     "topic": "Pending replacement card blocking approval",
+     "kind": "cross_document_dependency",
+     "description": "A replacement order (replacement doc) creates a pending replacement, and the old card is cancelled. A pending replacement blocks the CLI. However, doc 007 says the CLI 'cannot be processed until' delivery or cancellation, while also offering a denial reason 'pending_replacement_card'. This leaves unclear whether to deny or wait.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "If a replacement is pending, the CLI cannot be processed until the replacement is delivered or cancelled."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "The old card is automatically cancelled for security and will no longer work for new purchases."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Handling requested amount above the tier maximum",
+     "kind": "conflict",
+     "description": "Doc 007 Step 0 says never to submit an over-limit request and to ask the customer to adjust it. Doc 006 says to offer the maximum amount. Yet the deny tool includes 'requested_amount_exceeds_limit', and Step 4 rechecks the amount, which suggests an over-limit request could reach the decision step.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "Do NOT submit a request that exceeds the tier limit."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "inform them of the maximum amount they are eligible for and ask if they would like to proceed with that amount instead."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "'requested_amount_exceeds_limit'"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_007 Step 0 requires resolving the amount before submission, by offering the maximum per doc 006, so approval only ever uses an in-limit amount."
+    }
+   ]
+  },
+  "change_debit_card_pin_6285": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_027",
+    "doc_bank_accounts_bank_accounts_(general)_026",
+    "doc_bank_accounts_bank_accounts_(general)_028"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Card status precondition (FROZEN card) \u2014 prerequisite unfreeze",
+     "kind": "cross_document_dependency",
+     "description": "The PIN change requires the card to be ACTIVE; a frozen card must first be unfrozen via the separate unfreeze procedure, which itself has its own requirements (linked checking account must be OPEN). If the checking account is not open, the card cannot be unfrozen and the PIN cannot be changed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Card must be in ACTIVE status (cannot change PIN on FROZEN, PENDING, or CLOSED cards)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "If customer's card is frozen, they must unfreeze it first before changing PIN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "The linked checking account must still be OPEN"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 027 requires unfreezing first; doc 026 governs unfreezing (FROZEN status, account OPEN, use unfreeze_debit_card_3893), after which the card is active and change_debit_card_pin_6285 may be called."
+    },
+    {
+     "id": "I2",
+     "topic": "Determining card_id and verifying status/ownership",
+     "kind": "cross_document_dependency",
+     "description": "The PIN procedure requires checking ownership and ACTIVE status but gives no lookup step; card status and user_id come from get_debit_cards_by_account_id_7823 in doc 028, whose listed use cases don't include PIN changes. Multiple cards (including closed ones) may be returned, so the wrong card_id could be chosen.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Customer must be the owner of the debit card"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "new_pin validation \u2014 birth year / birth month-day check",
+     "kind": "ambiguity",
+     "description": "The new PIN must not be the customer's birth year or birth month/day, but no document says how to obtain the customer's birth date or the format of month/day (MMDD vs DDMM).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Cannot be the customer's birth year or birth month/day"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "new_pin validation \u2014 what counts as sequential",
+     "kind": "ambiguity",
+     "description": "Only examples 1234 and 4321 are given; unclear whether partial sequences or wraparound (e.g., 7890, 0123, 1357) are disallowed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Cannot be sequential (e.g., 1234, 4321)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Change vs reset tool choice / incorrect current_pin handling",
+     "kind": "ambiguity",
+     "description": "If the customer gives an incorrect current PIN, the card is locked after 3 attempts, but the documents don't say whether the agent should switch to the reset procedure (reset_debit_card_pin_6284) or how many retries to allow; 'temporarily locked' also isn't mapped to a status in doc 028.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "If customer enters incorrect current PIN 3 times, the card will be temporarily locked"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Use reset_debit_card_pin_6284 with parameters: card_id, last_4_digits, new_pin"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Reading back PIN in confirmation",
+     "kind": "ambiguity",
+     "description": "Step 6 says to confirm the PIN change, while notes forbid displaying or reading back PINs; agent must confirm without echoing current_pin or new_pin.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "For security, PINs are never displayed or read back to customers"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Confirm the PIN has been changed"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 027 Important Notes decide: confirm the change without displaying or reading back the PIN."
+    }
+   ]
+  },
+  "clear_debit_card_fraud_alert_4892": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_039",
+    "doc_bank_accounts_bank_accounts_(general)_042",
+    "doc_bank_accounts_bank_accounts_(general)_028",
+    "doc_bank_accounts_bank_accounts_(general)_031"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Determining alert type (customer- vs bank-initiated) before calling",
+     "kind": "ambiguity",
+     "description": "The tool may only clear customer-initiated alerts and velocity blocks, but no document provides a way to see whether an alert is bank-initiated or whether a card has an alert vs a velocity block. The card lookup fields do not include an alert/block type. The KB's fallback is to attempt the call and escalate if an error comes back.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "This tool CANNOT clear bank-initiated fraud alerts. If you attempt to clear a bank-initiated alert, you will receive an error. In this case, you must transfer the customer to the security team."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "reason argument selection",
+     "kind": "ambiguity",
+     "description": "Picking 'customer_verified' or 'velocity_clear' depends on whether the protection is a fraud alert or a velocity block. No retrieval field identifies which one applies, so the agent must infer it from what the customer says.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "`'customer_verified'`: Use when clearing a customer-initiated fraud alert after the customer has verified their identity and confirmed their transactions are legitimate"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "`'velocity_clear'`: Use when clearing a velocity block after verifying the customer's identity"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "card_id lookup",
+     "kind": "cross_document_dependency",
+     "description": "The card_id has to come from get_debit_cards_by_account_id_7823. That tool can return several cards, including old closed ones, so the agent must choose the correct current card.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "`card_id` (required): The debit card ID to clear the alert/block for"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Escalation reason code when clearing is not allowed",
+     "kind": "cross_document_dependency",
+     "description": "Doc 039 requires transfer to the security team in several cases: bank-initiated alert, failed identity verification, or unrecognized transactions. The transfer reason code is defined in doc 042. Failed identity verification could plausibly map to either fraud_or_security_concern or account_ownership_dispute.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "Customer cannot verify their identity"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_042",
+       "quote": "fraud_or_security_concern | Fraud, identity theft, unauthorized transactions, or security concerns requiring specialist handling"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_042",
+       "quote": "account_ownership_dispute | Ownership disputes, joint account issues, or identity verification failures requiring specialist"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Whether to clear a velocity block or let it expire",
+     "kind": "ambiguity",
+     "description": "Velocity blocks expire on their own after 30 minutes, and early clearing is optional. The KB does not say whether the agent should clear the block if it may already have expired, or how to check its age.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "Velocity blocks automatically expire after 30 minutes, but can be cleared earlier by a customer service agent after identity verification."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Clearing when customer reports unrecognized transactions",
+     "kind": "cross_document_dependency",
+     "description": "If the customer reports transactions they did not make, the agent must escalate instead of clearing the alert. That same scenario also triggers the dispute process in doc 031, whose fraud categories map to closing and reissuing the card. Clearing the alert would be the wrong call in this case.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_039",
+       "quote": "Customer reports transactions they did not make"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_not_present_fraud' \u2192 'close_and_reissue'"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 039 decides: for fraud alerts, clear only if the alert was customer-initiated AND the customer confirms the transactions are legitimate; otherwise escalate."
+    }
+   ]
+  },
+  "close_bank_account_7392": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_005",
+    "doc_bank_accounts_bank_accounts_(general)_006",
+    "doc_bank_accounts_bank_accounts_(general)_007",
+    "doc_bank_accounts_bank_accounts_(general)_008",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_018"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Closing business checking vs. business savings (order of closure)",
+     "kind": "conflict",
+     "description": "Business checking cannot be closed while any linked business savings account is still OPEN. Business savings cannot be closed unless at least one active business checking account remains. A customer who wants to close their last business checking and all of its savings accounts therefore hits a circular block. The agent may wrongly close one of them.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_007",
+       "quote": "Customer has no linked business savings accounts that are still OPEN (close those first)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_008",
+       "quote": "Customer must have at least one active business checking account remaining (business savings requires a linked business checking account)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "waive_early_closure_fee argument",
+     "kind": "ambiguity",
+     "description": "The tool accepts waive_early_closure_fee, but no document says when, or whether, a fee may be waived. The closure documents only say the fee is deducted from the balance, with no alternative payment method. The agent cannot tell whether to set this argument to true or false.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "The fee is deducted directly from the account balance and there is no alternative payment method."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Early closure fee window anchor date",
+     "kind": "cross_document_dependency",
+     "description": "Whether a fee applies depends on 'closed within N days', but the closure documents do not define the start date. Doc 009 provides date_opened from get_all_user_accounts_by_user_id_3847, and that field must be combined with the tier window to decide if the fee applies.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "Early closure fee: $15 if closed within 30 days"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "date_opened"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 009 supplies date_opened, which is the only available tenure anchor for the early-closure window."
+    },
+    {
+     "id": "I4",
+     "topic": "Balance precondition when a fee applies",
+     "kind": "ambiguity",
+     "description": "When a fee applies, the balance must be 'at least the fee amount'. The documents do not say what happens to any balance above the fee. It is unclear whether the balance must equal the fee exactly, as with the $0 rule otherwise, or whether a larger balance is allowed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "If an early closure fee applies, the account balance must be at least the fee amount; otherwise, account balance (current_holdings) must be $0."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Notice period handling",
+     "kind": "ambiguity",
+     "description": "Each tier lists a notice period, and the procedure says to 'determine' it. No document says how the notice period affects the call, for example whether closure must be delayed or refused within the notice period, or how it is measured.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "Determine the account tier and applicable fees/notice period."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_006",
+       "quote": "Notice period: 21 days"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "No pending transactions precondition",
+     "kind": "cross_document_dependency",
+     "description": "The closure documents require that there be no pending transactions, but they do not say how to check this. Doc 018 gives the tool for this and states that each transaction's status is 'posted' or 'pending'.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "No pending transactions for this account"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_018",
+       "quote": "**status**: Transaction status, either 'posted' or 'pending'"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 018: call get_bank_account_transactions_9173(account_id) and confirm that no transaction has status 'pending'."
+    }
+   ]
+  },
+  "close_credit_card_account_7834": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_002",
+    "doc_credit_cards_credit_card_account_logistics_003",
+    "doc_credit_cards_credit_card_replacements_005",
+    "doc_credit_cards_credit_cards_(general)_016"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Whether retention steps must precede the close_credit_card_account_7834 call",
+     "kind": "cross_document_dependency",
+     "description": "The closure procedure goes straight from the eligibility checks to the closure tool call. The retention protocol adds steps that must happen before closure: a closure-reason history check, logging the reason, addressing the concern, and making one retention offer. Closure is to proceed only after the customer declines the offer or is found ineligible because of prior attempts. An agent following only doc_002 would call the tool too early.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "3. Use the close_credit_card_account_7834 tool to process the closure. Refer to 'How can I close a credit card account?' for eligibility requirements."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If the customer declines the retention offer (or was ineligible due to prior attempts), thank them for being a Rho-Bank customer and proceed with closure."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Pending replacement card blocking condition",
+     "kind": "conflict",
+     "description": "The documents give different conditions for when a replacement order stops blocking closure. doc_003 blocks until the replacement is received or activated. doc_005 says closure may proceed once 'at least one' of delivered or cancelled is true, but elsewhere requires all orders to be delivered or cancelled. A delivered but not activated card is allowed by doc_005 but arguably blocked by doc_003.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_005",
+       "quote": "Do not proceed with account closure until at least one of the following is true:"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_005",
+       "quote": "If multiple orders appear, review each status and proceed only when all orders are delivered or cancelled."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Pending dispute check scope and status mapping",
+     "kind": "ambiguity",
+     "description": "The eligibility rule is account-level, but the dispute tool returns all disputes for the user, linked to cards only by card_last4. The documents also do not say which statuses count as 'pending': open, under_review, or others. An agent could wrongly block or allow the closure because of a dispute on another card or with an unclear status.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "The account must not have any active or pending transaction disputes."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_016",
+       "quote": "Call it with the user's user_id to get a list of all disputes filed by that user"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_016",
+       "quote": "status (for example: open, under_review, closed)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Minimum account age anchor date",
+     "kind": "ambiguity",
+     "description": "Both documents require an account age of at least 60 days but never define the start date (account opening, activation, or approval) or which field to use. This makes the eligibility check before calling the tool undetermined in edge cases.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "Account age at least 60 days"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "The account must be open for at least 60 days."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "credit_card_account_id identifier type",
+     "kind": "cross_document_dependency",
+     "description": "doc_002 says the ID comes from the account profile or a lookup. doc_005 warns that an account-level ID, not a card-level ID, is needed. Without that warning, the agent might pass a card identifier to the closure tool.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "This can be found in the customer's account profile or by looking up their credit card accounts."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_005",
+       "quote": "Re-verify you are using the account-level identifier, not a card-level identifier."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_replacements_005 specifies that the account-level identifier must be used, not a card-level identifier."
+    },
+    {
+     "id": "I6",
+     "topic": "Retention history look-back window",
+     "kind": "ambiguity",
+     "description": "'Within the past year' has no defined anchor or record date field. As a result, whether the agent skips retention and proceeds directly to closure is undetermined near the boundary.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "determine whether this specific credit card account has any closure reason records within the past year"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "close_debit_card_4721": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_025",
+    "doc_bank_accounts_bank_accounts_(general)_023",
+    "doc_bank_accounts_bank_accounts_(general)_031",
+    "doc_bank_accounts_bank_accounts_(general)_028"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Pending-transaction requirement for lost/stolen/fraud_suspected closures",
+     "kind": "conflict",
+     "description": "Requirement 4 blocks closure whenever pending or processing transactions exist. Step 4, however, tells the agent to inform lost/stolen/fraud customers that pending transactions 'will still be processed', which implies closure goes ahead despite them. The doc explicitly says these reasons bypass only requirement 6. So it is unclear whether the agent should call the tool or refuse for a stolen card that has pending transactions.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "No pending transactions: The card must not have any pending or processing transactions. If pending transactions exist, inform the customer they must wait for all transactions to settle before the card can be closed."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "These reasons bypass the minimum card age requirement (requirement 6) for security purposes"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Inform customer that any pending transactions will still be processed"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Cards reported as lost or stolen are closed immediately with no cooling-off period"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Card status eligibility vs. dispute-driven freeze/close actions",
+     "kind": "cross_document_dependency",
+     "description": "Closure requires ACTIVE or PENDING status. The dispute procedure can freeze a card ('freeze_pending_investigation' via freeze_debit_card_3892). It also requires closing a card for fraud disputes ('close_and_reissue'), and the agent must perform that action separately. A card already FROZEN (e.g., from an earlier unauthorized_transaction dispute) fails the closure status check. The dispute doc also never names close_debit_card_4721 or which reason value to pass.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "The debit card must currently be in ACTIVE or PENDING status"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "This parameter records metadata only; the agent must separately perform the indicated card action after filing the dispute."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_present_fraud' \u2192 'close_and_reissue'"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Pending refunds handling",
+     "kind": "conflict",
+     "description": "Requirement 5 blocks closure when refunds are pending, unless the customer waits or acknowledges in writing that refunds will go to the checking account. The Important Notes state unconditionally that refunds to a closed card are credited to the linked checking account. This leaves unclear whether a written acknowledgment is actually needed before calling the tool.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "If pending refunds exist, inform the customer they must wait for the refunds to process (typically 3-5 business days) or acknowledge in writing that the refunds will be credited to the linked checking account instead."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Refunds to a closed card will be credited to the linked checking account"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_bank_accounts_bank_accounts_(general)_025 Requirement 5 governs eligibility: proceed only if refunds have processed or the customer gives the written acknowledgment; the note describes the outcome."
+    },
+    {
+     "id": "I4",
+     "topic": "Minimum card age calculation (14 days)",
+     "kind": "ambiguity",
+     "description": "The rule says the card must have been 'active' for 14 days but tells the agent to measure from date_issued. A PENDING card, which is still eligible for closure, may never have been active. It is also unclear whether 'days' means calendar days or business days, which affects the earliest eligible closure date.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Minimum card age: The debit card must have been active for at least 14 days. Calculate this from the date_issued field."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "The debit card must currently be in ACTIVE or PENDING status"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_bank_accounts_bank_accounts_(general)_025 specifies date_issued as the anchor; count 14 days from date_issued (lost/stolen/fraud_suspected bypass this)."
+    },
+    {
+     "id": "I5",
+     "topic": "Reason 'damaged' vs. replacement card ordering",
+     "kind": "cross_document_dependency",
+     "description": "Damaged closures assume the customer wants a replacement, which must be ordered through the separate ordering procedure. That procedure limits active cards per account and says the existing card stays active until the new card is activated. The order of closing vs. ordering therefore affects eligibility and service continuity, and neither document sets it.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Damaged card (customer wants replacement)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "Customer cannot have more than 1 active debit cards per checking account"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "The customer's existing debit card (if any) will remain active until the new card is activated."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "account_closing reason and card age requirement",
+     "kind": "ambiguity",
+     "description": "The checking account cannot be closed until all its debit cards are closed. However, the 14-day minimum card age is waived only for lost/stolen/fraud_suspected, not account_closing. A recently issued card would block account closure, and the KB does not say how to handle this.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "If the linked checking account is being closed, all associated debit cards must be closed first"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "These reasons bypass the minimum card age requirement (requirement 6) for security purposes"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "deny_credit_limit_increase_5848": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_007",
+    "doc_credit_cards_credit_card_account_logistics_006",
+    "doc_credit_cards_credit_card_replacements_001"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "denial_reason when the requested amount exceeds the tier maximum",
+     "kind": "conflict",
+     "description": "Doc_007 Step 0 and doc_006 say not to submit an over-limit request and to offer the maximum instead. Yet doc_007 also has a Step 3 that verifies the requested amount, and the tool offers 'requested_amount_exceeds_limit' as a denial reason. This makes it unclear whether an over-limit request should be denied with that reason or never reach a denial at all.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "If the requested amount exceeds the limit, inform the customer of the maximum allowed and ask them to adjust their request. Do NOT submit a request that exceeds the tier limit."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "If the customer requests more than the maximum allowed for their tier, inform them of the maximum amount they are eligible for and ask if they would like to proceed with that amount instead."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "## Step 3: Verify Payment History and Requested Amount"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc_007 Step 0, supported by doc_006, decides this. The agent should not submit an over-limit request. It should offer the tier maximum and have the customer adjust before submitting. In the normal flow, an over-limit request therefore should not end in a denial call."
+    },
+    {
+     "id": "I2",
+     "topic": "denial_reason when multiple eligibility criteria fail",
+     "kind": "ambiguity",
+     "description": "Doc_007 requires checking ALL criteria before deciding, but the deny tool accepts only one denial_reason. No document sets a priority order for choosing a reason when several checks fail.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "You MUST check ALL of the following eligibility criteria before making an approval or denial decision as this ensures complete audit records."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "denial_reason (string, required): Must be one of: 'insufficient_account_age', 'cooldown_period_active', 'pending_disputes', 'pending_replacement_card', 'past_due_balance', 'high_utilization', 'insufficient_payment_history', 'requested_amount_exceeds_limit', 'other'."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "insufficient_payment_history criterion (Step 3 content)",
+     "kind": "cross_document_dependency",
+     "description": "Step 3 of the procedure in doc_007 is empty. The payment-history requirement (6 months for entry tier, 3 for mid and premium) and the months argument for get_payment_history_6183 are defined only in doc_006. Doc_006 in turn depends on knowing the card's tier.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "## Step 3: Verify Payment History and Requested Amount\n\n."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Entry-tier cards: Requires 6 consecutive months of on-time payments."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Mid-tier cards: Requires 3 consecutive months of on-time payments."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc_006 supplies the Step 3 criteria. The agent should deny with 'insufficient_payment_history' if the consecutive on-time months fall below that card tier's requirement."
+    },
+    {
+     "id": "I4",
+     "topic": "Thresholds for insufficient_account_age, cooldown_period_active, high_utilization",
+     "kind": "ambiguity",
+     "description": "Doc_007 refers to a minimum account age, a cooldown period, and a maximum utilization threshold for each card tier. None of the documents gives the actual values, so these denial reasons cannot be determined from the KB.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "Account Age: Verify the account has been open for the minimum required days for their card tier."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "check if the customer has submitted a request within the cooldown period for their card tier"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "Verify current utilization is below the maximum threshold for their card tier."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "pending_replacement_card: deny vs. defer",
+     "kind": "ambiguity",
+     "description": "Doc_007 says the CLI 'cannot be processed' until a pending replacement is delivered or cancelled. That wording leaves open whether to deny with 'pending_replacement_card' or to hold the request. A pending replacement also arises from the separate replacement workflow in doc_001, which states delivery windows but defines no 'pending' status.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "If a replacement is pending, the CLI cannot be processed until the replacement is delivered or cancelled."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "If any requirements are not met:\n\n1. Use the deny_credit_limit_increase_5848 tool to record the denial."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Communicate the expected delivery window based on the selected method (standard: 7\u201310 business days; expedited: 2\u20133 business days)."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Card tier mapping needed for tier-based denial criteria",
+     "kind": "cross_document_dependency",
+     "description": "Every tier-dependent check (payment history months, maximum increase, age, cooldown, utilization) needs the card's tier. The only mapping from card product to tier appears in the replacement-card document.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Entry-tier (Bronze Rewards, EcoCard, Business Bronze): $15.00."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Mid-tier (Silver Rewards, Business Silver, Green Rewards, Silver Zoom): $10.00."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Premium-tier and above (Gold, Platinum, Diamond Elite): $0.00 (complimentary)."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc_001's shipping-fee list identifies each card's tier (Entry, Mid, Premium). That tier is then applied to the criteria in doc_006 and doc_007."
+    }
+   ]
+  },
+  "file_credit_card_transaction_dispute_4829": {
+   "docs": [
+    "doc_credit_cards_credit_cards_(general)_014",
+    "doc_credit_cards_credit_cards_(general)_015"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "resolution_requested",
+     "kind": "conflict",
+     "description": "The internal procedure lists a third allowed value 'reversal_of_charge', but the tool only accepts 'full_refund' or 'partial_refund'. If the agent follows the KB and passes 'reversal_of_charge', the call will be invalid.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+       "quote": "- 'reversal_of_charge': Charge reversal/chargeback"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "eligible_for_provisional_credit",
+     "kind": "cross_document_dependency",
+     "description": "This argument has to be computed with the separate eligibility article. The inputs are account age (at least 60 days), dispute reason, transaction amount against the card-tier limit, number of prior disputes in the last 12 months, merchant contact, and purchase age for not-received disputes.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+       "quote": "Agent must determine this based on the Provisional Credit Eligibility Guidelines article in this knowledge base. Pass true or false."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_015",
+       "quote": "Customer is ELIGIBLE for provisional credit if ALL of the following are true:"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_015 defines the criteria. The flag is true only if all five conditions are met."
+    },
+    {
+     "id": "I3",
+     "topic": "eligible_for_provisional_credit - 30-day anchor for goods_services_not_received",
+     "kind": "ambiguity",
+     "description": "The 30-day window for 'goods_services_not_received' is measured from the purchase date, but the reference date is never stated: today, the date the issue was noticed, or the filing date. The KB also does not say how to treat a purchase exactly 30 days ago. 'More than 30 days ago' and 'within the last 30 days' leave that boundary unclear.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_015",
+       "quote": "'goods_services_not_received' (only if purchase was made more than 30 days ago)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_015",
+       "quote": "'goods_services_not_received' where purchase was made within the last 30 days (merchant may still be processing delivery)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "eligible_for_provisional_credit - previous disputes count",
+     "kind": "ambiguity",
+     "description": "The rule is 'not more than 2 disputes in the past 12 months', so 2 prior disputes is allowed. However, the KB does not say whether the dispute currently being filed counts toward the limit, or how to find the prior disputes.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_015",
+       "quote": "Previous Disputes: The customer has not filed more than 2 disputes in the past 12 months"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "card_action",
+     "kind": "cross_document_dependency",
+     "description": "The tool says card_action is for records only and does NOT order a replacement. The KB links 'cancel_and_reissue' to the separate order_replacement_credit_card_7291 step, but it also allows the value when cancellation is 'happening as part of this dispute'. That wording could lead the agent to think filing the dispute performs the reissue.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+       "quote": "whether you've already ordered a replacement card via order_replacement_credit_card_7291 or the cancellation is happening as part of this dispute"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "eligible_for_provisional_credit - dispute amount vs partial refund",
+     "kind": "ambiguity",
+     "description": "The amount thresholds ($25 minimum and the tier maximum) apply to the 'transaction amount'. When a partial refund is requested, the KB does not say whether the partial_refund_amount or the full transaction amount should be checked.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_015",
+       "quote": "Dispute Amount: The transaction amount must be at least $25.00 and must not exceed the card's maximum provisional credit limit based on card tier"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "file_debit_card_transaction_dispute_6281": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_031",
+    "doc_bank_accounts_bank_accounts_(general)_025",
+    "doc_bank_accounts_bank_accounts_(general)_032"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "provisional_credit_eligible (merchant contact / shared PIN vs. required categories)",
+     "kind": "conflict",
+     "description": "Doc 032 says provisional credit is REQUIRED when all four conditions are met, and lists 'unauthorized_transaction', 'duplicate_charge' and 'atm_cash_discrepancy' as qualifying categories. The same document then says it is NOT REQUIRED when a non-fraud customer has not contacted the merchant, or when the PIN was shared. Doc 031 defines 'unauthorized_transaction' as the non-fraud category. So a non-fraud duplicate or unauthorized dispute with no merchant contact, or any fraud dispute with pin_compromised='yes_shared', meets both the required and not-required lists. No precedence between the two lists is stated.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "**Provisional Credit is REQUIRED when ALL of these conditions are met:**"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "2. Customer has not contacted merchant first (for non-fraud disputes)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "3. Customer shared their PIN voluntarily (pin_compromised = 'yes_shared')"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "Only use 'unauthorized_transaction' when fraud is NOT suspected (e.g., family member used card without permission, customer forgot about a transaction, etc.)."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "customer_max_liability_amount (anchor date and amount)",
+     "kind": "ambiguity",
+     "description": "The liability tiers are anchored to the statement date, but the tool only takes transaction_date and discovery_date, and no statement date is supplied. The '2 business days' and '60 days' windows overlap without saying which tier wins. The tool says the value depends on 'the disputed amount', but the KB never says whether to cap it at the disputed amount (e.g., $30 disputed versus a $50 tier).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "- Reported within 2 business days of statement: Maximum liability $50\n- Reported within 60 days of statement: Maximum liability $500\n- Reported after 60 days: Unlimited liability - customer may not recover funds"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "7. **discovery_date** (string, MM/DD/YYYY) - Date customer first noticed the issue."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "60-day window: transaction age vs. statement date",
+     "kind": "conflict",
+     "description": "The pre-filing rule requires the transaction to be within 60 days old, measured from the transaction. The liability and provisional-credit timeliness rules measure 60 days from the statement date. Under the pre-filing rule the 'after 60 days / unlimited (-1)' tier could never be filed. It is unclear which anchor governs eligibility to file versus the liability and provisional-credit values.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "3. Transaction must be within 60 days old"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "1. **Timely Reporting**: Customer reported the unauthorized transaction within 60 days of the statement date showing the transaction"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "provisional_credit_eligible for new accounts with card_not_present_fraud",
+     "kind": "conflict",
+     "description": "'card_not_present_fraud' is in the REQUIRED category list. The not-required list excludes accounts less than 30 days old with card-not-present transactions. The timeline section also says new accounts still must receive credit within 20 business days. To decide, the agent needs the account open date, which comes from account data outside these procedures.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "4. Account is less than 30 days old AND the dispute is for a card-not-present transaction"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "- New accounts (open less than 30 days): Must issue within 20 business days"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "card_action close_and_reissue vs. debit card closure requirements",
+     "kind": "cross_document_dependency",
+     "description": "Fraud categories map to 'close_and_reissue', and the agent must then separately close the card. Doc 025 blocks closure while pending transactions exist; fraud_suspected bypasses only the 14-day minimum card age. The card action may therefore be impossible to perform even though the dispute records it.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "**Note:** This parameter records metadata only; the agent must separately perform the indicated card action after filing the dispute."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "4. No pending transactions: The card must not have any pending or processing transactions."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "These reasons bypass the minimum card age requirement (requirement 6) for security purposes"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 031 decides the argument value: card_action is set from the category mapping as metadata, regardless of whether closure can proceed. Doc 025 governs the separate closure action: use reason fraud_suspected, and wait for pending transactions to settle."
+    },
+    {
+     "id": "I6",
+     "topic": "provisional_credit_eligible account standing / liability offset",
+     "kind": "cross_document_dependency",
+     "description": "Provisional credit requires the checking account to be OPEN with no holds or restrictions, a stricter test than doc 031's pre-filing OPEN check, so account holds must be checked separately. The credit amount is also offset by the liability determined under doc 031's timing rules, so eligibility and amount depend on the liability calculation.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "4. **Account Standing**: The checking account is in OPEN status with no holds or restrictions"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "5. The debit card must be linked to an OPEN checking account"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_032",
+       "quote": "- Liability offset: If customer reported late, reduce by their liability amount ($50 or $500)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "freeze_debit_card_3892": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_026",
+    "doc_bank_accounts_bank_accounts_(general)_031",
+    "doc_bank_accounts_bank_accounts_(general)_025",
+    "doc_bank_accounts_bank_accounts_(general)_028",
+    "doc_bank_accounts_bank_accounts_(general)_032"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Freeze vs. close when customer reports suspicious or unauthorized activity",
+     "kind": "conflict",
+     "description": "The freeze procedure lists suspicious activity as a reason to freeze. The closing procedure lists suspected fraud and unauthorized transactions as reasons to close. An agent could call freeze_debit_card_3892 when closure is required, or the reverse.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "Suspicious activity noticed, wants to investigate before closing"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Suspected fraud/unauthorized transactions"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'unauthorized_transaction' \u2192 'freeze_pending_investigation'"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_present_fraud' \u2192 'close_and_reissue'"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "The dispute document (031) separates the cases. If fraud is suspected, the card is closed and reissued. If the activity is unauthorized but fraud is NOT suspected, the card is frozen. A customer who only wants to investigate before deciding to close may freeze, per 026."
+    },
+    {
+     "id": "I2",
+     "topic": "Choosing freeze when multiple disputes are filed on the same card",
+     "kind": "cross_document_dependency",
+     "description": "After filing disputes, the agent must perform the card action itself, using the most severe action across all disputes. freeze_debit_card_3892 should be called only when the most severe action is freeze_pending_investigation, and only once. When filing disputes, any freeze must wait until all disputes are filed. Separately, the freeze procedure requires the card to be ACTIVE.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "when performing the actual card action after filing all disputes, use the MOST SEVERE action across all disputes"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "then call freeze_debit_card_3892 (the most severe action) once for the card"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "Card must currently be in ACTIVE status (cannot freeze PENDING, CLOSED, or already FROZEN cards)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 031 sets the order: file all disputes first, then apply the single most severe action (close_and_reissue > freeze_pending_investigation > keep_active). The freeze is called once, and only if freeze is the top action. Doc 026's ACTIVE-status requirement still applies."
+    },
+    {
+     "id": "I3",
+     "topic": "Misplaced vs. lost card (freeze or close)",
+     "kind": "ambiguity",
+     "description": "A misplaced card should be frozen, but a confirmed lost card should be closed. The documents do not say how to tell when 'lost' counts as confirmed, so the agent may freeze a card that should be closed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "Use when customer misplaced the card or wants temporary security."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "If customer confirms the card is lost/stolen, recommend closing instead of freezing"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Lost card"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 026 makes the customer's confirmation decisive. If the customer confirms the card is lost or stolen, recommend closing. If the card is only misplaced and the customer is still looking for it, freeze."
+    },
+    {
+     "id": "I4",
+     "topic": "card_id selection and status/ownership check",
+     "kind": "cross_document_dependency",
+     "description": "The freeze tool takes only card_id. Status and ownership must be checked using get_debit_cards_by_account_id_7823, which can return several cards, including old closed ones. The agent must pick the ACTIVE card owned by the customer.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Before freezing/unfreezing: Verify the card exists and check its current status"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "Customer must be the owner of the debit card"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Customer must be the owner of the debit card (verify user_id matches)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 028 says to look up the cards first and confirm the card's status. The card's user_id field is used to confirm ownership (the method stated in doc 025). Only an ACTIVE card may be frozen, per doc 026."
+    },
+    {
+     "id": "I5",
+     "topic": "Whether freeze-procedure steps apply to dispute-driven freezes",
+     "kind": "ambiguity",
+     "description": "Doc 026 requires asking the reason for the freeze and informing the customer of its effects before calling the tool. Doc 031 says only to call freeze_debit_card_3892 after filing. It does not say whether those disclosure steps must still be done.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "Inform customer of the following:"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "the agent must separately perform the indicated card action after filing the dispute."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Customer expectation that a freeze blocks ATM use",
+     "kind": "ambiguity",
+     "description": "Freezing does not block ATM access, so a customer seeking full protection may be poorly served by the freeze alone. ATM Block must be enabled separately in the mobile app. Neither the tool nor the steps say whether the agent must inform the customer of this.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "Freezing does not affect ATM access if the customer has their PIN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "For ATM freeze, customer must also enable 'ATM Block' separately through mobile app"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "log_credit_card_closure_reason_4521": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_003",
+    "doc_credit_cards_credit_card_account_logistics_002",
+    "doc_credit_cards_credit_card_replacements_005",
+    "doc_credit_cards_credit_cards_(general)_016"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Whether to call log_credit_card_closure_reason_4521 at all (prior closure-reason records)",
+     "kind": "cross_document_dependency",
+     "description": "Logging happens in Step 3, but Step 2 requires first checking closure reason history for the account. If records exist within the past year, the flow jumps to Step 6 and bypasses Step 3. An agent that logs before or regardless of the history check would make a wrong or duplicate call. The 'past year' window is also not anchored to a specific date.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If records are found within the past year, inform the customer you will proceed with their closure request and move to Step 6."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Ask the customer why they want to close their account. Then log it using log_credit_card_closure_reason_4521."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_003 decides it: call get_closure_reason_history_8293 first. If the account has records within the past year, go to Step 6 and do not log a new reason. Log in Step 3 only when there are no such records."
+    },
+    {
+     "id": "I2",
+     "topic": "Eligibility gate before logging: pending disputes check",
+     "kind": "cross_document_dependency",
+     "description": "Step 1 requires that the account have no active or pending disputes before proceeding to logging. The only dispute tool queries by user_id and returns all of the user's disputes, not just this account's. Its status values (open, under_review, closed) do not match 'active or pending'. It is unclear how to scope the disputes to this account (e.g., by card_last4) and which statuses count as blocking.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Pending disputes: The account must not have any active or pending transaction disputes. If present, advise the customer to wait for resolution before closing."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_016",
+       "quote": "Call it with the user's user_id to get a list of all disputes filed by that user"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_016",
+       "quote": "status (for example: open, under_review, closed)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "If any requirement is not met, explain what must be resolved and do not proceed with retention offers."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Eligibility gate before logging: pending replacement card definition",
+     "kind": "conflict",
+     "description": "The retention protocol blocks closure if a replacement is 'not yet received or activated'. The replacement-orders doc unblocks once the order is delivered or cancelled, with no activation requirement. A delivered-but-not-activated card is blocking under one doc and allowed under the other. This determines whether the agent proceeds to Step 3 logging.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "No pending replacement cards: If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_005",
+       "quote": "If all orders are final (delivered or cancelled), proceed with standard closure checks."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "user_id argument source",
+     "kind": "cross_document_dependency",
+     "description": "The logging tool needs user_id, but the retention protocol does not say where it comes from or require identity verification. The closure-processing doc requires identity verification and says user_id should match the authenticated user.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "user_id (string, required): The customer's unique identifier in the system."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "Verify the customer's identity using standard verification procedures."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "This should match the authenticated user."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_002: verify identity first and use the authenticated user's user_id."
+    },
+    {
+     "id": "I5",
+     "topic": "credit_card_account_id argument (account-level vs card-level identifier)",
+     "kind": "cross_document_dependency",
+     "description": "The logging tool takes credit_card_account_id. The replacement doc warns that a card-level identifier may be confused with the account-level one, and the closure doc says where to find it. The retention protocol gives no such guidance.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_005",
+       "quote": "Re-verify you are using the account-level identifier, not a card-level identifier."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_002",
+       "quote": "This can be found in the customer's account profile or by looking up their credit card accounts."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_replacements_005 and doc_credit_cards_credit_card_account_logistics_002: use the account-level identifier from the account profile or account lookup."
+    },
+    {
+     "id": "I6",
+     "topic": "closure_reason value mapping",
+     "kind": "ambiguity",
+     "description": "The agent must map the customer's free-text reason to one enum value, but no mapping guidance exists. Step 4 handles only some reasons and gives no handling for 'simplifying_finances' or 'other'. This leaves unclear how to classify reasons that are mixed or that overlap (e.g., annual fee plus not using the card).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "closure_reason (string, required): One of: 'annual_fee', 'not_using_card', 'found_better_card', 'unhappy_with_rewards', 'simplifying_finances', 'negative_experience', 'other'."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_003",
+       "quote": "Offer tailored solutions based on the customer's reason:"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "open_bank_account_4821": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_001",
+    "doc_bank_accounts_bank_accounts_(general)_002",
+    "doc_bank_accounts_bank_accounts_(general)_003",
+    "doc_bank_accounts_bank_accounts_(general)_004",
+    "doc_bank_accounts_bank_accounts_(general)_005",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_006"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "account_type for business savings",
+     "kind": "conflict",
+     "description": "The business savings procedure tells the agent to set account_type to 'savings'. The tool's own enum has a separate 'business_savings' value, and 'savings' means personal savings. Following the document would open a personal savings account instead of a business one.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "Set account_type to 'savings'."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "account_type: 'savings' for personal savings accounts."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "account_class for business checking",
+     "kind": "ambiguity",
+     "description": "The business checking procedure lists class options without the 'Account' suffix. The other procedures and the tool require the full official class name. The documents do not say whether the value should be 'Navy Blue' or 'Navy Blue Account'.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+       "quote": "Business checking account_class options include Navy Blue, Cobalt Blue, True Blue, etc."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+       "quote": "Personal checking account_class options must use the full official name ending with 'Account'"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "account_type for personal and business checking",
+     "kind": "ambiguity",
+     "description": "The personal checking and business checking procedures only say to use open_bank_account_4821. Neither states the account_type value. The agent must infer 'checking' or 'business_checking' from the tool enum, and that inference is made riskier by the savings document's misuse of 'savings'.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+       "quote": "4. Use open_bank_account_4821 to open the account."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+       "quote": "4. Use open_bank_account_4821 to open the account."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "account count limits (savings / business savings / checking)",
+     "kind": "conflict",
+     "description": "Some limit phrasings ('cannot have more than 5', 'does not exceed') would allow opening when the customer already holds the limit. The checklists instead require fewer than the limit currently held. The checking limits are worded only as 'does not exceed' and have no clarifying checklist.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "Cannot have more than 5 personal savings accounts"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "Customer currently holds fewer than 5 personal savings accounts."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "Customer has fewer than 4 existing business savings accounts."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+       "quote": "The customer does not exceed 6 business checking accounts."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "For savings, doc_002's checklist and decision point decide it: 'If the customer already has 5 personal savings accounts, do not open a new one.' For business savings, doc_004's checklist decides it ('< 4'). The checking limits (doc_001, doc_003) remain unclarified."
+    },
+    {
+     "id": "I5",
+     "topic": "business checking eligibility: no CLOSED accounts",
+     "kind": "cross_document_dependency",
+     "description": "Business checking eligibility depends on account status and balance retrieved via get_all_user_accounts_by_user_id_3847 (doc_009). Any account closed through the closing procedures (doc_005/006) becomes CLOSED and blocks business checking. The procedure also does not say which checking account must hold the $500 balance if there are several.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+       "quote": "The customer has no accounts with status CLOSED."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_003",
+       "quote": "The customer's existing checking account has a balance of at least $500."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "returns all account information including:"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "Use close_bank_account_7392 to close the account."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "personal savings and checking eligibility data",
+     "kind": "ambiguity",
+     "description": "Personal savings requires an 'active Rho-Bank checking account' with 14-day tenure. It is unclear whether a business checking account qualifies, or whether 'active' equals status OPEN; tenure must be computed from date_opened (doc_009). Personal checking requires 'no checking accounts closed for cause', but doc_009's returned fields include no closure reason.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "Customer has at least one active Rho-Bank checking account."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_001",
+       "quote": "The customer has no checking accounts closed for cause in the past 6 months."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "date_opened"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "order_debit_card_5739": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_023",
+    "doc_bank_accounts_bank_accounts_(general)_029",
+    "doc_bank_accounts_bank_accounts_(general)_005",
+    "doc_bank_accounts_bank_accounts_(general)_009"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "delivery_fee (tier-dependent)",
+     "kind": "conflict",
+     "description": "Doc 023 lists flat delivery fees (EXPEDITED $15, RUSH $35) while doc 029 gives tier-specific delivery_fee values (e.g., Premium EXPEDITED $0, Elite RUSH $0, Entry no expedited). Doc 029 is framed for replacement cards, so it is unclear whether its tier fees apply to new (non-replacement) card orders.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "RUSH: $35 fee, arrives in 1-2 business days, fees may vary based on account tier."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+       "quote": "When using order_debit_card_5739, you must provide the exact delivery_fee and design_fee amounts based on the tier rules below."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+       "quote": "Free expedited shipping on all replacements (delivery_fee: $0 for both STANDARD and EXPEDITED)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 023 states fees 'may vary based on account tier' and doc 029 requires exact tier-based delivery_fee for order_debit_card_5739, so use doc 029 tier values."
+    },
+    {
+     "id": "I2",
+     "topic": "design_fee (tier-dependent)",
+     "kind": "conflict",
+     "description": "Doc 023 lists PREMIUM $10 and CUSTOM $25; doc 029 gives tier-specific design fees (Premium tier: PREMIUM $0, CUSTOM $15; Elite: all $0).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "CUSTOM: Customer-uploaded image ($25 one-time fee, subject to approval), fees may vary ased on account tier."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+       "quote": "CUSTOM design (uploaded image): design_fee $15 (discounted from $25)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 029's tier design fee table governs, as doc 023 defers to tier variation."
+    },
+    {
+     "id": "I3",
+     "topic": "Account tier determination",
+     "kind": "cross_document_dependency",
+     "description": "Fees in doc 029 depend on account tier, but tier-to-account-class mapping is only given in the closure doc 005; account_class comes from get_all_user_accounts_by_user_id_3847 (doc 009).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "MID TIER (Blue Account, Green Account (checking))"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "account_class"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Use account_class from doc 009 tool and map to tier via doc 005 list."
+    },
+    {
+     "id": "I4",
+     "topic": "delivery_option availability for Entry/Mid tier",
+     "kind": "conflict",
+     "description": "Doc 023 offers STANDARD, EXPEDITED, RUSH to all; doc 029 says Entry tier is standard only and Mid tier only standard/expedited (no rush mentioned), Premium lists rush; unclear if restrictions apply to new card orders.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+       "quote": "Standard shipping only (no expedited option available) - delivery_fee: $0"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "Ask customer for preferred delivery option (STANDARD, EXPEDITED, or RUSH) and explain fees."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "excess_replacement_fee",
+     "kind": "cross_document_dependency",
+     "description": "Whether to pass excess_replacement_fee requires counting replacement history per doc 029 and tier limits; doc 023's new-card procedure doesn't mention it. Also doc 023 eligibility caps active cards at 1, interacting with replacement flow.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+       "quote": "If customer has exceeded the 2-card limit, they must wait until oldest replacement ages out of the 12-month window, OR pay a $25 excess replacement fee"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_029",
+       "quote": "Cards with issue_reason of 'new_account', 'first_card', 'expired', 'upgrade', or 'bank_reissue' do NOT count toward the replacement limit."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 029: only for replacements exceeding tier limit, set excess fee per tier ($25 Entry, $15 Mid; Premium must wait; Elite unlimited); otherwise omit."
+    },
+    {
+     "id": "I6",
+     "topic": "Sufficient balance / minimum balance eligibility",
+     "kind": "ambiguity",
+     "description": "Doc 023 requires a $25 minimum balance and says the order fails if funds are insufficient for fees, but doesn't specify whether the balance must cover $25 plus fees (e.g., $35 rush + $25 custom).",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "Account must have a minimum balance of $25 (to cover potential fees)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_023",
+       "quote": "If the account has insufficient funds for delivery or design fees, the order will fail"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "order_replacement_credit_card_7291": {
+   "docs": [
+    "doc_credit_cards_credit_card_replacements_001",
+    "doc_credit_cards_credit_cards_(general)_014",
+    "doc_bank_accounts_bank_accounts_(general)_030",
+    "doc_credit_cards_credit_cards_(general)_013",
+    "doc_credit_cards_credit_cards_(general)_015"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Tool arguments (shipping_speed / expedited_shipping, fee acknowledgement, notes, user_id)",
+     "kind": "conflict",
+     "description": "The replacement procedure tells the agent to pass Shipping_speed (standard/expedited), Expedited_fee_acknowledgement and Notes. The tool's schema has none of these. It takes a boolean expedited_shipping and requires user_id, which the procedure never lists. Following the document could produce a call with invalid arguments or a missing required user_id.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Shipping_speed: standard or expedited."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Expedited_fee_acknowledgement: customer consent captured if a fee applies based on tier."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Notes: any relevant context (e.g., travel dates, fraud report reference, delivery instructions)."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Replacement eligibility check",
+     "kind": "ambiguity",
+     "description": "The procedure requires confirming eligibility 'in the knowledge base' before unlocking or calling the tool. No document in the KB defines any eligibility criteria for credit card replacement, so the agent cannot determine whether to proceed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Confirm eligibility for replacement in the knowledge base before proceeding. Do not unlock or call the tool unless the customer is eligible."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "credit_card_account_id",
+     "kind": "ambiguity",
+     "description": "The procedure lets the agent pass either account_id or card_id from the lookup. The tool requires specifically credit_card_account_id. The security protocol notes that the lookup returns both active and closed accounts, so the agent might pick the wrong identifier or a closed account.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Customer credit card account identifier (e.g., account_id or card_id from the account lookup)."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_030",
+       "quote": "This will return all active and closed credit card accounts."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Expedited fee tier for unlisted cards",
+     "kind": "ambiguity",
+     "description": "The replacement doc's tier lists for expedited fees differ from the tier lists in the provisional credit doc. Crypto-Cash Back, Business Gold and Business Platinum are not listed for fees. The replacement doc also lumps Gold/Platinum/Diamond Elite as 'Premium-tier and above'. As a result, the fee and consent needed before choosing expedited_shipping are unclear for some cards.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Entry-tier (Bronze Rewards, EcoCard, Business Bronze): $15.00."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_015",
+       "quote": "Entry Tier (Bronze Rewards Card, EcoCard, Business Bronze Rewards Card, Crypto-Cash Back Card): Maximum $2500.00"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Premium-tier and above (Gold, Platinum, Diamond Elite): $0.00 (complimentary)."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Interaction with dispute card_action",
+     "kind": "cross_document_dependency",
+     "description": "Ordering a replacement cancels the old card. A subsequent dispute must then use card_action 'cancel_and_reissue', not 'keep_active'. The card_last_4_digits value must refer to the card on which the transaction occurred.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_014",
+       "quote": "use when user wants card replaced - whether you've already ordered a replacement card via order_replacement_credit_card_7291 or the cancellation is happening as part of this dispute"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "The old card is automatically cancelled for security and will no longer work for new purchases."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_cards_(general)_014 specifies cancel_and_reissue when a replacement was ordered via order_replacement_credit_card_7291."
+    },
+    {
+     "id": "I6",
+     "topic": "Reason value when triggered by lost/stolen debit card protocol",
+     "kind": "ambiguity",
+     "description": "The cross-product protocol has the agent offer a credit card replacement 'as a security precaution' after a debit card loss, even if the credit card itself may not be lost. No document states which reason enum (lost, stolen, fraud_suspected, other) applies when the credit card was not in the wallet.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_030",
+       "quote": "If yes, proactively offer to order a replacement credit card as a security precaution"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Ask for the replacement reason and record exactly one of: fraud_suspected, lost, stolen, damaged, expired, or other."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "pay_credit_card_from_checking_9182": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_009",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_030",
+    "doc_credit_cards_credit_cards_(general)_017"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "amount (upper bound)",
+     "kind": "conflict",
+     "description": "The tool description only requires a positive amount, while the KB procedure also caps it at both the checking balance and the outstanding credit card balance. An agent relying on the tool spec alone could overpay or overdraw.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "Must be positive and cannot exceed the checking account balance or the credit card outstanding balance."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_009 decides it: the amount must be positive and must not exceed either balance."
+    },
+    {
+     "id": "I2",
+     "topic": "checking_account_id lookup",
+     "kind": "cross_document_dependency",
+     "description": "The payment procedure says to look up the checking account to get its ID and confirm funds, but it does not name a lookup tool. The retrieval tool, get_all_user_accounts_by_user_id_3847, is described only in the general accounts document. A customer may also have several checking accounts, and that tool returns status and account_type, which the agent needs to pick the correct, usable account.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "Look up the customer's checking account to confirm sufficient funds."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "Use get_all_user_accounts_by_user_id_3847 to retrieve the bank accounts (checkings, savings) for a customer."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "credit_card_account_id lookup / closed cards",
+     "kind": "cross_document_dependency",
+     "description": "The credit card ID comes from get_credit_card_accounts_by_user, which is named in other documents. That tool returns both active and closed cards. The payment document never says whether a closed card can receive a payment, so the agent could select a closed card.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "Look up the customer's credit card account to confirm the outstanding balance."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_030",
+       "quote": "This will return all active and closed credit card accounts."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+       "quote": "This can be found by calling get_credit_card_accounts_by_user."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "which balance defines 'outstanding balance'",
+     "kind": "ambiguity",
+     "description": "The amount cap refers to the credit card 'outstanding balance'. Another document refers to a 'statement balance' instead. The KB does not say which figure (current vs statement balance) caps the payment.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "confirm the outstanding balance"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_017",
+       "quote": "reduces the statement balance"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "checking account status/eligibility",
+     "kind": "ambiguity",
+     "description": "The prerequisites require only that a Rho-Bank checking account exists and has sufficient funds. Nothing says whether a frozen or closed checking account (status is returned by the lookup tool) may be debited.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "Confirm the customer has a Rho-Bank checking account with sufficient funds to cover the payment amount."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "- status"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "authorization before call",
+     "kind": "cross_document_dependency",
+     "description": "The tool must be unlocked and called through the discoverable-tool wrappers, and only after the customer explicitly confirms the amount. The tool description mentions neither requirement.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "Confirm the payment amount with the customer and obtain authorization to transfer."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_009",
+       "quote": "Unlock the pay_credit_card_from_checking_9182 tool using unlock_discoverable_agent_tool."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_card_account_logistics_009 sets the order: verify identity, look up both accounts, confirm the amount and get authorization, unlock the tool, then call it."
+    }
+   ]
+  },
+  "request_temporary_debit_card_limit_increase_8374": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_040",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_018"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "new_limit (maximum allowed value)",
+     "kind": "ambiguity",
+     "description": "The cap is 150% of the 'current limit', but no document says how to retrieve the card's current ATM/purchase limit, so the agent cannot verify new_limit is within the cap. It is also unclear whether 'current limit' means the standard limit or an already-raised temporary limit.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+       "quote": "New limit cannot exceed 150% of current limit (50% boost maximum)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Overdraft history eligibility check",
+     "kind": "cross_document_dependency",
+     "description": "The 'no overdraft fees in last 30 days' check depends on doc_018's transaction tool. That check filters for type 'overdraft_fee' on the linked checking account and compares dates in MM/DD/YYYY format. It is unclear whether pending fees count, or whether fees later refunded or rebated (fee_refund/fee_rebate) still count.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+       "quote": "**Overdraft History**: No overdraft fees in the last 30 days"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_018",
+       "quote": "**status**: Transaction status, either 'posted' or 'pending'"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Account status and age eligibility",
+     "kind": "cross_document_dependency",
+     "description": "Account OPEN status and the 60-day age must be verified via get_all_user_accounts_by_user_id_3847 (status, date_opened) from doc_009. The card-to-checking-account linkage, however, is not explained in either document.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+       "quote": "The account must be at least 60 days old"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "- date_opened"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_009 provides status and date_opened fields used to verify the eligibility in doc_040; age is computed from date_opened."
+    },
+    {
+     "id": "I4",
+     "topic": "Card status ACTIVE verification",
+     "kind": "ambiguity",
+     "description": "The card must be ACTIVE, but no document provides a way to look up debit card status or identify the card linked to the account.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+       "quote": "**Card Status**: The debit card must be ACTIVE"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Frequency limit (one increase per 24h per card)",
+     "kind": "ambiguity",
+     "description": "No document explains how to determine whether a temporary increase was already granted in the last 24 hours. It is also unclear whether the rule counts per card across both limit types or per limit_type.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+       "quote": "Only one temporary increase per 24-hour period per card"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Account status definition 'OPEN (in good standing)'",
+     "kind": "ambiguity",
+     "description": "'In good standing' is not defined beyond OPEN status. It is unclear whether, for example, a negative balance disqualifies the account.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_040",
+       "quote": "The linked checking account must be OPEN (in good standing)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "reset_debit_card_pin_6284": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_027",
+    "doc_bank_accounts_bank_accounts_(general)_026",
+    "doc_bank_accounts_bank_accounts_(general)_028"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Card status precondition (FROZEN cards)",
+     "kind": "cross_document_dependency",
+     "description": "PIN reset requires the card to be ACTIVE; a frozen card must first be unfrozen via the unfreeze procedure in doc_026, which has its own requirements (FROZEN status, linked checking account OPEN). Calling reset on a frozen card is wrong.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Card must be in ACTIVE status (cannot change PIN on FROZEN, PENDING, or CLOSED cards)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "If customer's card is frozen, they must unfreeze it first before changing PIN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "The linked checking account must still be OPEN"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_027 requires ACTIVE status and unfreezing first; the unfreeze is done per doc_026 (unfreeze_debit_card_3893, requiring the card to be FROZEN and the linked checking account to be OPEN)."
+    },
+    {
+     "id": "I2",
+     "topic": "card_id and status lookup",
+     "kind": "cross_document_dependency",
+     "description": "The PIN procedure needs card_id, the card's ACTIVE status, and confirmation of ownership. However, it does not say how to obtain them. doc_028's tool returns card_id, status, user_id and card_number_last_4, but its use-case list does not mention PIN resets. Accounts may also return multiple cards, including closed ones.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Use reset_debit_card_pin_6284 with parameters: card_id, last_4_digits, new_pin"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "last_4_digits verification",
+     "kind": "ambiguity",
+     "description": "The customer is asked to confirm the last 4 digits, but no document says whether the agent should check them against card_number_last_4 before calling the tool. It is also unspecified what to do if they do not match.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "For security, ask customer to confirm the last 4 digits of their card"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "card_number_last_4: Last 4 digits of the card number"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Reset vs change tool selection",
+     "kind": "conflict",
+     "description": "The tool description limits reset to forgotten PINs, while doc_027 lists other reasons (suspected compromise, memorability, periodic change). For those cases the customer may know the current PIN, which would call for change_debit_card_pin_6285 instead.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "## PIN Reset Steps (Customer Forgot PIN)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Customer suspects someone knows their PIN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Use change_debit_card_pin_6285 with parameters: card_id, current_pin, new_pin"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_027 decides by whether the customer knows the current PIN: if they forgot it, use reset_debit_card_pin_6284; if they know it, use change_debit_card_pin_6285."
+    },
+    {
+     "id": "I5",
+     "topic": "new_pin validation (birth date rule)",
+     "kind": "ambiguity",
+     "description": "The new PIN cannot be the customer's birth year or birth month/day, but no document says where to get the birth date. The sequential rule is also only defined by examples (1234, 4321), so it is unclear whether patterns like 2345 or 3210 are disallowed.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Cannot be the customer's birth year or birth month/day"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Cannot be sequential (e.g., 1234, 4321)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Card ownership verification",
+     "kind": "ambiguity",
+     "description": "The customer must own the card, but doc_027 does not say how to confirm this. doc_028 returns user_id, but nothing explicitly says to compare it with the verified customer.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_027",
+       "quote": "Customer must be the owner of the debit card"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "user_id: The user ID of the cardholder"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "set_debit_card_recurring_block_7382": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_034",
+    "doc_bank_accounts_bank_accounts_(general)_031",
+    "doc_bank_accounts_bank_accounts_(general)_028"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "card_id selection / card status eligibility",
+     "kind": "ambiguity",
+     "description": "The blocking procedure only says to pass 'The debit card ID'. It does not say which card to use when the account lookup returns several cards, including closed historical ones. It also does not say whether a block may be set on a card that is PENDING, FROZEN or CLOSED. The agent could block an old or closed card instead of the customer's active one.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "card_id: The debit card ID"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "status: Current status of the card (ACTIVE, PENDING, FROZEN, CLOSED)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Dispute-then-block sequence and the card_action outcome",
+     "kind": "cross_document_dependency",
+     "description": "When a customer needs both a dispute and a block, doc_034 says to file the dispute first and then set the block. In doc_031, fraud categories map to 'close_and_reissue' and the agent must separately perform that action. If the card is closed and reissued, the block would land on a closed card. Neither document says whether to block the replacement card or how to get its ID.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "1. First file the dispute for past charges\n2. Then set up the recurring block for future protection"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "'card_not_present_fraud' \u2192 'close_and_reissue'"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "the agent must separately perform the indicated card action after filing the dispute"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Dispute category for never-authorized recurring charges",
+     "kind": "conflict",
+     "description": "doc_034 lists 'Customer never authorized the recurring charge' among recurring disputes and says the category should be 'recurring_charge_after_cancellation', which maps to 'keep_active'. doc_031 says unauthorized transactions must use a fraud category or 'unauthorized_transaction', which map to close/reissue or freeze. The choice determines the card's final state and therefore which card the recurring block is applied to.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "For recurring charge disputes, the dispute_category should be 'recurring_charge_after_cancellation'."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "When a transaction is unauthorized, determine if fraud is suspected. If YES, use 'card_present_fraud' (for in-store/physical transactions) or 'card_not_present_fraud' (for online/phone transactions)."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Obtaining card_id for the block call",
+     "kind": "cross_document_dependency",
+     "description": "The blocking procedure does not explain how to obtain the card_id. Another document supplies the lookup tool, which requires the checking account ID.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "Use set_debit_card_recurring_block_7382 with:\n   - card_id: The debit card ID"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Use get_debit_cards_by_account_id_7823 to look up all debit cards associated with a specific checking account."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_028 decides it: look up the cards via get_debit_cards_by_account_id_7823 using the checking account ID, then take the card_id."
+    },
+    {
+     "id": "I5",
+     "topic": "Proceeding with block when dispute cannot be filed",
+     "kind": "ambiguity",
+     "description": "The combined flow says to file the dispute first. doc_031's pre-filing requirements (at least $1.00, within 60 days, open-dispute limits, OPEN checking account) may block the dispute. The documents do not say whether the recurring block should still be set if the dispute fails. They also do not say whether the block itself requires an OPEN linked account.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "If customer was charged after cancellation AND wants to prevent future charges:\n1. First file the dispute for past charges"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "Transaction must be within 60 days old"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_031",
+       "quote": "The debit card must be linked to an OPEN checking account"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Customer wants to block a single merchant",
+     "kind": "ambiguity",
+     "description": "The procedure requires explaining that the block covers ALL recurring payments. It does not say explicit customer confirmation is needed before calling the tool. If the customer only wants one merchant blocked, the agent should not call the tool and should advise cancelling directly with that merchant.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "Explain that this will block ALL recurring payments on the card, not just one merchant"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_034",
+       "quote": "If customer only wants to block one merchant, advise them to cancel directly with that merchant"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_034 decides it: for a single-merchant request, advise cancelling with the merchant rather than setting block_recurring=true. Whether explicit confirmation is required remains unstated."
+    }
+   ]
+  },
+  "submit_credit_limit_increase_request_7392": {
+   "docs": [
+    "doc_credit_cards_credit_card_account_logistics_007",
+    "doc_credit_cards_credit_card_account_logistics_006",
+    "doc_credit_cards_credit_card_replacements_001"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "requested_increase_amount \u2013 tier maximum check before submission",
+     "kind": "cross_document_dependency",
+     "description": "Step 0 of the CLI workflow forbids submitting a request above the tier limit but does not define the limit. The limits are defined only in doc_006, as a percentage of the current credit limit. To compute a valid integer dollar amount for the tool, the agent must combine the two documents.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "verify that the customer's requested increase amount is within the maximum allowed for their card tier. If the requested amount exceeds the limit, inform the customer of the maximum allowed and ask them to adjust their request. Do NOT submit a request that exceeds the tier limit."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Entry-tier cards: Maximum increase of 25% of current credit limit per request."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Mid-tier cards: Maximum increase of 50% of current credit limit per request."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_006 supplies the per-tier maximums: 25% of the current limit for entry-tier, and 50% for mid- and premium-tier. Apply them at Step 0 of doc_007 before calling the tool."
+    },
+    {
+     "id": "I2",
+     "topic": "Whether to submit an over-limit request (then deny) or not submit at all",
+     "kind": "conflict",
+     "description": "Step 0 forbids submitting a request that exceeds the tier limit. However, the denial tool lists 'requested_amount_exceeds_limit' as a valid reason, and Step 3 is titled 'Verify ... Requested Amount' after submission. Together these imply over-limit requests might be submitted and then denied.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "Do NOT submit a request that exceeds the tier limit."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "'requested_amount_exceeds_limit'"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "## Step 3: Verify Payment History and Requested Amount"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_007 Step 0 is explicit and mandatory: do not call submit_credit_limit_increase_request_7392 with an amount above the tier maximum. Instead, ask the customer to adjust, and only submit once a valid amount is confirmed."
+    },
+    {
+     "id": "I3",
+     "topic": "Card tier classification (which cards are entry/mid/premium)",
+     "kind": "cross_document_dependency",
+     "description": "The CLI limits are stated per tier, but the CLI documents never map card products to tiers. The only mapping appears in the replacement-card document. That document groups 'Premium-tier and above (Gold, Platinum, Diamond Elite)', which leaves unclear whether cards 'above' premium (e.g., Diamond Elite) follow the premium CLI limits.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Entry-tier (Bronze Rewards, EcoCard, Business Bronze)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Mid-tier (Silver Rewards, Business Silver, Green Rewards, Silver Zoom)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_replacements_001",
+       "quote": "Premium-tier and above (Gold, Platinum, Diamond Elite)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Premium-tier cards: Maximum increase of 50% of current credit limit per request."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "requested_increase_amount \u2013 increment vs. new total limit",
+     "kind": "ambiguity",
+     "description": "The submit tool takes the increase delta, while the approve tool takes the new total limit. A customer stating a desired new limit (e.g., 'raise it to $8,000') could lead the agent to pass the total instead of the difference.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "requested_increase_amount (integer, required): The dollar amount by which to increase the credit limit (e.g., 1000 for a $1,000 increase)."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "new_credit_limit (float, required): The new total credit limit to set."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_007 defines requested_increase_amount as the amount of the increase, not the new total. Pass the difference from the current limit as an integer."
+    },
+    {
+     "id": "I5",
+     "topic": "Computing the maximum integer amount (rounding and current-limit source)",
+     "kind": "ambiguity",
+     "description": "The maximum is a percentage of the current credit limit, but the tool requires an integer dollar amount. The documents do not say how to round fractional results (e.g., 25% of $2,350 = $587.50). They also do not say which tool or source provides the current credit limit.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_006",
+       "quote": "Maximum increase of 25% of current credit limit per request."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "requested_increase_amount (integer, required)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Order of submission vs. eligibility checks",
+     "kind": "ambiguity",
+     "description": "An agent might withhold submission because of known ineligibility, such as a cooldown, a pending replacement card, or a past-due balance. However, the workflow requires submission before eligibility checks, and Step 3 is empty, leaving payment-history verification placement unstated in doc_007.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "This creates a formal record of the request before eligibility checks are performed. Eligibility checks are internal and not exposed to customers, so the submission must happen first."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_card_account_logistics_007",
+       "quote": "## Step 3: Verify Payment History and Requested Amount\n\n."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_007 requires submitting the request first, with only the Step 0 amount check beforehand. Eligibility checks (and payment history per doc_006) are performed after submission and drive approve or deny."
+    }
+   ]
+  },
+  "submit_interest_discrepancy_report_7294": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_043",
+    "doc_bank_accounts_bank_accounts_(general)_044",
+    "doc_bank_accounts_bank_accounts_(general)_045",
+    "doc_bank_accounts_bank_accounts_(general)_046",
+    "doc_bank_accounts_bank_accounts_(general)_012"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "expected_apy (stacking of bonus components)",
+     "kind": "conflict",
+     "description": "The report procedure says to compute expected APY by adding all applicable components, which could lead an agent to sum every credit card bonus and every checking boost. The stacking policies say only the highest credit card bonus and the highest checking boost apply.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "Calculate the expected APY by adding all applicable components"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_045",
+       "quote": "Only the HIGHEST credit card APY bonus is applied to the savings account."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_046",
+       "quote": "Only the HIGHEST checking account APY boost is applied to the savings account."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Docs 045 and 046 define which bonuses are 'applicable'. Add only the single highest credit card bonus and the single highest checking boost. These stack with each other and with relationship and tier bonuses."
+    },
+    {
+     "id": "I2",
+     "topic": "expected_apy (boost percentage values)",
+     "kind": "cross_document_dependency",
+     "description": "The exact linked-checking boost percentages are delegated to savings-account-specific documentation, which is not in the KB. Base and tier rates and relationship bonus values are also not given, so expected_apy cannot be computed from these documents alone.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_012",
+       "quote": "For the exact APY boost percentages for each pairing, please refer to the specific savings account documentation."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "Review documentation for the savings account type to determine all applicable APY components (base rate, tier rate, linked checking boost, credit card bonuses, relationship bonus)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "Sequencing: credit before report",
+     "kind": "cross_document_dependency",
+     "description": "The report submission depends on first applying an interest_correction credit with a different tool. Doc 043 frames the report as a follow-up ('should also'), while doc 044 makes the ordering mandatory.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "Always apply the credit to the customer's account BEFORE submitting the report."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+       "quote": "For interest corrections, after applying the credit, you should also submit an interest discrepancy report using submit_interest_discrepancy_report_7294"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 044 decides it: apply the credit via apply_savings_account_credit_6831 with credit_type 'interest_correction' first, then submit the report."
+    },
+    {
+     "id": "I4",
+     "topic": "amount_difference (sign and period)",
+     "kind": "ambiguity",
+     "description": "The documents do not specify whether amount_difference is expected minus actual (positive) or signed. They also do not say over which interest period or credit it is measured, or whether it must equal the credit amount applied.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "amount_difference (number): The dollar amount difference between expected and actual interest credited"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_043",
+       "quote": "determine the difference between expected and actual interest"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "expected_apy (base rate vs tier rate)",
+     "kind": "ambiguity",
+     "description": "Base rate and tier rate are both listed as components to add. Doc 045/046 also mention 'account tier bonuses'. It is unclear whether a tier rate replaces the base rate or is added to it, which changes expected_apy.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "base rate, tier rate, linked checking boost, credit card bonuses, relationship bonus"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "Customer's balance qualifies for a higher APY tier but the lower tier rate was applied."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_046",
+       "quote": "Account tier bonuses"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Whether to report when system selected the wrong checking account",
+     "kind": "ambiguity",
+     "description": "Doc 046's agent responsibility ends at applying an interest correction and does not mention submitting a report. Doc 044 covers the case through its catch-all trigger, and doc 043 requires a report after interest corrections.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_046",
+       "quote": "If the system selected the wrong checking account, calculate the correct APY and apply an interest correction"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_044",
+       "quote": "System Calculation Error: Any other discrepancy between expected and actual interest credited."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Docs 043 and 044 require the report after any interest correction, so submit it after the credit."
+    }
+   ]
+  },
+  "transfer_funds_between_bank_accounts_7291": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_002",
+    "doc_bank_accounts_bank_accounts_(general)_004",
+    "doc_bank_accounts_bank_accounts_(general)_010",
+    "doc_bank_accounts_bank_accounts_(general)_006",
+    "doc_bank_accounts_bank_accounts_(general)_009",
+    "doc_bank_accounts_bank_accounts_(general)_005"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "amount (opening deposit)",
+     "kind": "ambiguity",
+     "description": "Both savings-opening procedures tell the agent to transfer 'the required amount' or 'required opening deposit amount', but no document states the minimum opening deposit for any savings account_class. The amount argument therefore cannot be derived from the KB.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "amount: the required opening deposit amount confirmed with the customer."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "amount: the required opening deposit amount confirmed with the customer."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+       "quote": "If funding a new savings account, confirm the required opening deposit is reflected"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "source_account_id after a failed business opening-deposit transfer",
+     "kind": "conflict",
+     "description": "The business savings procedure fixes the source as the qualifying OPEN business checking account. On failure, it says to remind the customer of the 30-day window. The general transfer document instead says to offer a different amount or a different source account. These clauses prescribe different handling for the same failure.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "source_account_id: the qualifying OPEN business checking account that meets the 30-day tenure and $2,500 balance requirements."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "Inform the customer and remind them they have 30 days to fund the account via internal transfer or external deposit, or the account will be closed."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+       "quote": "Offer to adjust the amount or select a different source account after re-validating available funds"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "amount when consolidating before closure",
+     "kind": "cross_document_dependency",
+     "description": "The transfer document lists consolidating balances before account closure as a use case but gives no amount rule. The closure documents require the balance to be $0, or at least the early closure fee if one applies, since the fee is deducted from the balance. The transfer amount must be computed from the tier-specific fee and window in the closure documents.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+       "quote": "Consolidating balances prior to closing one of the customer\u2019s accounts"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_006",
+       "quote": "If an early closure fee applies, the account balance must be at least the fee amount; otherwise, account balance (current_holdings) must be $0. The fee is deducted directly from the account balance and there is no alternative payment method."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_005",
+       "quote": "If an early closure fee applies, the account balance must be at least the fee amount; otherwise, account balance (current_holdings) must be $0."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "The closure documents (doc_006 for personal savings, doc_005 for personal checking) decide this. Transfer out the entire balance if no early closure fee applies. If a fee applies within the tier's window, leave at least the fee amount in the account."
+    },
+    {
+     "id": "I4",
+     "topic": "account status check (destination / source)",
+     "kind": "cross_document_dependency",
+     "description": "The transfer document requires both accounts to be ACTIVE or OPEN. The opening-deposit transfer, however, targets an account just created by open_bank_account_4821, and no document states what status a newly opened, unfunded savings account has. The personal procedure also speaks of an 'active' checking account while other documents use status OPEN.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_010",
+       "quote": "If either account is not ACTIVE or OPEN, do not proceed; resolve the account status first"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "Customer has at least one active Rho-Bank checking account."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "Customer has at least one business checking account with status OPEN."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "source_account_id for personal savings opening deposit",
+     "kind": "ambiguity",
+     "description": "For personal savings, the source is just 'the customer's Rho-Bank checking account'. If the customer has several checking accounts, nothing determines which one to debit. The business procedure, by contrast, specifies the qualifying account.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "source_account_id: the customer's Rho-Bank checking account to be debited."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "Use the qualifying OPEN business checking account that meets both the tenure and balance thresholds as the source for the optional opening deposit transfer."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "destination_account_id (new savings account)",
+     "kind": "cross_document_dependency",
+     "description": "The destination is the newly opened account, whose ID only comes from the open_bank_account_4821 result or a later account lookup. The personal procedure does not say to capture it.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_002",
+       "quote": "destination_account_id: the newly opened personal savings account to be credited."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_004",
+       "quote": "Returns a new savings account record (capture the new account_id for subsequent actions)."
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_009",
+       "quote": "returns all account information including:\n- account_id"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_004 instructs capturing the new account_id from the open_bank_account_4821 result. Alternatively, doc_009's get_all_user_accounts_by_user_id_3847 returns account_ids that can be used to identify the new account."
+    }
+   ]
+  },
+  "unfreeze_debit_card_3893": {
+   "docs": [
+    "doc_bank_accounts_bank_accounts_(general)_026",
+    "doc_bank_accounts_bank_accounts_(general)_025",
+    "doc_bank_accounts_bank_accounts_(general)_028"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "Linked checking account must be OPEN (unfreeze precondition)",
+     "kind": "cross_document_dependency",
+     "description": "Unfreezing requires the linked checking account to be OPEN, but the card lookup tool only returns the card's account_id and the card's own status, not the account's status. The KB describes no way to confirm the account is OPEN, so the agent may unfreeze without checking it.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "4. The linked checking account must still be OPEN"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "account_id: The checking account ID the card is linked to"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "Frozen card when the linked account is closing or the card is confirmed lost/stolen",
+     "kind": "conflict",
+     "description": "Closing a card requires ACTIVE or PENDING status, so a FROZEN card cannot be closed directly. The account-closing rule requires all cards to be closed first. Doc 026 recommends closing a lost/stolen card. The KB never says whether the agent should unfreeze a frozen card just to close it. Unfreezing a lost or stolen card would reactivate it, which is risky, and unfreezing requires the account to still be OPEN.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "3. The debit card must currently be in ACTIVE or PENDING status"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "If the linked checking account is being closed, all associated debit cards must be closed first"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "If customer confirms the card is lost/stolen, recommend closing instead of freezing"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I3",
+     "topic": "card_id selection and FROZEN status check",
+     "kind": "cross_document_dependency",
+     "description": "The unfreeze procedure requires FROZEN status, but the steps go straight from verification to the tool call. Status must be checked with the lookup tool in doc 028, which can return several cards per account. The agent must pick the correct card_id.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "3. Card must currently be in FROZEN status"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Before freezing/unfreezing: Verify the card exists and check its current status"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "Multiple cards may be returned if the account has card history (e.g., old closed cards plus current active card)"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 028 says to look up cards with get_debit_cards_by_account_id_7823 before unfreezing. The agent should use the card_id whose status is FROZEN, as doc 026 requires."
+    },
+    {
+     "id": "I4",
+     "topic": "Card ownership verification",
+     "kind": "cross_document_dependency",
+     "description": "Doc 026 requires the customer to own the card but does not say how to check this. The method (matching user_id) appears only in the closing procedure, and the user_id field is defined in doc 028.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "2. Customer must be the owner of the debit card"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "2. Customer must be the owner of the debit card (verify user_id matches)"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_028",
+       "quote": "user_id: The user ID of the cardholder"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Following doc 025 and doc 028, the agent should compare the card's user_id with the verified customer's user_id."
+    },
+    {
+     "id": "I5",
+     "topic": "Unfreeze 'at any time' vs. unfreeze requirements",
+     "kind": "conflict",
+     "description": "Customers are told during freezing that they can unfreeze at any time, yet unfreezing is conditional on the linked account still being OPEN. This may pressure the agent to unfreeze when the requirements are not met.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "They can unfreeze at any time by calling customer service or through the mobile app"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "4. The linked checking account must still be OPEN"
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "Doc 026's Unfreezing Requirements govern the action. The 'at any time' statement is only customer messaging, so the requirements must still be met."
+    },
+    {
+     "id": "I6",
+     "topic": "Customer identity verification method",
+     "kind": "ambiguity",
+     "description": "Both procedures require verification, and doc 025 refers to 'standard verification procedures', but none of the documents define those procedures.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_026",
+       "quote": "1. Verify customer identity"
+      },
+      {
+       "doc_id": "doc_bank_accounts_bank_accounts_(general)_025",
+       "quote": "Verify customer identity using standard verification procedures"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    }
+   ]
+  },
+  "update_transaction_rewards_3847": {
+   "docs": [
+    "doc_credit_cards_credit_cards_(general)_004",
+    "doc_credit_cards_credit_cards_(general)_003",
+    "doc_credit_cards_credit_cards_(general)_006",
+    "doc_credit_cards_credit_cards_(general)_005"
+   ],
+   "issues": [
+    {
+     "id": "I1",
+     "topic": "new_rewards_earned \u2013 reward rates used in recalculation",
+     "kind": "ambiguity",
+     "description": "The update procedure requires recalculating rewards from card type, category and promotions, and forbids using the dispute's expected_rewards. However, no document gives the base or bonus rates for the cash back cards. The categories document explicitly says it does not specify rates. Only the EcoCard rates are stated.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "Recalculate the correct rewards for each transaction based on the card type, transaction category, and any applicable promotions."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "Important: Do not rely on any expected_rewards field in the dispute record. Independently verify rates and eligibility."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_005",
+       "quote": "This document lists categories only and does not specify reward rates for any card."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_006",
+       "quote": "The only true points-based card is the EcoCard, which earns 'sustainability points' (5 points per dollar on green purchases, 1 point per dollar on other purchases)"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I2",
+     "topic": "new_rewards_earned \u2013 expressing cash back as points",
+     "kind": "cross_document_dependency",
+     "description": "The tool requires an 'X points' string even for cash back cards. Converting a cash back amount or percentage into that points value depends on the storage convention defined in a separate document.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "new_rewards_earned: a string formatted as 'X points' where X is the correct whole-number point value"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_006",
+       "quote": "all credit card rewards in the transaction database are stored as 'points' regardless of whether the card is a cash back card or a points-based card"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_006",
+       "quote": "For example, 250 points equals $2.50 in cash back, which matches a 2.5% cash back rate on a $100 purchase."
+      }
+     ],
+     "resolved_by_kb": true,
+     "resolution": "doc_credit_cards_credit_cards_(general)_006 resolves it. 1 point = $0.01, so points = cash back dollars \u00d7 100. Equivalently, points = cash back rate % \u00d7 purchase amount (e.g., 2.5% on $100 = 250 points)."
+    },
+    {
+     "id": "I3",
+     "topic": "new_rewards_earned \u2013 rounding to whole number",
+     "kind": "ambiguity",
+     "description": "The value must be a whole number of points. Rate \u00d7 amount can produce fractions (e.g., 2.5% of $33.33), and no rounding rule (round, floor, ceil) is given.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "X is the correct whole-number point value"
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I4",
+     "topic": "Promotions / bonus category applicable at time of purchase",
+     "kind": "ambiguity",
+     "description": "The calculation must include active bonus categories and promotions as of the purchase date. No document defines which promotions exist, their dates, or each card's bonus categories.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "Ensure your calculation reflects the proper base rate and any active bonus category or promotion at the time of purchase."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_005",
+       "quote": "Each credit card has its own bonus categories with higher reward rates."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I5",
+     "topic": "Precondition: dispute resolved and approved before update",
+     "kind": "cross_document_dependency",
+     "description": "The update may only be applied after a dispute is resolved and approved. The dispute is created via the customer-run submission tool in another document, and no document defines who approves it or how the resolved status is set or recognized.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "After a cash back dispute is resolved and approved, you must update the affected transaction(s) with the correct rewards value."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_004",
+       "quote": "Look up the user\u2019s resolved disputes in the cash_back_disputes database to find the transaction_id values that need rewards adjustments."
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_003",
+       "quote": "Tell the customer to run the tool with their own user_id and the specific transaction_id for the purchase in question."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": null
+    },
+    {
+     "id": "I6",
+     "topic": "Category eligibility \u2013 'Other' and Green/Sustainable",
+     "kind": "ambiguity",
+     "description": "Eligibility depends on category. 'Other' covers card-specific exclusions that are never defined, so it is unclear whether such transactions earn the default rate or nothing. Green and Sustainable are declared interchangeable, which matters for EcoCard green-purchase rates.",
+     "doc_quotes": [
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_005",
+       "quote": "Other (transactions that fall under card-specific exclusions or exceptions, do not list any examples here)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_005",
+       "quote": "Sustainable (same as Green, used interchangeably)"
+      },
+      {
+       "doc_id": "doc_credit_cards_credit_cards_(general)_005",
+       "quote": "Purchases in non-bonus categories earn the card\u2019s default rate."
+      }
+     ],
+     "resolved_by_kb": false,
+     "resolution": "Partially resolved. doc_credit_cards_credit_cards_(general)_005 treats Sustainable as Green, so the EcoCard 5 points/dollar rate applies to both. The treatment of 'Other' exclusions remains undetermined."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,5533 @@
+{
+ "doc_bank_accounts_bank_accounts_(general)_018": {
+  "summary": "Internal guide describing how agents retrieve checking/savings account transaction history with get_bank_account_transactions_9173(account_id), which returns all transactions in reverse chronological order, and defining the transaction record fields (transaction_id, account_id, date, description, amount sign convention, type enumeration, status posted/pending).",
+  "entities": [
+   {
+    "name": "get_bank_account_transactions_9173",
+    "type": "tool",
+    "canonical": "get_bank_account_transactions_9173"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "savings account",
+    "type": "product",
+    "canonical": "savings account"
+   },
+   {
+    "name": "account_id",
+    "type": "data_field",
+    "canonical": "account id"
+   },
+   {
+    "name": "transaction_id",
+    "type": "data_field",
+    "canonical": "transaction id"
+   },
+   {
+    "name": "date",
+    "type": "data_field",
+    "canonical": "transaction date"
+   },
+   {
+    "name": "description",
+    "type": "data_field",
+    "canonical": "transaction description"
+   },
+   {
+    "name": "amount",
+    "type": "data_field",
+    "canonical": "transaction amount"
+   },
+   {
+    "name": "type",
+    "type": "data_field",
+    "canonical": "transaction type"
+   },
+   {
+    "name": "status",
+    "type": "data_field",
+    "canonical": "transaction status"
+   },
+   {
+    "name": "pending",
+    "type": "condition",
+    "canonical": "pending transactions"
+   },
+   {
+    "name": "posted",
+    "type": "condition",
+    "canonical": "posted transactions"
+   },
+   {
+    "name": "atm_fee",
+    "type": "fee_or_limit",
+    "canonical": "atm fee"
+   },
+   {
+    "name": "monthly_fee",
+    "type": "fee_or_limit",
+    "canonical": "monthly fee"
+   },
+   {
+    "name": "overdraft_fee",
+    "type": "fee_or_limit",
+    "canonical": "overdraft fee"
+   },
+   {
+    "name": "fee_rebate",
+    "type": "other",
+    "canonical": "fee rebate"
+   },
+   {
+    "name": "rebate_credit",
+    "type": "other",
+    "canonical": "rebate credit"
+   },
+   {
+    "name": "fee_refund",
+    "type": "other",
+    "canonical": "fee refund"
+   },
+   {
+    "name": "interest_credit",
+    "type": "other",
+    "canonical": "interest credit"
+   },
+   {
+    "name": "everyonepay",
+    "type": "product",
+    "canonical": "everyonepay"
+   },
+   {
+    "name": "direct_deposit",
+    "type": "other",
+    "canonical": "direct deposit"
+   },
+   {
+    "name": "wire transfers",
+    "type": "other",
+    "canonical": "wire transfer"
+   },
+   {
+    "name": "ACH transfers",
+    "type": "other",
+    "canonical": "ach transfer"
+   },
+   {
+    "name": "mobile_deposit",
+    "type": "other",
+    "canonical": "mobile deposit"
+   },
+   {
+    "name": "bill_pay",
+    "type": "product",
+    "canonical": "bill pay"
+   },
+   {
+    "name": "reverse chronological order",
+    "type": "rule",
+    "canonical": "transaction ordering"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "get_bank_account_transactions_9173",
+    "predicate": "applies_to",
+    "object": "checking account",
+    "condition": null,
+    "quote": "retrieve the transaction history for a customer's bank account (checking or savings) using the get_bank_account_transactions_9173 tool"
+   },
+   {
+    "subject": "get_bank_account_transactions_9173",
+    "predicate": "applies_to",
+    "object": "savings account",
+    "condition": null,
+    "quote": "retrieve the transaction history for a customer's bank account (checking or savings) using the get_bank_account_transactions_9173 tool"
+   },
+   {
+    "subject": "get_bank_account_transactions_9173",
+    "predicate": "requires",
+    "object": "account id",
+    "condition": null,
+    "quote": "account_id: The bank account ID to retrieve transactions for"
+   },
+   {
+    "subject": "transaction ordering",
+    "predicate": "applies_to",
+    "object": "get_bank_account_transactions_9173",
+    "condition": null,
+    "quote": "Transactions are returned in reverse chronological order (most recent first)."
+   },
+   {
+    "subject": "transaction amount",
+    "predicate": "defines",
+    "object": "credits and debits sign convention",
+    "condition": null,
+    "quote": "Positive values are credits (money in), negative values are debits (money out)"
+   },
+   {
+    "subject": "transaction status",
+    "predicate": "defines",
+    "object": "pending transactions",
+    "condition": null,
+    "quote": "Transaction status, either 'posted' or 'pending'"
+   },
+   {
+    "subject": "get_bank_account_transactions_9173",
+    "predicate": "applies_to",
+    "object": "fee rebate",
+    "condition": "when verifying fees or checking for applied rebates",
+    "quote": "This is useful when reviewing account activity, verifying fees, checking for applied rebates, or investigating customer inquiries."
+   },
+   {
+    "subject": "transaction date",
+    "predicate": "defines",
+    "object": "date format",
+    "condition": null,
+    "quote": "Date of the transaction (MM/DD/YYYY format)"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "The customer's bank account ID, obtained from another lookup",
+    "kind": "data",
+    "why": "The tool requires account_id but the document does not explain how to find it"
+   },
+   {
+    "needs": "Fee schedules and rules (monthly fee, overdraft fee, ATM fee) for verifying fees",
+    "kind": "rule",
+    "why": "Document mentions verifying fees but does not define fee amounts or when they apply"
+   },
+   {
+    "needs": "Rebate/refund eligibility policies (fee_rebate, rebate_credit, fee_refund)",
+    "kind": "rule",
+    "why": "Document mentions checking for applied rebates but not when rebates are owed"
+   },
+   {
+    "needs": "Definition of EveryonePay product",
+    "kind": "definition",
+    "why": "everyonepay transaction type is listed without explanation"
+   },
+   {
+    "needs": "Procedures for investigating customer inquiries about transactions or disputes",
+    "kind": "procedure",
+    "why": "Tool is used for investigations but the actions to take are defined elsewhere"
+   }
+  ],
+  "provides": [
+   "Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history",
+   "Transactions returned in reverse chronological order (most recent first)",
+   "Transaction record field definitions: transaction_id, account_id, date, description, amount, type, status",
+   "Date format MM/DD/YYYY",
+   "Amount sign convention: positive = credit, negative = debit, in USD",
+   "Enumeration of transaction types (direct_deposit through fee_refund)",
+   "Transaction status values: posted or pending"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_023": {
+  "summary": "Internal procedure for ordering a debit card linked to a checking account: eligibility requirements (verified customer, checking account, OPEN status, open 3+ business days, max 1 active card per account, $25 minimum balance, age 18+, no pending order, valid US address), delivery and card design options with fees, step-by-step process using order_debit_card_5739, and notes on fee deduction, activation and tracking.",
+  "entities": [
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "savings account",
+    "type": "product",
+    "canonical": "savings account"
+   },
+   {
+    "name": "customer verification",
+    "type": "process",
+    "canonical": "customer identity verification"
+   },
+   {
+    "name": "account_type",
+    "type": "data_field",
+    "canonical": "account type"
+   },
+   {
+    "name": "Account status OPEN",
+    "type": "condition",
+    "canonical": "account status open"
+   },
+   {
+    "name": "3 business days account age",
+    "type": "fee_or_limit",
+    "canonical": "minimum account age for debit card"
+   },
+   {
+    "name": "max 1 active debit card per checking account",
+    "type": "fee_or_limit",
+    "canonical": "debit card limit per account"
+   },
+   {
+    "name": "$25 minimum balance",
+    "type": "fee_or_limit",
+    "canonical": "debit card minimum balance"
+   },
+   {
+    "name": "minimum age 18",
+    "type": "fee_or_limit",
+    "canonical": "minimum age requirement"
+   },
+   {
+    "name": "date_of_birth",
+    "type": "data_field",
+    "canonical": "date of birth"
+   },
+   {
+    "name": "debit_cards table",
+    "type": "data_field",
+    "canonical": "debit cards table"
+   },
+   {
+    "name": "PENDING status",
+    "type": "condition",
+    "canonical": "pending debit card order"
+   },
+   {
+    "name": "US domestic address",
+    "type": "condition",
+    "canonical": "us domestic address"
+   },
+   {
+    "name": "STANDARD delivery",
+    "type": "fee_or_limit",
+    "canonical": "standard delivery"
+   },
+   {
+    "name": "EXPEDITED delivery $15",
+    "type": "fee_or_limit",
+    "canonical": "expedited delivery fee"
+   },
+   {
+    "name": "RUSH delivery $35",
+    "type": "fee_or_limit",
+    "canonical": "rush delivery fee"
+   },
+   {
+    "name": "account tier",
+    "type": "condition",
+    "canonical": "account tier"
+   },
+   {
+    "name": "CLASSIC design",
+    "type": "product",
+    "canonical": "classic card design"
+   },
+   {
+    "name": "PREMIUM design $10",
+    "type": "fee_or_limit",
+    "canonical": "premium card design fee"
+   },
+   {
+    "name": "CUSTOM design $25",
+    "type": "fee_or_limit",
+    "canonical": "custom card design fee"
+   },
+   {
+    "name": "custom design approval",
+    "type": "process",
+    "canonical": "custom card design approval"
+   },
+   {
+    "name": "order_debit_card_5739",
+    "type": "tool",
+    "canonical": "order_debit_card_5739"
+   },
+   {
+    "name": "Rho-Bank mobile app",
+    "type": "tool",
+    "canonical": "rho-bank mobile app"
+   },
+   {
+    "name": "card activation",
+    "type": "process",
+    "canonical": "debit card activation"
+   },
+   {
+    "name": "insufficient funds",
+    "type": "condition",
+    "canonical": "insufficient funds"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "debit card",
+    "predicate": "applies_to",
+    "object": "checking account",
+    "condition": null,
+    "quote": "Debit cards can only be ordered for checking accounts (personal or business)"
+   },
+   {
+    "subject": "debit card",
+    "predicate": "prohibits",
+    "object": "savings account",
+    "condition": null,
+    "quote": "savings accounts are not eligible for debit cards"
+   },
+   {
+    "subject": "debit card",
+    "predicate": "requires",
+    "object": "customer identity verification",
+    "condition": null,
+    "quote": "Customer must be verified"
+   },
+   {
+    "subject": "debit card",
+    "predicate": "requires",
+    "object": "account type",
+    "condition": null,
+    "quote": "account_type must be 'checking'"
+   },
+   {
+    "subject": "debit card",
+    "predicate": "requires",
+    "object": "account status open",
+    "condition": null,
+    "quote": "Account status must be OPEN"
+   },
+   {
+    "subject": "minimum account age for debit card",
+    "predicate": "limits",
+    "object": "debit card",
+    "condition": null,
+    "quote": "Account must have been open for at least 3 business days (excluding weekends)"
+   },
+   {
+    "subject": "debit card limit per account",
+    "predicate": "limits",
+    "object": "debit card",
+    "condition": null,
+    "quote": "Customer cannot have more than 1 active debit cards per checking account"
+   },
+   {
+    "subject": "debit card minimum balance",
+    "predicate": "limits",
+    "object": "debit card",
+    "condition": null,
+    "quote": "Account must have a minimum balance of $25 (to cover potential fees)"
+   },
+   {
+    "subject": "minimum age requirement",
+    "predicate": "limits",
+    "object": "debit card",
+    "condition": null,
+    "quote": "Customer must be at least 18 years old (verify using date_of_birth)"
+   },
+   {
+    "subject": "date of birth",
+    "predicate": "determines_value_of",
+    "object": "minimum age requirement",
+    "condition": null,
+    "quote": "verify using date_of_birth"
+   },
+   {
+    "subject": "pending debit card order",
+    "predicate": "prohibits",
+    "object": "debit card",
+    "condition": "same account",
+    "quote": "Customer cannot have a pending debit card order for the same account (check debit_cards table for PENDING status)"
+   },
+   {
+    "subject": "debit cards table",
+    "predicate": "determines_value_of",
+    "object": "pending debit card order",
+    "condition": null,
+    "quote": "check debit_cards table for PENDING status"
+   },
+   {
+    "subject": "debit card",
+    "predicate": "requires",
+    "object": "us domestic address",
+    "condition": null,
+    "quote": "Customer's address on file must be a valid US domestic address (international shipping is not available)"
+   },
+   {
+    "subject": "account tier",
+    "predicate": "determines_value_of",
+    "object": "rush delivery fee",
+    "condition": null,
+    "quote": "RUSH: $35 fee, arrives in 1-2 business days, fees may vary based on account tier."
+   },
+   {
+    "subject": "account tier",
+    "predicate": "determines_value_of",
+    "object": "custom card design fee",
+    "condition": null,
+    "quote": "CUSTOM: Customer-uploaded image ($25 one-time fee, subject to approval), fees may vary ased on account tier."
+   },
+   {
+    "subject": "custom card design fee",
+    "predicate": "requires",
+    "object": "custom card design approval",
+    "condition": null,
+    "quote": "subject to approval"
+   },
+   {
+    "subject": "debit card",
+    "predicate": "uses_tool",
+    "object": "order_debit_card_5739",
+    "condition": null,
+    "quote": "Use order_debit_card_5739 to order the card."
+   },
+   {
+    "subject": "customer identity verification",
+    "predicate": "precedes",
+    "object": "order_debit_card_5739",
+    "condition": null,
+    "quote": "1) Verify customer identity"
+   },
+   {
+    "subject": "expedited delivery fee",
+    "predicate": "applies_to",
+    "object": "checking account",
+    "condition": null,
+    "quote": "Expedited and rush delivery fees are automatically deducted from the linked checking account"
+   },
+   {
+    "subject": "insufficient funds",
+    "predicate": "prohibits",
+    "object": "order_debit_card_5739",
+    "condition": "insufficient funds for delivery or design fees",
+    "quote": "If the account has insufficient funds for delivery or design fees, the order will fail"
+   },
+   {
+    "subject": "rho-bank mobile app",
+    "predicate": "applies_to",
+    "object": "debit card",
+    "condition": "shipment tracking",
+    "quote": "Customers can track their card shipment status using the Rho-Bank mobile app"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "applies_to",
+    "object": "debit card",
+    "condition": null,
+    "quote": "New cards are automatically activated upon first use with PIN entry"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "customer identity verification procedure",
+    "kind": "procedure",
+    "why": "Step 1 requires verifying the customer but the method is not defined here"
+   },
+   {
+    "needs": "account tier definitions and tier-based fee schedule",
+    "kind": "rule",
+    "why": "RUSH and CUSTOM fees 'may vary based on account tier' without specifying the variations"
+   },
+   {
+    "needs": "custom card design approval process/criteria",
+    "kind": "procedure",
+    "why": "CUSTOM design is 'subject to approval' but criteria are not given"
+   },
+   {
+    "needs": "customer account data (account_type, status, open date, balance, date_of_birth, address)",
+    "kind": "data",
+    "why": "Eligibility checks require looking up these fields"
+   },
+   {
+    "needs": "debit_cards table lookup",
+    "kind": "data",
+    "why": "Must check active card count and PENDING orders"
+   },
+   {
+    "needs": "definition of business days",
+    "kind": "definition",
+    "why": "Account age and delivery timeframes are in business days; only weekends exclusion stated, holidays unspecified"
+   },
+   {
+    "needs": "definition of valid US domestic address",
+    "kind": "definition",
+    "why": "Address must be valid US domestic but validity criteria not given"
+   }
+  ],
+  "provides": [
+   "debit card eligibility requirements (checking only, verified, OPEN, 3 business days, max 1 active card, $25 minimum balance, age 18+, no pending order, US address)",
+   "savings accounts not eligible for debit cards",
+   "delivery options and fees: STANDARD free 7-10 business days, EXPEDITED $15 3-5 days, RUSH $35 1-2 days",
+   "card design options and fees: CLASSIC free default, PREMIUM $10, CUSTOM $25 subject to approval",
+   "step-by-step debit card ordering procedure using order_debit_card_5739",
+   "delivery fees deducted automatically from linked checking account",
+   "order fails on insufficient funds for fees",
+   "shipment tracking via Rho-Bank mobile app",
+   "new cards activate upon first use with PIN entry; existing card remains active until new card activated"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_025": {
+  "summary": "Internal procedure for closing/cancelling a debit card: valid reasons, eligibility requirements (verification, ownership, ACTIVE/PENDING status, no pending transactions or refunds, 14-day minimum card age), closing steps using close_debit_card_4721, security bypass for lost/stolen/fraud, and post-closure notes.",
+  "entities": [
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "linked checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "close_debit_card_4721",
+    "type": "tool",
+    "canonical": "close_debit_card_4721"
+   },
+   {
+    "name": "customer verification",
+    "type": "process",
+    "canonical": "customer identity verification"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user_id"
+   },
+   {
+    "name": "card status ACTIVE or PENDING",
+    "type": "condition",
+    "canonical": "debit card status"
+   },
+   {
+    "name": "pending transactions",
+    "type": "condition",
+    "canonical": "pending transactions"
+   },
+   {
+    "name": "pending refunds",
+    "type": "condition",
+    "canonical": "pending refunds"
+   },
+   {
+    "name": "refund processing time 3-5 business days",
+    "type": "fee_or_limit",
+    "canonical": "refund processing time"
+   },
+   {
+    "name": "minimum card age 14 days",
+    "type": "fee_or_limit",
+    "canonical": "debit card minimum age for closure"
+   },
+   {
+    "name": "date_issued",
+    "type": "data_field",
+    "canonical": "date_issued"
+   },
+   {
+    "name": "closure reason",
+    "type": "data_field",
+    "canonical": "debit card closure reason"
+   },
+   {
+    "name": "card_id",
+    "type": "data_field",
+    "canonical": "card_id"
+   },
+   {
+    "name": "replacement card",
+    "type": "process",
+    "canonical": "replacement debit card order"
+   },
+   {
+    "name": "transaction dispute",
+    "type": "process",
+    "canonical": "transaction dispute"
+   },
+   {
+    "name": "standard ordering process",
+    "type": "process",
+    "canonical": "debit card ordering process"
+   },
+   {
+    "name": "recurring payments",
+    "type": "other",
+    "canonical": "recurring payments"
+   },
+   {
+    "name": "online banking password change",
+    "type": "process",
+    "canonical": "online banking password change"
+   },
+   {
+    "name": "checking account closure",
+    "type": "process",
+    "canonical": "checking account closure"
+   },
+   {
+    "name": "lost/stolen immediate closure no cooling-off",
+    "type": "rule",
+    "canonical": "lost stolen card immediate closure"
+   },
+   {
+    "name": "written acknowledgment of refund redirection",
+    "type": "condition",
+    "canonical": "refund credit to checking acknowledgment"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "debit card closure",
+    "predicate": "requires",
+    "object": "customer identity verification",
+    "condition": null,
+    "quote": "Customer must be verified"
+   },
+   {
+    "subject": "debit card closure",
+    "predicate": "requires",
+    "object": "user_id",
+    "condition": null,
+    "quote": "Customer must be the owner of the debit card (verify user_id matches)"
+   },
+   {
+    "subject": "debit card closure",
+    "predicate": "requires",
+    "object": "debit card status",
+    "condition": null,
+    "quote": "The debit card must currently be in ACTIVE or PENDING status"
+   },
+   {
+    "subject": "pending transactions",
+    "predicate": "prohibits",
+    "object": "debit card closure",
+    "condition": "unless reason is lost, stolen or fraud_suspected (pending transactions still processed)",
+    "quote": "If pending transactions exist, inform the customer they must wait for all transactions to settle before the card can be closed."
+   },
+   {
+    "subject": "pending refunds",
+    "predicate": "prohibits",
+    "object": "debit card closure",
+    "condition": "unless customer acknowledges in writing refunds go to linked checking account",
+    "quote": "inform the customer they must wait for the refunds to process (typically 3-5 business days) or acknowledge in writing that the refunds will be credited to the linked checking account instead"
+   },
+   {
+    "subject": "debit card minimum age for closure",
+    "predicate": "limits",
+    "object": "debit card closure",
+    "condition": null,
+    "quote": "The debit card must have been active for at least 14 days."
+   },
+   {
+    "subject": "date_issued",
+    "predicate": "determines_value_of",
+    "object": "debit card minimum age for closure",
+    "condition": null,
+    "quote": "Calculate this from the date_issued field."
+   },
+   {
+    "subject": "lost/stolen/fraud_suspected reasons",
+    "predicate": "exception_to",
+    "object": "debit card minimum age for closure",
+    "condition": "reason is lost, stolen, or fraud_suspected",
+    "quote": "These reasons bypass the minimum card age requirement (requirement 6) for security purposes"
+   },
+   {
+    "subject": "debit card closure",
+    "predicate": "uses_tool",
+    "object": "close_debit_card_4721",
+    "condition": null,
+    "quote": "Use close_debit_card_4721 to close the card with parameters: card_id, reason"
+   },
+   {
+    "subject": "fraud_suspected closure",
+    "predicate": "references",
+    "object": "transaction dispute",
+    "condition": "fraud suspected",
+    "quote": "advise customer to review recent transactions and file disputes for any unauthorized charges"
+   },
+   {
+    "subject": "fraud_suspected closure",
+    "predicate": "references",
+    "object": "online banking password change",
+    "condition": null,
+    "quote": "For fraud_suspected closures, recommend the customer also change their online banking password"
+   },
+   {
+    "subject": "debit card closure",
+    "predicate": "precedes",
+    "object": "checking account closure",
+    "condition": "linked checking account being closed",
+    "quote": "If the linked checking account is being closed, all associated debit cards must be closed first"
+   },
+   {
+    "subject": "closed debit card",
+    "predicate": "prohibits",
+    "object": "debit card reactivation",
+    "condition": null,
+    "quote": "Closed cards cannot be reopened - customer must order a new card if needed"
+   },
+   {
+    "subject": "refunds to closed card",
+    "predicate": "applies_to",
+    "object": "checking account",
+    "condition": null,
+    "quote": "Refunds to a closed card will be credited to the linked checking account"
+   },
+   {
+    "subject": "lost stolen card immediate closure",
+    "predicate": "applies_to",
+    "object": "debit card",
+    "condition": "reported lost or stolen",
+    "quote": "Cards reported as lost or stolen are closed immediately with no cooling-off period"
+   },
+   {
+    "subject": "debit card closure",
+    "predicate": "references",
+    "object": "debit card ordering process",
+    "condition": "customer needs new card",
+    "quote": "If they need a new card, they can order one through the standard ordering process"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "standard customer identity verification procedures",
+    "kind": "procedure",
+    "why": "Step 1 requires verification using 'standard verification procedures' not defined here"
+   },
+   {
+    "needs": "debit card ordering / replacement process",
+    "kind": "procedure",
+    "why": "Replacement and new card ordering referenced but not described"
+   },
+   {
+    "needs": "transaction dispute filing procedure",
+    "kind": "procedure",
+    "why": "Fraud cases require filing disputes for unauthorized charges"
+   },
+   {
+    "needs": "lookup of card details (status, user_id, date_issued, pending transactions, pending refunds)",
+    "kind": "data",
+    "why": "Eligibility checks require card data; no lookup tool is named"
+   },
+   {
+    "needs": "checking account closure procedure",
+    "kind": "procedure",
+    "why": "Account closure referenced as a reason and must follow card closure"
+   },
+   {
+    "needs": "online banking password change procedure",
+    "kind": "procedure",
+    "why": "Recommended for fraud_suspected closures"
+   }
+  ],
+  "provides": [
+   "debit card closure eligibility requirements",
+   "debit card closure reason codes: lost, stolen, fraud_suspected, damaged, no_longer_needed, account_closing",
+   "14-day minimum card age for closure calculated from date_issued",
+   "lost/stolen/fraud_suspected bypass of minimum card age",
+   "pending refunds typically 3-5 business days; written acknowledgment option to credit linked checking account",
+   "close_debit_card_4721 usage with parameters card_id and reason",
+   "closed debit cards are permanently deactivated and cannot be reactivated",
+   "lost/stolen cards closed immediately with no cooling-off period",
+   "debit cards must be closed before linked checking account closure",
+   "refunds to closed card credited to linked checking account",
+   "post-closure customer disclosures (recurring payments update, new card ordering)"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_026": {
+  "summary": "Internal procedure for freezing and unfreezing a debit card: distinguishes freeze (temporary) from close (permanent), lists reasons, eligibility requirements (verified owner, card status ACTIVE/FROZEN, linked checking OPEN), steps using freeze_debit_card_3892 and unfreeze_debit_card_3893, customer disclosures, and notes on ATM access, ATM Block, 90-day reminder, and recommending closure for lost/stolen cards.",
+  "entities": [
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "Freeze",
+    "type": "process",
+    "canonical": "debit card freeze"
+   },
+   {
+    "name": "Unfreeze",
+    "type": "process",
+    "canonical": "debit card unfreeze"
+   },
+   {
+    "name": "Close",
+    "type": "process",
+    "canonical": "debit card closure"
+   },
+   {
+    "name": "freeze_debit_card_3892",
+    "type": "tool",
+    "canonical": "freeze_debit_card_3892"
+   },
+   {
+    "name": "unfreeze_debit_card_3893",
+    "type": "tool",
+    "canonical": "unfreeze_debit_card_3893"
+   },
+   {
+    "name": "card_id",
+    "type": "data_field",
+    "canonical": "card id"
+   },
+   {
+    "name": "customer identity verification",
+    "type": "process",
+    "canonical": "customer identity verification"
+   },
+   {
+    "name": "card status ACTIVE/PENDING/CLOSED/FROZEN",
+    "type": "data_field",
+    "canonical": "debit card status"
+   },
+   {
+    "name": "linked checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "account status OPEN",
+    "type": "condition",
+    "canonical": "account status open"
+   },
+   {
+    "name": "ATM Block",
+    "type": "other",
+    "canonical": "atm block"
+   },
+   {
+    "name": "mobile app",
+    "type": "tool",
+    "canonical": "mobile app"
+   },
+   {
+    "name": "pending transactions",
+    "type": "other",
+    "canonical": "pending transactions"
+   },
+   {
+    "name": "recurring payments/subscriptions",
+    "type": "other",
+    "canonical": "recurring payments"
+   },
+   {
+    "name": "90-day reminder",
+    "type": "fee_or_limit",
+    "canonical": "frozen card 90-day reminder"
+   },
+   {
+    "name": "lost/stolen card",
+    "type": "condition",
+    "canonical": "lost or stolen card"
+   },
+   {
+    "name": "card owner",
+    "type": "role",
+    "canonical": "card owner"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "debit card freeze",
+    "predicate": "requires",
+    "object": "customer identity verification",
+    "condition": null,
+    "quote": "Customer must be verified"
+   },
+   {
+    "subject": "debit card freeze",
+    "predicate": "requires",
+    "object": "card owner",
+    "condition": null,
+    "quote": "Customer must be the owner of the debit card"
+   },
+   {
+    "subject": "debit card freeze",
+    "predicate": "requires",
+    "object": "debit card status",
+    "condition": "status must be ACTIVE",
+    "quote": "Card must currently be in ACTIVE status (cannot freeze PENDING, CLOSED, or already FROZEN cards)"
+   },
+   {
+    "subject": "debit card freeze",
+    "predicate": "uses_tool",
+    "object": "freeze_debit_card_3892",
+    "condition": null,
+    "quote": "Use freeze_debit_card_3892 with the card_id"
+   },
+   {
+    "subject": "freeze_debit_card_3892",
+    "predicate": "requires",
+    "object": "card id",
+    "condition": null,
+    "quote": "Use freeze_debit_card_3892 with the card_id"
+   },
+   {
+    "subject": "debit card unfreeze",
+    "predicate": "requires",
+    "object": "debit card status",
+    "condition": "status must be FROZEN",
+    "quote": "Card must currently be in FROZEN status"
+   },
+   {
+    "subject": "debit card unfreeze",
+    "predicate": "requires",
+    "object": "account status open",
+    "condition": "linked checking account",
+    "quote": "The linked checking account must still be OPEN"
+   },
+   {
+    "subject": "debit card unfreeze",
+    "predicate": "requires",
+    "object": "customer identity verification",
+    "condition": null,
+    "quote": "Customer must be verified"
+   },
+   {
+    "subject": "debit card unfreeze",
+    "predicate": "uses_tool",
+    "object": "unfreeze_debit_card_3893",
+    "condition": null,
+    "quote": "Use unfreeze_debit_card_3893 with the card_id"
+   },
+   {
+    "subject": "debit card freeze",
+    "predicate": "prohibits",
+    "object": "recurring payments",
+    "condition": "while frozen",
+    "quote": "Recurring payments/subscriptions will also be declined"
+   },
+   {
+    "subject": "debit card freeze",
+    "predicate": "permits",
+    "object": "pending transactions",
+    "condition": "already authorized",
+    "quote": "Pending transactions already authorized may still process"
+   },
+   {
+    "subject": "atm block",
+    "predicate": "applies_to",
+    "object": "debit card freeze",
+    "condition": "to also block ATM access",
+    "quote": "For ATM freeze, customer must also enable 'ATM Block' separately through mobile app"
+   },
+   {
+    "subject": "lost or stolen card",
+    "predicate": "requires",
+    "object": "debit card closure",
+    "condition": "customer confirms lost/stolen",
+    "quote": "If customer confirms the card is lost/stolen, recommend closing instead of freezing"
+   },
+   {
+    "subject": "frozen card 90-day reminder",
+    "predicate": "applies_to",
+    "object": "debit card freeze",
+    "condition": "not unfrozen within 90 days",
+    "quote": "If a frozen card is not unfrozen within 90 days, the customer will receive a reminder notification"
+   },
+   {
+    "subject": "customer identity verification",
+    "predicate": "precedes",
+    "object": "freeze_debit_card_3892",
+    "condition": null,
+    "quote": "1. Verify customer identity"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Customer identity verification procedure",
+    "kind": "procedure",
+    "why": "Both freeze and unfreeze require verifying the customer but the method is not defined here"
+   },
+   {
+    "needs": "Debit card closure procedure for lost/stolen cards",
+    "kind": "procedure",
+    "why": "Document recommends closing instead of freezing but does not describe how to close"
+   },
+   {
+    "needs": "Card status and ownership lookup (card_id, card status, owner)",
+    "kind": "data",
+    "why": "Agent must confirm card is ACTIVE/FROZEN, owned by customer, and obtain card_id"
+   },
+   {
+    "needs": "Linked checking account status",
+    "kind": "data",
+    "why": "Unfreeze requires the linked checking account to be OPEN"
+   },
+   {
+    "needs": "ATM Block setup instructions in mobile app",
+    "kind": "procedure",
+    "why": "ATM freeze is done separately via mobile app, not described here"
+   }
+  ],
+  "provides": [
+   "Definition of freeze (temporary) vs close (permanent) for debit cards",
+   "Eligibility requirements to freeze a debit card (verified, owner, ACTIVE status)",
+   "Eligibility requirements to unfreeze (verified, owner, FROZEN status, linked checking OPEN)",
+   "Freeze steps using freeze_debit_card_3892 with card_id",
+   "Unfreeze steps using unfreeze_debit_card_3893 with card_id",
+   "Required customer disclosures when freezing (new and recurring transactions declined, pending may process, unfreeze anytime)",
+   "Rule that freezing does not block ATM access with PIN; ATM Block needed separately",
+   "90-day reminder notification for frozen cards",
+   "Rule to recommend closure instead of freeze for confirmed lost/stolen cards",
+   "Acceptable reasons for freezing a card"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_029": {
+  "summary": "Internal policy defining debit card replacement limits, waiting periods, shipping (delivery_fee) and design (design_fee) fees by checking account tier (Entry, Mid, Premium, Elite), fee auto-charging to the linked checking account, use of order_debit_card_5739, and how to count replacement history via issue_reason and date_issued.",
+  "entities": [
+   {
+    "name": "replacement debit card",
+    "type": "product",
+    "canonical": "debit card replacement"
+   },
+   {
+    "name": "checking account tier",
+    "type": "condition",
+    "canonical": "checking account tier"
+   },
+   {
+    "name": "order_debit_card_5739",
+    "type": "tool",
+    "canonical": "order_debit_card_5739"
+   },
+   {
+    "name": "delivery_fee",
+    "type": "data_field",
+    "canonical": "delivery fee"
+   },
+   {
+    "name": "design_fee",
+    "type": "data_field",
+    "canonical": "design fee"
+   },
+   {
+    "name": "excess replacement fee",
+    "type": "fee_or_limit",
+    "canonical": "excess replacement fee"
+   },
+   {
+    "name": "replacement limit per rolling 12-month period",
+    "type": "fee_or_limit",
+    "canonical": "debit card replacement limit"
+   },
+   {
+    "name": "48-hour waiting period",
+    "type": "rule",
+    "canonical": "replacement waiting period"
+   },
+   {
+    "name": "Entry tier",
+    "type": "product",
+    "canonical": "entry tier checking"
+   },
+   {
+    "name": "Mid tier",
+    "type": "product",
+    "canonical": "mid tier checking"
+   },
+   {
+    "name": "Premium tier",
+    "type": "product",
+    "canonical": "premium tier checking"
+   },
+   {
+    "name": "Elite tier",
+    "type": "product",
+    "canonical": "elite tier checking"
+   },
+   {
+    "name": "linked checking account",
+    "type": "product",
+    "canonical": "linked checking account"
+   },
+   {
+    "name": "standard shipping",
+    "type": "other",
+    "canonical": "standard shipping"
+   },
+   {
+    "name": "expedited shipping",
+    "type": "other",
+    "canonical": "expedited shipping"
+   },
+   {
+    "name": "rush shipping",
+    "type": "other",
+    "canonical": "rush shipping"
+   },
+   {
+    "name": "priority processing",
+    "type": "process",
+    "canonical": "priority processing"
+   },
+   {
+    "name": "CLASSIC design",
+    "type": "product",
+    "canonical": "classic card design"
+   },
+   {
+    "name": "PREMIUM design (metallic silver)",
+    "type": "product",
+    "canonical": "premium card design"
+   },
+   {
+    "name": "CUSTOM design (uploaded image)",
+    "type": "product",
+    "canonical": "custom card design"
+   },
+   {
+    "name": "issue_reason",
+    "type": "data_field",
+    "canonical": "issue reason"
+   },
+   {
+    "name": "date_issued",
+    "type": "data_field",
+    "canonical": "date issued"
+   },
+   {
+    "name": "replacement history check",
+    "type": "process",
+    "canonical": "replacement history check"
+   },
+   {
+    "name": "card closure",
+    "type": "process",
+    "canonical": "card closure"
+   },
+   {
+    "name": "fee disclosure to customer",
+    "type": "rule",
+    "canonical": "fee disclosure before ordering"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "checking account tier",
+    "predicate": "determines_value_of",
+    "object": "debit card replacement limit",
+    "condition": null,
+    "quote": "the replacement policies vary based on the customer's checking account tier"
+   },
+   {
+    "subject": "debit card replacement",
+    "predicate": "requires",
+    "object": "linked checking account",
+    "condition": "fees applicable",
+    "quote": "All applicable fees (shipping, design, excess replacement) are AUTOMATICALLY CHARGED to the linked checking account when the card is ordered."
+   },
+   {
+    "subject": "fee disclosure before ordering",
+    "predicate": "precedes",
+    "object": "order_debit_card_5739",
+    "condition": null,
+    "quote": "Always inform the customer that the fee will be deducted from their checking account balance before placing the order."
+   },
+   {
+    "subject": "order_debit_card_5739",
+    "predicate": "requires",
+    "object": "delivery fee",
+    "condition": null,
+    "quote": "When using order_debit_card_5739, you must provide the exact delivery_fee and design_fee amounts based on the tier rules below."
+   },
+   {
+    "subject": "order_debit_card_5739",
+    "predicate": "requires",
+    "object": "design fee",
+    "condition": null,
+    "quote": "When using order_debit_card_5739, you must provide the exact delivery_fee and design_fee amounts based on the tier rules below."
+   },
+   {
+    "subject": "debit card replacement limit",
+    "predicate": "applies_to",
+    "object": "entry tier checking",
+    "condition": "2 cards per rolling 12 months",
+    "quote": "Maximum 2 replacement cards per rolling 12-month period"
+   },
+   {
+    "subject": "replacement waiting period",
+    "predicate": "applies_to",
+    "object": "entry tier checking",
+    "condition": "48 hours after card closure",
+    "quote": "48-hour waiting period after card closure before a replacement can be ordered"
+   },
+   {
+    "subject": "entry tier checking",
+    "predicate": "prohibits",
+    "object": "expedited shipping",
+    "condition": null,
+    "quote": "Standard shipping only (no expedited option available) - delivery_fee: $0"
+   },
+   {
+    "subject": "excess replacement fee",
+    "predicate": "applies_to",
+    "object": "entry tier checking",
+    "condition": "exceeded 2-card limit; $25",
+    "quote": "OR pay a $25 excess replacement fee"
+   },
+   {
+    "subject": "debit card replacement limit",
+    "predicate": "applies_to",
+    "object": "mid tier checking",
+    "condition": "3 cards per rolling 12 months",
+    "quote": "Maximum 3 replacement cards per rolling 12-month period"
+   },
+   {
+    "subject": "mid tier checking",
+    "predicate": "permits",
+    "object": "expedited shipping",
+    "condition": "delivery_fee $15",
+    "quote": "Standard (delivery_fee: $0) or expedited shipping available (delivery_fee: $15)"
+   },
+   {
+    "subject": "excess replacement fee",
+    "predicate": "applies_to",
+    "object": "mid tier checking",
+    "condition": "exceeded 3-card limit; $15",
+    "quote": "OR pay a $15 excess replacement fee"
+   },
+   {
+    "subject": "debit card replacement limit",
+    "predicate": "applies_to",
+    "object": "premium tier checking",
+    "condition": "5 cards per rolling 12 months",
+    "quote": "Maximum 5 replacement cards per rolling 12-month period"
+   },
+   {
+    "subject": "premium tier checking",
+    "predicate": "permits",
+    "object": "rush shipping",
+    "condition": "delivery_fee $35",
+    "quote": "Rush shipping available (delivery_fee: $35)"
+   },
+   {
+    "subject": "premium tier checking",
+    "predicate": "prohibits",
+    "object": "excess replacement fee",
+    "condition": "exceeded 5-card limit; must wait",
+    "quote": "they must wait until oldest replacement ages out (no fee option - must wait)"
+   },
+   {
+    "subject": "elite tier checking",
+    "predicate": "permits",
+    "object": "debit card replacement",
+    "condition": "unlimited",
+    "quote": "Unlimited replacement cards"
+   },
+   {
+    "subject": "priority processing",
+    "predicate": "applies_to",
+    "object": "elite tier checking",
+    "condition": "ordered before 2pm EST",
+    "quote": "Priority processing - cards ship same business day if ordered before 2pm EST"
+   },
+   {
+    "subject": "custom card design",
+    "predicate": "applies_to",
+    "object": "premium tier checking",
+    "condition": "design_fee $15",
+    "quote": "CUSTOM design (uploaded image): design_fee $15 (discounted from $25)"
+   },
+   {
+    "subject": "premium card design",
+    "predicate": "applies_to",
+    "object": "entry tier checking",
+    "condition": "design_fee $10",
+    "quote": "PREMIUM design (metallic silver): design_fee $10"
+   },
+   {
+    "subject": "issue reason",
+    "predicate": "determines_value_of",
+    "object": "debit card replacement limit",
+    "condition": "lost, stolen, fraud, damaged count",
+    "quote": "Look for cards with issue_reason of 'lost', 'stolen', 'fraud', or 'damaged'"
+   },
+   {
+    "subject": "date issued",
+    "predicate": "determines_value_of",
+    "object": "debit card replacement limit",
+    "condition": "within last 12 months",
+    "quote": "Check the date_issued field and count cards issued within the last 12 months"
+   },
+   {
+    "subject": "issue reason",
+    "predicate": "exception_to",
+    "object": "debit card replacement limit",
+    "condition": "new_account, first_card, expired, upgrade, bank_reissue",
+    "quote": "Cards with issue_reason of 'new_account', 'first_card', 'expired', 'upgrade', or 'bank_reissue' do NOT count toward the replacement limit."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "customer's checking account tier",
+    "kind": "data",
+    "why": "All limits and fees depend on the tier, which must be looked up for the account."
+   },
+   {
+    "needs": "tool/procedure to retrieve all cards for the account",
+    "kind": "tool",
+    "why": "Replacement history check step 1 requires retrieving all cards but no tool is named."
+   },
+   {
+    "needs": "card closure procedure and closure timestamp",
+    "kind": "procedure",
+    "why": "Waiting period is measured from card closure, which is not defined here."
+   },
+   {
+    "needs": "order_debit_card_5739 tool specification",
+    "kind": "tool",
+    "why": "Document references the ordering tool and its parameters but does not define its full usage."
+   },
+   {
+    "needs": "linked checking account balance",
+    "kind": "data",
+    "why": "Fees are automatically deducted from the linked checking account balance."
+   },
+   {
+    "needs": "definition of the checking account tiers (Entry/Mid/Premium/Elite)",
+    "kind": "definition",
+    "why": "Tiers are used but their eligibility criteria are defined elsewhere."
+   }
+  ],
+  "provides": [
+   "Replacement card limits per rolling 12-month period by tier (Entry 2, Mid 3, Premium 5, Elite unlimited)",
+   "48-hour waiting period after card closure for Entry tier; no waiting period for Mid/Premium/Elite",
+   "Delivery fee values by tier and shipping speed (Mid expedited $15, Premium rush $35, Elite all $0)",
+   "Excess replacement fees ($25 Entry, $15 Mid, none for Premium - must wait)",
+   "Design fees by tier for CLASSIC, PREMIUM, CUSTOM designs",
+   "Rule that fees are automatically charged to linked checking account and must be disclosed before ordering",
+   "Requirement to pass exact delivery_fee and design_fee to order_debit_card_5739",
+   "Elite priority processing: same business day shipping if ordered before 2pm EST",
+   "Procedure for checking replacement history using issue_reason and date_issued",
+   "List of issue_reasons that do and do not count toward the replacement limit"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_031": {
+  "summary": "Internal procedure for filing a debit card transaction dispute under Regulation E using file_debit_card_transaction_dispute_6281: liability disclosure tiers, pre-filing requirements (verification, $1 minimum, 60-day window, per-account open-dispute limits by checking tier, open checking account, ATM ownership), argument definitions with allowed values, fraud vs. unauthorized categorization, and card action mapping including most-severe action rule for multiple disputes.",
+  "entities": [
+   {
+    "name": "file_debit_card_transaction_dispute_6281",
+    "type": "tool",
+    "canonical": "file_debit_card_transaction_dispute_6281"
+   },
+   {
+    "name": "get_bank_account_transactions_9173",
+    "type": "tool",
+    "canonical": "get_bank_account_transactions_9173"
+   },
+   {
+    "name": "freeze_debit_card_3892",
+    "type": "tool",
+    "canonical": "freeze_debit_card_3892"
+   },
+   {
+    "name": "Regulation E",
+    "type": "regulation",
+    "canonical": "regulation e"
+   },
+   {
+    "name": "Debit card transaction dispute",
+    "type": "process",
+    "canonical": "debit card dispute"
+   },
+   {
+    "name": "Customer liability exposure",
+    "type": "fee_or_limit",
+    "canonical": "reg e liability limits"
+   },
+   {
+    "name": "Maximum open disputes per checking tier",
+    "type": "fee_or_limit",
+    "canonical": "maximum open disputes"
+   },
+   {
+    "name": "Minimum dispute amount $1.00",
+    "type": "fee_or_limit",
+    "canonical": "minimum dispute amount"
+   },
+   {
+    "name": "60-day dispute window",
+    "type": "fee_or_limit",
+    "canonical": "dispute time limit"
+   },
+   {
+    "name": "Customer verification",
+    "type": "process",
+    "canonical": "customer verification"
+   },
+   {
+    "name": "Checking account tier",
+    "type": "data_field",
+    "canonical": "checking account tier"
+   },
+   {
+    "name": "Open checking account",
+    "type": "condition",
+    "canonical": "open checking account"
+   },
+   {
+    "name": "Rho-Bank ATM vs third-party ATM",
+    "type": "condition",
+    "canonical": "atm ownership"
+   },
+   {
+    "name": "Debit Card Provisional Credit Guidelines",
+    "type": "document_reference",
+    "canonical": "debit card provisional credit guidelines"
+   },
+   {
+    "name": "Provisional credit",
+    "type": "product",
+    "canonical": "provisional credit"
+   },
+   {
+    "name": "dispute_category",
+    "type": "data_field",
+    "canonical": "dispute category"
+   },
+   {
+    "name": "transaction_type",
+    "type": "data_field",
+    "canonical": "transaction type"
+   },
+   {
+    "name": "card_action",
+    "type": "data_field",
+    "canonical": "card action"
+   },
+   {
+    "name": "Card action mapping",
+    "type": "rule",
+    "canonical": "card action mapping"
+   },
+   {
+    "name": "Most severe card action rule",
+    "type": "rule",
+    "canonical": "most severe card action"
+   },
+   {
+    "name": "written_statement_provided",
+    "type": "data_field",
+    "canonical": "written statement"
+   },
+   {
+    "name": "police_report_filed",
+    "type": "data_field",
+    "canonical": "police report"
+   },
+   {
+    "name": "contacted_merchant",
+    "type": "data_field",
+    "canonical": "merchant contact"
+   },
+   {
+    "name": "pin_compromised",
+    "type": "data_field",
+    "canonical": "pin compromised"
+   },
+   {
+    "name": "card_in_possession",
+    "type": "data_field",
+    "canonical": "card in possession"
+   },
+   {
+    "name": "Duplicate transaction rule",
+    "type": "rule",
+    "canonical": "duplicate charge earliest transaction"
+   },
+   {
+    "name": "Fraud vs unauthorized categorization",
+    "type": "rule",
+    "canonical": "fraud categorization"
+   },
+   {
+    "name": "EveryonePay",
+    "type": "product",
+    "canonical": "everyonepay"
+   },
+   {
+    "name": "Debit card",
+    "type": "product",
+    "canonical": "debit card"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "debit card dispute",
+    "predicate": "requires",
+    "object": "regulation e",
+    "condition": null,
+    "quote": "the agent must gather comprehensive information and follow Regulation E requirements"
+   },
+   {
+    "subject": "reg e liability limits",
+    "predicate": "applies_to",
+    "object": "debit card dispute",
+    "condition": "before proceeding, inform customer",
+    "quote": "Reported within 2 business days of statement: Maximum liability $50"
+   },
+   {
+    "subject": "debit card dispute",
+    "predicate": "requires",
+    "object": "customer verification",
+    "condition": null,
+    "quote": "Customer must be verified"
+   },
+   {
+    "subject": "minimum dispute amount",
+    "predicate": "limits",
+    "object": "debit card dispute",
+    "condition": null,
+    "quote": "Transaction must be at least $1.00"
+   },
+   {
+    "subject": "dispute time limit",
+    "predicate": "limits",
+    "object": "debit card dispute",
+    "condition": null,
+    "quote": "Transaction must be within 60 days old"
+   },
+   {
+    "subject": "checking account tier",
+    "predicate": "determines_value_of",
+    "object": "maximum open disputes",
+    "condition": "per account",
+    "quote": "Entry Tier max 2, Mid Tier max 3, Premium Tier max 4, Elite Tier max 5. Dispute limits are per account, not per customer."
+   },
+   {
+    "subject": "debit card dispute",
+    "predicate": "requires",
+    "object": "open checking account",
+    "condition": null,
+    "quote": "The debit card must be linked to an OPEN checking account"
+   },
+   {
+    "subject": "atm ownership",
+    "predicate": "applies_to",
+    "object": "debit card dispute",
+    "condition": "ATM disputes",
+    "quote": "determine if it was a Rho-Bank ATM or third-party ATM (different processes apply)"
+   },
+   {
+    "subject": "debit card dispute",
+    "predicate": "uses_tool",
+    "object": "file_debit_card_transaction_dispute_6281",
+    "condition": null,
+    "quote": "**Tool: file_debit_card_transaction_dispute_6281**"
+   },
+   {
+    "subject": "file_debit_card_transaction_dispute_6281",
+    "predicate": "uses_tool",
+    "object": "get_bank_account_transactions_9173",
+    "condition": "to find transaction_id",
+    "quote": "Use get_bank_account_transactions_9173 to find it."
+   },
+   {
+    "subject": "fraud categorization",
+    "predicate": "determines_value_of",
+    "object": "dispute category",
+    "condition": "transaction unauthorized",
+    "quote": "If YES, use 'card_present_fraud' (for in-store/physical transactions) or 'card_not_present_fraud' (for online/phone transactions)."
+   },
+   {
+    "subject": "duplicate charge earliest transaction",
+    "predicate": "applies_to",
+    "object": "debit card dispute",
+    "condition": "multiple duplicates exist",
+    "quote": "Dispute the earliest (first) transaction when multiple duplicates exist."
+   },
+   {
+    "subject": "debit card dispute",
+    "predicate": "requires",
+    "object": "merchant contact",
+    "condition": "non-fraud disputes",
+    "quote": "Required for non-fraud disputes."
+   },
+   {
+    "subject": "debit card dispute",
+    "predicate": "requires",
+    "object": "police report",
+    "condition": "fraud disputes over $500; recommend if not filed",
+    "quote": "For fraud disputes over $500, ask if customer has filed a police report. If not, recommend they do so."
+   },
+   {
+    "subject": "provisional credit",
+    "predicate": "requires",
+    "object": "written statement",
+    "condition": null,
+    "quote": "Required for Reg E provisional credit eligibility."
+   },
+   {
+    "subject": "debit card provisional credit guidelines",
+    "predicate": "determines_value_of",
+    "object": "provisional credit",
+    "condition": null,
+    "quote": "Agent must determine based on Debit Card Provisional Credit Guidelines."
+   },
+   {
+    "subject": "card action mapping",
+    "predicate": "determines_value_of",
+    "object": "card action",
+    "condition": null,
+    "quote": "Determine based on dispute category using the mapping below."
+   },
+   {
+    "subject": "most severe card action",
+    "predicate": "applies_to",
+    "object": "card action",
+    "condition": "multiple disputes on same card",
+    "quote": "when performing the actual card action after filing all disputes, use the MOST SEVERE action across all disputes"
+   },
+   {
+    "subject": "most severe card action",
+    "predicate": "uses_tool",
+    "object": "freeze_debit_card_3892",
+    "condition": "most severe is freeze_pending_investigation",
+    "quote": "but then call freeze_debit_card_3892 (the most severe action) once for the card"
+   },
+   {
+    "subject": "file_debit_card_transaction_dispute_6281",
+    "predicate": "precedes",
+    "object": "card action",
+    "condition": null,
+    "quote": "the agent must separately perform the indicated card action after filing the dispute."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Debit Card Provisional Credit Guidelines",
+    "kind": "rule",
+    "why": "provisional_credit_eligible must be determined from these guidelines, not defined here"
+   },
+   {
+    "needs": "customer verification procedure",
+    "kind": "procedure",
+    "why": "Customer must be verified before filing"
+   },
+   {
+    "needs": "Rho-Bank vs third-party ATM dispute processes",
+    "kind": "procedure",
+    "why": "Document says different processes apply but does not describe them"
+   },
+   {
+    "needs": "customer's checking account tier and count of open disputes",
+    "kind": "data",
+    "why": "Needed to check maximum open disputes per account"
+   },
+   {
+    "needs": "transaction lookup via get_bank_account_transactions_9173",
+    "kind": "tool",
+    "why": "To find transaction_id"
+   },
+   {
+    "needs": "close and reissue card tool/procedure",
+    "kind": "tool",
+    "why": "Agent must separately perform close_and_reissue action; tool not named"
+   },
+   {
+    "needs": "freeze_debit_card_3892 usage",
+    "kind": "tool",
+    "why": "Used to perform freeze action after filing"
+   },
+   {
+    "needs": "account status (open) and card-account linkage",
+    "kind": "data",
+    "why": "Debit card must be linked to an open checking account"
+   },
+   {
+    "needs": "statement dates",
+    "kind": "data",
+    "why": "Liability tiers depend on time reported relative to statement"
+   }
+  ],
+  "provides": [
+   "Regulation E liability tiers: $50 within 2 business days, $500 within 60 days, unlimited after 60 days",
+   "Pre-filing requirements: verified, >= $1.00, within 60 days, open checking account, ATM ownership check",
+   "Maximum open disputes per account by tier: Entry 2, Mid 3, Premium 4, Elite 5",
+   "Rule to dispute earliest transaction among duplicates",
+   "Argument definitions and allowed values for file_debit_card_transaction_dispute_6281",
+   "Fraud vs unauthorized_transaction categorization rule",
+   "Merchant contact required for non-fraud disputes",
+   "Police report recommendation for fraud disputes over $500",
+   "Written statement requirement for Reg E provisional credit; conversation can serve as statement",
+   "Card action mapping by dispute category",
+   "Most severe card action rule for multiple disputes on same card"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_035": {
+  "summary": "Internal guide for retrieving a customer's debit card dispute history and open dispute status via get_debit_dispute_status_7483, defining returned fields, dispute status codes, regulatory timeline checks (provisional credit within 10 days/20 for new accounts; investigation within 45 days/90 for international/POS), and escalation to a supervisor when timelines are exceeded.",
+  "entities": [
+   {
+    "name": "get_debit_dispute_status_7483",
+    "type": "tool",
+    "canonical": "get_debit_dispute_status_7483"
+   },
+   {
+    "name": "debit card dispute",
+    "type": "process",
+    "canonical": "debit card dispute"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user id"
+   },
+   {
+    "name": "dispute_id",
+    "type": "data_field",
+    "canonical": "dispute id"
+   },
+   {
+    "name": "transaction_id",
+    "type": "data_field",
+    "canonical": "transaction id"
+   },
+   {
+    "name": "account_id",
+    "type": "data_field",
+    "canonical": "account id"
+   },
+   {
+    "name": "dispute_category",
+    "type": "data_field",
+    "canonical": "dispute category"
+   },
+   {
+    "name": "disputed_amount",
+    "type": "data_field",
+    "canonical": "disputed amount"
+   },
+   {
+    "name": "filing_date",
+    "type": "data_field",
+    "canonical": "dispute filing date"
+   },
+   {
+    "name": "status",
+    "type": "data_field",
+    "canonical": "dispute status"
+   },
+   {
+    "name": "provisional_credit_issued",
+    "type": "data_field",
+    "canonical": "provisional credit issued"
+   },
+   {
+    "name": "provisional_credit_amount",
+    "type": "data_field",
+    "canonical": "provisional credit amount"
+   },
+   {
+    "name": "provisional_credit_date",
+    "type": "data_field",
+    "canonical": "provisional credit date"
+   },
+   {
+    "name": "expected_resolution_date",
+    "type": "data_field",
+    "canonical": "expected resolution date"
+   },
+   {
+    "name": "resolution",
+    "type": "data_field",
+    "canonical": "dispute resolution"
+   },
+   {
+    "name": "resolution_date",
+    "type": "data_field",
+    "canonical": "dispute resolution date"
+   },
+   {
+    "name": "provisional credit",
+    "type": "other",
+    "canonical": "provisional credit"
+   },
+   {
+    "name": "provisional credit timeline (10 days, 20 for new accounts)",
+    "type": "fee_or_limit",
+    "canonical": "provisional credit deadline"
+   },
+   {
+    "name": "investigation timeline (45 days, 90 for international/POS)",
+    "type": "fee_or_limit",
+    "canonical": "dispute investigation deadline"
+   },
+   {
+    "name": "regulatory timelines",
+    "type": "regulation",
+    "canonical": "dispute regulatory timelines"
+   },
+   {
+    "name": "new accounts",
+    "type": "condition",
+    "canonical": "new account"
+   },
+   {
+    "name": "international/POS transactions",
+    "type": "condition",
+    "canonical": "international or pos transaction"
+   },
+   {
+    "name": "supervisor",
+    "type": "role",
+    "canonical": "supervisor"
+   },
+   {
+    "name": "affidavit",
+    "type": "document_reference",
+    "canonical": "dispute affidavit"
+   },
+   {
+    "name": "police report",
+    "type": "document_reference",
+    "canonical": "police report"
+   },
+   {
+    "name": "PENDING_DOCUMENTATION",
+    "type": "condition",
+    "canonical": "pending documentation status"
+   },
+   {
+    "name": "CLOSED_NO_RESPONSE",
+    "type": "condition",
+    "canonical": "closed no response status"
+   },
+   {
+    "name": "PROVISIONAL_REVERSED",
+    "type": "condition",
+    "canonical": "provisional credit reversed status"
+   },
+   {
+    "name": "RESOLVED_CUSTOMER_FAVOR",
+    "type": "condition",
+    "canonical": "resolved customer favor status"
+   },
+   {
+    "name": "dispute timeline escalation",
+    "type": "rule",
+    "canonical": "dispute timeline escalation"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "debit card dispute",
+    "predicate": "uses_tool",
+    "object": "get_debit_dispute_status_7483",
+    "condition": null,
+    "quote": "To retrieve a customer's debit card dispute history and check the status of open disputes, use the get_debit_dispute_status_7483 tool."
+   },
+   {
+    "subject": "get_debit_dispute_status_7483",
+    "predicate": "requires",
+    "object": "user id",
+    "condition": null,
+    "quote": "get_debit_dispute_status_7483(user_id: str)"
+   },
+   {
+    "subject": "get_debit_dispute_status_7483",
+    "predicate": "determines_value_of",
+    "object": "dispute status",
+    "condition": null,
+    "quote": "status: Current status (see below)"
+   },
+   {
+    "subject": "get_debit_dispute_status_7483",
+    "predicate": "determines_value_of",
+    "object": "provisional credit issued",
+    "condition": null,
+    "quote": "provisional_credit_issued: Boolean"
+   },
+   {
+    "subject": "get_debit_dispute_status_7483",
+    "predicate": "determines_value_of",
+    "object": "expected resolution date",
+    "condition": null,
+    "quote": "expected_resolution_date: Estimated completion date"
+   },
+   {
+    "subject": "pending documentation status",
+    "predicate": "requires",
+    "object": "dispute affidavit",
+    "condition": "customer must provide additional documentation",
+    "quote": "PENDING_DOCUMENTATION: Waiting for customer to provide additional documentation (affidavit, police report, etc.)"
+   },
+   {
+    "subject": "pending documentation status",
+    "predicate": "requires",
+    "object": "police report",
+    "condition": "customer must provide additional documentation",
+    "quote": "PENDING_DOCUMENTATION: Waiting for customer to provide additional documentation (affidavit, police report, etc.)"
+   },
+   {
+    "subject": "closed no response status",
+    "predicate": "applies_to",
+    "object": "debit card dispute",
+    "condition": "customer did not provide required documentation",
+    "quote": "CLOSED_NO_RESPONSE: Closed due to customer not providing required documentation"
+   },
+   {
+    "subject": "provisional credit deadline",
+    "predicate": "limits",
+    "object": "provisional credit",
+    "condition": "20 days for new accounts",
+    "quote": "Provisional credit should be issued within 10 days (20 for new accounts)"
+   },
+   {
+    "subject": "dispute investigation deadline",
+    "predicate": "limits",
+    "object": "debit card dispute",
+    "condition": "90 days for international/POS",
+    "quote": "Investigation should complete within 45 days (90 for international/POS)"
+   },
+   {
+    "subject": "dispute regulatory timelines",
+    "predicate": "applies_to",
+    "object": "debit card dispute",
+    "condition": "when checking dispute status",
+    "quote": "When checking dispute status, verify that regulatory timelines are being met"
+   },
+   {
+    "subject": "dispute timeline escalation",
+    "predicate": "escalates_to",
+    "object": "supervisor",
+    "condition": "dispute appears to be exceeding timelines",
+    "quote": "If a dispute appears to be exceeding timelines, escalate to a supervisor."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Definition of what qualifies as a 'new account' for the extended 20-day provisional credit window",
+    "kind": "definition",
+    "why": "Document applies a 20-day timeline for new accounts without defining the term"
+   },
+   {
+    "needs": "Definition of international/POS transactions qualifying for the 90-day investigation window",
+    "kind": "definition",
+    "why": "Extended timeline condition is referenced but not defined"
+   },
+   {
+    "needs": "Underlying regulation (e.g., Regulation E) establishing the dispute timelines",
+    "kind": "rule",
+    "why": "Document refers to 'regulatory timelines' without naming or detailing the regulation"
+   },
+   {
+    "needs": "Supervisor escalation procedure",
+    "kind": "procedure",
+    "why": "Document says to escalate to a supervisor but does not describe how"
+   },
+   {
+    "needs": "Dispute filing procedure and dispute category definitions",
+    "kind": "procedure",
+    "why": "Document only covers status lookup; filing and category types are defined elsewhere"
+   },
+   {
+    "needs": "Customer user_id lookup/verification",
+    "kind": "data",
+    "why": "Tool requires user_id input that must be obtained elsewhere"
+   },
+   {
+    "needs": "Whether day counts are business or calendar days and the start date for timelines",
+    "kind": "definition",
+    "why": "Timelines given in 'days' without specifying basis"
+   }
+  ],
+  "provides": [
+   "get_debit_dispute_status_7483 tool definition and its returned fields",
+   "Definitions of debit dispute statuses (OPEN, PENDING_DOCUMENTATION, UNDER_REVIEW, PROVISIONAL_CREDIT_ISSUED, RESOLVED_CUSTOMER_FAVOR, RESOLVED_BANK_FAVOR, RESOLVED_PARTIAL, PROVISIONAL_REVERSED, CLOSED_NO_RESPONSE)",
+   "Provisional credit timeline: within 10 days (20 for new accounts)",
+   "Investigation timeline: within 45 days (90 for international/POS)",
+   "Rule to escalate to a supervisor when a dispute exceeds timelines",
+   "Procedure to verify regulatory timelines when checking dispute status"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_039": {
+  "summary": "Internal procedure for handling debit card fraud alerts (customer-initiated vs bank-initiated) and velocity blocks, including use of clear_debit_card_fraud_alert_4892, its reason codes, restrictions, and criteria for clearing versus escalating to the security team.",
+  "entities": [
+   {
+    "name": "Debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "Fraud alerts",
+    "type": "condition",
+    "canonical": "fraud alert"
+   },
+   {
+    "name": "Customer-Initiated Alerts",
+    "type": "condition",
+    "canonical": "customer-initiated fraud alert"
+   },
+   {
+    "name": "Bank-Initiated Alerts",
+    "type": "condition",
+    "canonical": "bank-initiated fraud alert"
+   },
+   {
+    "name": "Velocity blocks",
+    "type": "condition",
+    "canonical": "velocity block"
+   },
+   {
+    "name": "30 minutes",
+    "type": "fee_or_limit",
+    "canonical": "velocity block expiry 30 minutes"
+   },
+   {
+    "name": "clear_debit_card_fraud_alert_4892",
+    "type": "tool",
+    "canonical": "clear_debit_card_fraud_alert_4892"
+   },
+   {
+    "name": "card_id",
+    "type": "data_field",
+    "canonical": "card id"
+   },
+   {
+    "name": "reason",
+    "type": "data_field",
+    "canonical": "clear reason"
+   },
+   {
+    "name": "customer_verified",
+    "type": "data_field",
+    "canonical": "customer_verified reason code"
+   },
+   {
+    "name": "velocity_clear",
+    "type": "data_field",
+    "canonical": "velocity_clear reason code"
+   },
+   {
+    "name": "security team",
+    "type": "role",
+    "canonical": "security team"
+   },
+   {
+    "name": "customer service agent",
+    "type": "role",
+    "canonical": "customer service agent"
+   },
+   {
+    "name": "identity verification",
+    "type": "process",
+    "canonical": "identity verification"
+   },
+   {
+    "name": "interaction notes",
+    "type": "data_field",
+    "canonical": "interaction notes"
+   },
+   {
+    "name": "fraud detection systems",
+    "type": "tool",
+    "canonical": "fraud detection system"
+   },
+   {
+    "name": "transfer to security team",
+    "type": "process",
+    "canonical": "transfer to security team"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "bank-initiated fraud alert",
+    "predicate": "escalates_to",
+    "object": "security team",
+    "condition": null,
+    "quote": "These CANNOT be cleared by customer service agents and require review by the security team."
+   },
+   {
+    "subject": "customer service agent",
+    "predicate": "permits",
+    "object": "customer-initiated fraud alert",
+    "condition": "after verifying the customer's identity",
+    "quote": "These can be cleared by customer service agents after verifying the customer's identity."
+   },
+   {
+    "subject": "velocity block expiry 30 minutes",
+    "predicate": "limits",
+    "object": "velocity block",
+    "condition": null,
+    "quote": "Velocity blocks automatically expire after 30 minutes"
+   },
+   {
+    "subject": "clear_debit_card_fraud_alert_4892",
+    "predicate": "applies_to",
+    "object": "velocity block",
+    "condition": null,
+    "quote": "Use this tool to clear fraud alerts or velocity blocks on a customer's debit card."
+   },
+   {
+    "subject": "clear_debit_card_fraud_alert_4892",
+    "predicate": "requires",
+    "object": "card id",
+    "condition": null,
+    "quote": "`card_id` (required): The debit card ID to clear the alert/block for"
+   },
+   {
+    "subject": "clear_debit_card_fraud_alert_4892",
+    "predicate": "requires",
+    "object": "clear reason",
+    "condition": null,
+    "quote": "`reason` (required): The reason for clearing."
+   },
+   {
+    "subject": "customer_verified reason code",
+    "predicate": "applies_to",
+    "object": "customer-initiated fraud alert",
+    "condition": "customer verified identity and confirmed transactions legitimate",
+    "quote": "Use when clearing a customer-initiated fraud alert after the customer has verified their identity and confirmed their transactions are legitimate"
+   },
+   {
+    "subject": "velocity_clear reason code",
+    "predicate": "applies_to",
+    "object": "velocity block",
+    "condition": "after verifying identity",
+    "quote": "Use when clearing a velocity block after verifying the customer's identity"
+   },
+   {
+    "subject": "clear_debit_card_fraud_alert_4892",
+    "predicate": "prohibits",
+    "object": "bank-initiated fraud alert",
+    "condition": null,
+    "quote": "This tool CANNOT clear bank-initiated fraud alerts."
+   },
+   {
+    "subject": "clear_debit_card_fraud_alert_4892",
+    "predicate": "requires",
+    "object": "identity verification",
+    "condition": null,
+    "quote": "Always verify the customer's identity before using this tool."
+   },
+   {
+    "subject": "identity verification",
+    "predicate": "precedes",
+    "object": "clear_debit_card_fraud_alert_4892",
+    "condition": null,
+    "quote": "Always verify the customer's identity before using this tool."
+   },
+   {
+    "subject": "clear_debit_card_fraud_alert_4892",
+    "predicate": "requires",
+    "object": "interaction notes",
+    "condition": null,
+    "quote": "Document why the alert/block was cleared in the interaction notes."
+   },
+   {
+    "subject": "identity verification",
+    "predicate": "escalates_to",
+    "object": "security team",
+    "condition": "customer cannot verify identity",
+    "quote": "Customer cannot verify their identity"
+   },
+   {
+    "subject": "customer service agent",
+    "predicate": "escalates_to",
+    "object": "security team",
+    "condition": "customer reports transactions they did not make, suspected non-account-holder, or suspicious explanation",
+    "quote": "Customer reports transactions they did not make"
+   },
+   {
+    "subject": "fraud detection system",
+    "predicate": "determines_value_of",
+    "object": "bank-initiated fraud alert",
+    "condition": "high-risk patterns identified",
+    "quote": "Placed by Rho-Bank's fraud detection systems when high-risk patterns are identified."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Procedure and criteria for verifying the customer's identity",
+    "kind": "procedure",
+    "why": "Identity verification is required before clearing any alert/block but is not defined here."
+   },
+   {
+    "needs": "How to transfer a customer to the security team",
+    "kind": "procedure",
+    "why": "Document requires transfer for bank-initiated alerts and other escalations without describing the transfer mechanism."
+   },
+   {
+    "needs": "Customer's debit card ID and whether an alert is customer- or bank-initiated",
+    "kind": "data",
+    "why": "card_id is required and the alert type determines action; lookup method not provided."
+   },
+   {
+    "needs": "Process for handling reported unauthorized transactions/disputes",
+    "kind": "procedure",
+    "why": "Customers reporting transactions they did not make are escalated; dispute handling is defined elsewhere."
+   }
+  ],
+  "provides": [
+   "Definitions of customer-initiated and bank-initiated fraud alerts",
+   "Definition and common triggers of velocity blocks",
+   "Velocity blocks automatically expire after 30 minutes",
+   "Usage, parameters and reason codes (customer_verified, velocity_clear) for clear_debit_card_fraud_alert_4892",
+   "Rule that agents cannot clear bank-initiated fraud alerts; must transfer to security team",
+   "Requirement to document clearing reason in interaction notes",
+   "Criteria for clearing vs escalating to security team"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_043": {
+  "summary": "Internal policy and procedure for agents applying credits to savings accounts via apply_savings_account_credit_6831, limited to interest corrections, fee refunds, and goodwill credits (supervisor approval typically required over $25), with follow-up interest discrepancy reports for interest corrections.",
+  "entities": [
+   {
+    "name": "apply_savings_account_credit_6831",
+    "type": "tool",
+    "canonical": "apply_savings_account_credit_6831"
+   },
+   {
+    "name": "get_all_user_accounts_by_user_id_3847",
+    "type": "tool",
+    "canonical": "get_all_user_accounts_by_user_id_3847"
+   },
+   {
+    "name": "get_bank_account_transactions_9173",
+    "type": "tool",
+    "canonical": "get_bank_account_transactions_9173"
+   },
+   {
+    "name": "submit_interest_discrepancy_report_7294",
+    "type": "tool",
+    "canonical": "submit_interest_discrepancy_report_7294"
+   },
+   {
+    "name": "savings account",
+    "type": "product",
+    "canonical": "savings account"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "Interest Corrections",
+    "type": "condition",
+    "canonical": "interest correction"
+   },
+   {
+    "name": "Fee Refunds",
+    "type": "condition",
+    "canonical": "fee refund"
+   },
+   {
+    "name": "Goodwill Credits",
+    "type": "condition",
+    "canonical": "goodwill credit"
+   },
+   {
+    "name": "APY boost from linked checking account",
+    "type": "rule",
+    "canonical": "linked checking apy boost"
+   },
+   {
+    "name": "tier rate",
+    "type": "fee_or_limit",
+    "canonical": "savings tier rate"
+   },
+   {
+    "name": "relationship bonus",
+    "type": "rule",
+    "canonical": "relationship bonus"
+   },
+   {
+    "name": "excess withdrawal fee",
+    "type": "fee_or_limit",
+    "canonical": "excess withdrawal fee"
+   },
+   {
+    "name": "monthly maintenance fee",
+    "type": "fee_or_limit",
+    "canonical": "monthly maintenance fee"
+   },
+   {
+    "name": "balance requirement",
+    "type": "condition",
+    "canonical": "minimum balance requirement"
+   },
+   {
+    "name": "withdrawal limits",
+    "type": "fee_or_limit",
+    "canonical": "savings withdrawal limit"
+   },
+   {
+    "name": "supervisor approval over $25",
+    "type": "fee_or_limit",
+    "canonical": "goodwill credit supervisor approval threshold"
+   },
+   {
+    "name": "supervisor",
+    "type": "role",
+    "canonical": "supervisor"
+   },
+   {
+    "name": "backend team",
+    "type": "role",
+    "canonical": "backend team"
+   },
+   {
+    "name": "credit_type",
+    "type": "data_field",
+    "canonical": "credit type"
+   },
+   {
+    "name": "account_id",
+    "type": "data_field",
+    "canonical": "account id"
+   },
+   {
+    "name": "amount",
+    "type": "data_field",
+    "canonical": "credit amount"
+   },
+   {
+    "name": "identity verification",
+    "type": "process",
+    "canonical": "identity verification"
+   },
+   {
+    "name": "documented APY rates and bonuses",
+    "type": "document_reference",
+    "canonical": "savings apy rates"
+   },
+   {
+    "name": "interest discrepancy report",
+    "type": "process",
+    "canonical": "interest discrepancy report"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "apply_savings_account_credit_6831",
+    "predicate": "applies_to",
+    "object": "savings account",
+    "condition": null,
+    "quote": "Use the apply_savings_account_credit_6831 tool to add a credit transaction to a savings account."
+   },
+   {
+    "subject": "interest correction",
+    "predicate": "uses_tool",
+    "object": "get_all_user_accounts_by_user_id_3847",
+    "condition": "before applying",
+    "quote": "Verify the customer's account details and APY components using get_all_user_accounts_by_user_id_3847"
+   },
+   {
+    "subject": "interest correction",
+    "predicate": "uses_tool",
+    "object": "get_bank_account_transactions_9173",
+    "condition": "before applying",
+    "quote": "review transaction history using get_bank_account_transactions_9173 to confirm the interest amount credited"
+   },
+   {
+    "subject": "savings apy rates",
+    "predicate": "determines_value_of",
+    "object": "credit amount",
+    "condition": "interest correction",
+    "quote": "calculate the correct interest amount based on documented APY rates and bonuses"
+   },
+   {
+    "subject": "interest correction",
+    "predicate": "applies_to",
+    "object": "linked checking apy boost",
+    "condition": "calculated incorrectly due to a system error",
+    "quote": "missing APY boost from linked checking account, incorrect tier rate applied, missing relationship bonus"
+   },
+   {
+    "subject": "fee refund",
+    "predicate": "applies_to",
+    "object": "excess withdrawal fee",
+    "condition": "customer was within limits",
+    "quote": "excess withdrawal fee charged when customer was within limits"
+   },
+   {
+    "subject": "fee refund",
+    "predicate": "applies_to",
+    "object": "monthly maintenance fee",
+    "condition": "balance requirement was met",
+    "quote": "monthly maintenance fee charged when balance requirement was met"
+   },
+   {
+    "subject": "goodwill credit",
+    "predicate": "requires",
+    "object": "supervisor",
+    "condition": "amounts over $25",
+    "quote": "Goodwill credits should be rare and typically require supervisor approval for amounts over $25."
+   },
+   {
+    "subject": "credit type",
+    "predicate": "limits",
+    "object": "apply_savings_account_credit_6831",
+    "condition": null,
+    "quote": "Must be one of 'interest_correction', 'fee_refund', or 'goodwill_credit'"
+   },
+   {
+    "subject": "credit amount",
+    "predicate": "limits",
+    "object": "apply_savings_account_credit_6831",
+    "condition": null,
+    "quote": "The positive dollar amount to credit (must be greater than 0)"
+   },
+   {
+    "subject": "identity verification",
+    "predicate": "precedes",
+    "object": "apply_savings_account_credit_6831",
+    "condition": null,
+    "quote": "1) Verify the customer's identity and account ownership"
+   },
+   {
+    "subject": "interest correction",
+    "predicate": "requires",
+    "object": "submit_interest_discrepancy_report_7294",
+    "condition": "after applying the credit",
+    "quote": "For interest corrections, after applying the credit, you should also submit an interest discrepancy report using submit_interest_discrepancy_report_7294"
+   },
+   {
+    "subject": "submit_interest_discrepancy_report_7294",
+    "predicate": "escalates_to",
+    "object": "backend team",
+    "condition": null,
+    "quote": "to ensure the backend team investigates and fixes the underlying issue"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Documented savings APY rates, tier rates, linked checking APY boost and relationship bonus values",
+    "kind": "data",
+    "why": "Required to calculate the correct interest amount for interest corrections"
+   },
+   {
+    "needs": "Savings excess withdrawal fee and withdrawal limit rules",
+    "kind": "rule",
+    "why": "Needed to determine if an excess withdrawal fee was incorrectly charged"
+   },
+   {
+    "needs": "Monthly maintenance fee and minimum balance requirement rules",
+    "kind": "threshold",
+    "why": "Needed to determine if a maintenance fee was charged when balance requirement was met"
+   },
+   {
+    "needs": "Customer identity verification and account ownership procedure",
+    "kind": "procedure",
+    "why": "Step 1 requires verifying identity but procedure is not defined here"
+   },
+   {
+    "needs": "Supervisor approval procedure for goodwill credits",
+    "kind": "procedure",
+    "why": "Goodwill credits over $25 typically require supervisor approval but the process is not described"
+   },
+   {
+    "needs": "Usage details for submit_interest_discrepancy_report_7294",
+    "kind": "tool",
+    "why": "Tool is required after interest corrections but its parameters are not defined here"
+   }
+  ],
+  "provides": [
+   "Eligible circumstances for applying savings account credits: interest correction, fee refund, goodwill credit",
+   "Parameters of apply_savings_account_credit_6831 (account_id, amount > 0, credit_type enum)",
+   "Goodwill credit supervisor approval threshold of $25",
+   "Six-step procedure for applying a savings account credit",
+   "Pre-check steps for interest corrections using get_all_user_accounts_by_user_id_3847 and get_bank_account_transactions_9173",
+   "Requirement to file interest discrepancy report after interest corrections"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_044": {
+  "summary": "Internal procedure for agents to submit interest discrepancy reports when a savings account's interest calculation is wrong (missing APY boost, wrong tier rate, missing relationship bonus, other errors), using submit_interest_discrepancy_report_7294 after first crediting the account via apply_savings_account_credit_6831.",
+  "entities": [
+   {
+    "name": "interest discrepancy report",
+    "type": "process",
+    "canonical": "interest discrepancy report"
+   },
+   {
+    "name": "submit_interest_discrepancy_report_7294",
+    "type": "tool",
+    "canonical": "submit_interest_discrepancy_report_7294"
+   },
+   {
+    "name": "get_all_user_accounts_by_user_id_3847",
+    "type": "tool",
+    "canonical": "get_all_user_accounts_by_user_id_3847"
+   },
+   {
+    "name": "get_bank_account_transactions_9173",
+    "type": "tool",
+    "canonical": "get_bank_account_transactions_9173"
+   },
+   {
+    "name": "apply_savings_account_credit_6831",
+    "type": "tool",
+    "canonical": "apply_savings_account_credit_6831"
+   },
+   {
+    "name": "savings account",
+    "type": "product",
+    "canonical": "savings account"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "linked checking APY boost",
+    "type": "rule",
+    "canonical": "linked checking apy boost"
+   },
+   {
+    "name": "APY tier rate",
+    "type": "rule",
+    "canonical": "apy tier rate"
+   },
+   {
+    "name": "relationship bonus",
+    "type": "rule",
+    "canonical": "relationship bonus"
+   },
+   {
+    "name": "base rate",
+    "type": "fee_or_limit",
+    "canonical": "base apy rate"
+   },
+   {
+    "name": "credit card bonuses",
+    "type": "rule",
+    "canonical": "credit card apy bonus"
+   },
+   {
+    "name": "system calculation error",
+    "type": "condition",
+    "canonical": "interest system calculation error"
+   },
+   {
+    "name": "backend team",
+    "type": "role",
+    "canonical": "backend team"
+   },
+   {
+    "name": "identity verification",
+    "type": "process",
+    "canonical": "identity verification"
+   },
+   {
+    "name": "account_id",
+    "type": "data_field",
+    "canonical": "account id"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user id"
+   },
+   {
+    "name": "expected_apy",
+    "type": "data_field",
+    "canonical": "expected apy"
+   },
+   {
+    "name": "actual_apy",
+    "type": "data_field",
+    "canonical": "actual apy"
+   },
+   {
+    "name": "amount_difference",
+    "type": "data_field",
+    "canonical": "amount difference"
+   },
+   {
+    "name": "savings account type documentation",
+    "type": "document_reference",
+    "canonical": "savings account apy documentation"
+   },
+   {
+    "name": "interest credit",
+    "type": "data_field",
+    "canonical": "interest credit transaction"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "uses_tool",
+    "object": "submit_interest_discrepancy_report_7294",
+    "condition": null,
+    "quote": "Use the submit_interest_discrepancy_report_7294 tool to create this report."
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "escalates_to",
+    "object": "backend team",
+    "condition": "savings account interest calculation is incorrect",
+    "quote": "agents must submit an interest discrepancy report to the backend team for investigation"
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "applies_to",
+    "object": "linked checking apy boost",
+    "condition": "qualifying checking-savings pairing but boost not applied",
+    "quote": "Customer has a qualifying checking-savings account pairing but the linked checking APY boost was not applied to their interest calculation."
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "applies_to",
+    "object": "apy tier rate",
+    "condition": "balance qualifies for higher tier but lower rate applied",
+    "quote": "Customer's balance qualifies for a higher APY tier but the lower tier rate was applied."
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "applies_to",
+    "object": "relationship bonus",
+    "condition": "customer maintains multiple Rho-Bank products but bonus not applied",
+    "quote": "Customer maintains multiple Rho-Bank products but the relationship bonus was not applied."
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "applies_to",
+    "object": "interest system calculation error",
+    "condition": null,
+    "quote": "Any other discrepancy between expected and actual interest credited."
+   },
+   {
+    "subject": "submit_interest_discrepancy_report_7294",
+    "predicate": "requires",
+    "object": "expected apy",
+    "condition": null,
+    "quote": "expected_apy (number): The APY percentage the customer should have received (e.g., 2.775 for 2.775%)"
+   },
+   {
+    "subject": "submit_interest_discrepancy_report_7294",
+    "predicate": "requires",
+    "object": "actual apy",
+    "condition": null,
+    "quote": "actual_apy (number): The APY percentage that was actually applied (e.g., 2.5 for 2.5%)"
+   },
+   {
+    "subject": "submit_interest_discrepancy_report_7294",
+    "predicate": "requires",
+    "object": "amount difference",
+    "condition": null,
+    "quote": "amount_difference (number): The dollar amount difference between expected and actual interest credited"
+   },
+   {
+    "subject": "submit_interest_discrepancy_report_7294",
+    "predicate": "requires",
+    "object": "account id",
+    "condition": null,
+    "quote": "account_id (string): The savings account ID with the discrepancy"
+   },
+   {
+    "subject": "submit_interest_discrepancy_report_7294",
+    "predicate": "requires",
+    "object": "user id",
+    "condition": null,
+    "quote": "user_id (string): The customer's unique identifier"
+   },
+   {
+    "subject": "identity verification",
+    "predicate": "precedes",
+    "object": "get_all_user_accounts_by_user_id_3847",
+    "condition": null,
+    "quote": "1) Verify the customer's identity and account ownership"
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "uses_tool",
+    "object": "get_all_user_accounts_by_user_id_3847",
+    "condition": null,
+    "quote": "Look up the customer's accounts using get_all_user_accounts_by_user_id_3847"
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "uses_tool",
+    "object": "get_bank_account_transactions_9173",
+    "condition": null,
+    "quote": "Check transaction history using get_bank_account_transactions_9173 to find the interest credit"
+   },
+   {
+    "subject": "interest discrepancy report",
+    "predicate": "references",
+    "object": "savings account apy documentation",
+    "condition": null,
+    "quote": "Review documentation for the savings account type to determine all applicable APY components (base rate, tier rate, linked checking boost, credit card bonuses, relationship bonus)"
+   },
+   {
+    "subject": "expected apy",
+    "predicate": "determines_value_of",
+    "object": "expected apy",
+    "condition": null,
+    "quote": "Calculate the expected APY by adding all applicable components"
+   },
+   {
+    "subject": "apply_savings_account_credit_6831",
+    "predicate": "precedes",
+    "object": "submit_interest_discrepancy_report_7294",
+    "condition": "discrepancy exists",
+    "quote": "Always apply the credit to the customer's account BEFORE submitting the report."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Savings account type documentation listing APY components (base rate, tier rates, linked checking boost, credit card bonuses, relationship bonus)",
+    "kind": "rule",
+    "why": "Step 4 requires reviewing it to compute expected APY; values are not given here"
+   },
+   {
+    "needs": "APY tier balance thresholds",
+    "kind": "threshold",
+    "why": "Needed to judge whether balance qualifies for a higher tier"
+   },
+   {
+    "needs": "Definition of qualifying checking-savings account pairing",
+    "kind": "definition",
+    "why": "Determines whether linked checking APY boost should apply"
+   },
+   {
+    "needs": "Relationship bonus eligibility criteria (which multiple Rho-Bank products qualify)",
+    "kind": "rule",
+    "why": "Needed to decide if relationship bonus was missed"
+   },
+   {
+    "needs": "Identity and account ownership verification procedure",
+    "kind": "procedure",
+    "why": "Step 1 requires it but it is not described"
+   },
+   {
+    "needs": "apply_savings_account_credit_6831 usage and parameters",
+    "kind": "tool",
+    "why": "Credit must be applied before report but tool parameters are not defined here"
+   },
+   {
+    "needs": "get_all_user_accounts_by_user_id_3847 tool",
+    "kind": "tool",
+    "why": "Used to look up customer accounts"
+   },
+   {
+    "needs": "get_bank_account_transactions_9173 tool",
+    "kind": "tool",
+    "why": "Used to find the interest credit"
+   },
+   {
+    "needs": "Customer account and transaction data",
+    "kind": "data",
+    "why": "Actual APY and interest credited must be looked up"
+   }
+  ],
+  "provides": [
+   "Criteria for when to submit an interest discrepancy report (missing APY boost, incorrect tier rate, missing relationship bonus, system calculation error)",
+   "Parameter definitions for submit_interest_discrepancy_report_7294 (account_id, user_id, expected_apy, actual_apy, amount_difference) with APY format as percentage number",
+   "8-step procedure for investigating and reporting interest discrepancies",
+   "Rule: expected APY is the sum of all applicable components",
+   "Rule: apply credit via apply_savings_account_credit_6831 before submitting discrepancy report",
+   "Purpose distinction: report for backend system fix, credit for immediate customer resolution"
+  ]
+ },
+ "doc_credit_cards_credit_cards_(general)_016": {
+  "summary": "Internal guide for retrieving a user's credit card dispute history via the get_user_dispute_history_7291 tool using user_id; describes when to use, procedure, output fields (dispute, transaction, context), interpretation, error handling, and operational notes.",
+  "entities": [
+   {
+    "name": "get_user_dispute_history_7291",
+    "type": "tool",
+    "canonical": "get_user_dispute_history_7291"
+   },
+   {
+    "name": "credit card dispute history",
+    "type": "data_field",
+    "canonical": "dispute history"
+   },
+   {
+    "name": "credit card dispute",
+    "type": "process",
+    "canonical": "credit card dispute"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user_id"
+   },
+   {
+    "name": "dispute_id",
+    "type": "data_field",
+    "canonical": "dispute_id"
+   },
+   {
+    "name": "dispute_date",
+    "type": "data_field",
+    "canonical": "dispute date"
+   },
+   {
+    "name": "status",
+    "type": "data_field",
+    "canonical": "dispute status"
+   },
+   {
+    "name": "last_updated_at",
+    "type": "data_field",
+    "canonical": "last_updated_at"
+   },
+   {
+    "name": "transaction_id",
+    "type": "data_field",
+    "canonical": "transaction_id"
+   },
+   {
+    "name": "card_last4",
+    "type": "data_field",
+    "canonical": "card last4"
+   },
+   {
+    "name": "reason_code",
+    "type": "data_field",
+    "canonical": "dispute reason code"
+   },
+   {
+    "name": "outcome",
+    "type": "data_field",
+    "canonical": "dispute outcome"
+   },
+   {
+    "name": "internal privileges",
+    "type": "condition",
+    "canonical": "internal access privileges"
+   },
+   {
+    "name": "internal support channels",
+    "type": "role",
+    "canonical": "internal support"
+   },
+   {
+    "name": "internal data handling and privacy requirements",
+    "type": "document_reference",
+    "canonical": "data handling and privacy requirements"
+   },
+   {
+    "name": "credit card",
+    "type": "product",
+    "canonical": "credit card"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "dispute history",
+    "predicate": "uses_tool",
+    "object": "get_user_dispute_history_7291",
+    "condition": null,
+    "quote": "To retrieve a user's credit card dispute history, use the get_user_dispute_history_7291 tool."
+   },
+   {
+    "subject": "get_user_dispute_history_7291",
+    "predicate": "requires",
+    "object": "user_id",
+    "condition": null,
+    "quote": "user_id (required): The user\u2019s canonical internal identifier."
+   },
+   {
+    "subject": "get_user_dispute_history_7291",
+    "predicate": "requires",
+    "object": "internal access privileges",
+    "condition": "permission or access error",
+    "quote": "Ensure you have the necessary internal privileges to view dispute histories."
+   },
+   {
+    "subject": "get_user_dispute_history_7291",
+    "predicate": "escalates_to",
+    "object": "internal support",
+    "condition": "partial or truncated data persists after retry",
+    "quote": "If the issue persists, capture the request context and escalate through internal support channels."
+   },
+   {
+    "subject": "get_user_dispute_history_7291",
+    "predicate": "limits",
+    "object": "credit card dispute",
+    "condition": null,
+    "quote": "This tool returns only credit card disputes associated with the specified user_id."
+   },
+   {
+    "subject": "dispute status",
+    "predicate": "determines_value_of",
+    "object": "credit card dispute",
+    "condition": "whether action is needed",
+    "quote": "Use status to determine whether action is needed."
+   },
+   {
+    "subject": "dispute history",
+    "predicate": "references",
+    "object": "data handling and privacy requirements",
+    "condition": null,
+    "quote": "Always handle user data in accordance with internal data handling and privacy requirements."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "the user's correct and current user_id",
+    "kind": "data",
+    "why": "Required input; document does not explain how to obtain it."
+   },
+   {
+    "needs": "internal privileges to view dispute histories",
+    "kind": "rule",
+    "why": "Access requirements are not defined here."
+   },
+   {
+    "needs": "internal data handling and privacy requirements",
+    "kind": "rule",
+    "why": "Referenced but not defined."
+   },
+   {
+    "needs": "user_id format validation rules",
+    "kind": "definition",
+    "why": "Told to validate format but format not specified."
+   },
+   {
+    "needs": "internal support escalation procedure",
+    "kind": "procedure",
+    "why": "Escalation channel referenced but not described."
+   },
+   {
+    "needs": "what actions to take based on dispute status",
+    "kind": "procedure",
+    "why": "Status determines whether action is needed but actions are not defined."
+   },
+   {
+    "needs": "reason code definitions",
+    "kind": "definition",
+    "why": "reason_code returned but values not explained."
+   }
+  ],
+  "provides": [
+   "procedure to retrieve credit card dispute history using get_user_dispute_history_7291",
+   "dispute record output schema (dispute_id, dispute_date, status, last_updated_at, transaction details, reason_code, outcome, notes)",
+   "example dispute statuses: open, under_review, closed",
+   "troubleshooting for empty results, permission errors, invalid user_id, truncated data",
+   "rule that the tool returns only credit card disputes for the specified user_id"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_024": {
+  "summary": "Internal procedure for activating a customer's new Rho-Bank debit card: select one of three activation tools based on the card's issue_reason (new, replacement, reissued), verify activation requirements, collect card details and a valid 4-digit PIN, then perform post-activation steps specific to replacement or reissued cards.",
+  "entities": [
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "activate_debit_card_8291",
+    "type": "tool",
+    "canonical": "activate_debit_card_8291"
+   },
+   {
+    "name": "activate_debit_card_8292",
+    "type": "tool",
+    "canonical": "activate_debit_card_8292"
+   },
+   {
+    "name": "activate_debit_card_8293",
+    "type": "tool",
+    "canonical": "activate_debit_card_8293"
+   },
+   {
+    "name": "debit_cards table",
+    "type": "data_field",
+    "canonical": "debit_cards table"
+   },
+   {
+    "name": "debit_card_orders table",
+    "type": "data_field",
+    "canonical": "debit_card_orders table"
+   },
+   {
+    "name": "issue_reason",
+    "type": "data_field",
+    "canonical": "issue_reason"
+   },
+   {
+    "name": "expiration_date",
+    "type": "data_field",
+    "canonical": "card expiration date"
+   },
+   {
+    "name": "PENDING status",
+    "type": "condition",
+    "canonical": "pending card status"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "standard verification procedures",
+    "type": "document_reference",
+    "canonical": "customer identity verification"
+   },
+   {
+    "name": "CVV",
+    "type": "data_field",
+    "canonical": "cvv"
+   },
+   {
+    "name": "last 4 digits of card number",
+    "type": "data_field",
+    "canonical": "card last 4 digits"
+   },
+   {
+    "name": "4-digit PIN rule",
+    "type": "rule",
+    "canonical": "debit card pin requirements"
+   },
+   {
+    "name": "24-hour grace period",
+    "type": "fee_or_limit",
+    "canonical": "old card grace period"
+   },
+   {
+    "name": "incorrect card details lockout",
+    "type": "rule",
+    "canonical": "card lock after failed attempts"
+   },
+   {
+    "name": "automatic deactivation of previous cards",
+    "type": "rule",
+    "canonical": "previous card deactivation"
+   },
+   {
+    "name": "debit card activation",
+    "type": "process",
+    "canonical": "debit card activation"
+   },
+   {
+    "name": "replacement card",
+    "type": "product",
+    "canonical": "replacement debit card"
+   },
+   {
+    "name": "reissued card",
+    "type": "product",
+    "canonical": "reissued debit card"
+   },
+   {
+    "name": "recurring payments",
+    "type": "other",
+    "canonical": "recurring payments"
+   },
+   {
+    "name": "online banking password",
+    "type": "other",
+    "canonical": "online banking password"
+   },
+   {
+    "name": "branch visit",
+    "type": "process",
+    "canonical": "in-person branch visit"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "debit card activation",
+    "predicate": "uses_tool",
+    "object": "activate_debit_card_8291",
+    "condition": "issue_reason = 'new_account' or 'first_card'",
+    "quote": "activate_debit_card_8291: Use for NEW cards (first-time card for this checking account, issue_reason = 'new_account' or 'first_card')"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "uses_tool",
+    "object": "activate_debit_card_8292",
+    "condition": "issue_reason = 'lost', 'stolen', or 'fraud'",
+    "quote": "activate_debit_card_8292: Use for REPLACEMENT cards (replacing lost/stolen/fraud cards, issue_reason = 'lost', 'stolen', or 'fraud')"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "uses_tool",
+    "object": "activate_debit_card_8293",
+    "condition": "issue_reason = 'expired', 'damaged', 'upgrade', or 'bank_reissue'",
+    "quote": "activate_debit_card_8293: Use for REISSUED cards (expiration renewal, damaged card, design upgrade, or bank-initiated, issue_reason = 'expired', 'damaged', 'upgrade', or 'bank_reissue')"
+   },
+   {
+    "subject": "issue_reason",
+    "predicate": "determines_value_of",
+    "object": "debit card activation",
+    "condition": null,
+    "quote": "You MUST use the correct tool based on the card's issue reason."
+   },
+   {
+    "subject": "debit_cards table",
+    "predicate": "defines",
+    "object": "issue_reason",
+    "condition": null,
+    "quote": "Check the debit_cards table for the 'issue_reason' field or debit_card_orders table for the order reason."
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "requires",
+    "object": "customer identity verification",
+    "condition": null,
+    "quote": "Customer must be verified"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "requires",
+    "object": "pending card status",
+    "condition": null,
+    "quote": "The debit card must be in PENDING status (not already ACTIVE)"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "requires",
+    "object": "checking account",
+    "condition": "account must be OPEN",
+    "quote": "The linked checking account must still be OPEN"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "requires",
+    "object": "card expiration date",
+    "condition": "card not expired",
+    "quote": "Card must not be expired (check expiration_date)"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "requires",
+    "object": "cvv",
+    "condition": null,
+    "quote": "The 3-digit CVV on the back of the card"
+   },
+   {
+    "subject": "debit card activation",
+    "predicate": "requires",
+    "object": "debit card pin requirements",
+    "condition": null,
+    "quote": "must be exactly 4 digits, cannot be sequential like 1234 or repeating like 1111"
+   },
+   {
+    "subject": "card lock after failed attempts",
+    "predicate": "escalates_to",
+    "object": "in-person branch visit",
+    "condition": "incorrect card details provided 2 times",
+    "quote": "If the customer provides incorrect card details 2 times, the card will be locked for security and they must visit a branch in person"
+   },
+   {
+    "subject": "old card grace period",
+    "predicate": "exception_to",
+    "object": "previous card deactivation",
+    "condition": "reissued cards",
+    "quote": "(except for reissued cards which have a 24-hour grace period)"
+   },
+   {
+    "subject": "old card grace period",
+    "predicate": "applies_to",
+    "object": "reissued debit card",
+    "condition": null,
+    "quote": "Inform customer that their old card will remain active for 24 hours as a grace period"
+   },
+   {
+    "subject": "online banking password",
+    "predicate": "applies_to",
+    "object": "replacement debit card",
+    "condition": "if fraud was suspected",
+    "quote": "Recommend changing their online banking password if fraud was suspected"
+   },
+   {
+    "subject": "customer identity verification",
+    "predicate": "precedes",
+    "object": "debit card activation",
+    "condition": null,
+    "quote": "Verify customer identity using standard verification procedures"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "standard customer identity verification procedures",
+    "kind": "procedure",
+    "why": "Step 1 requires verifying identity using standard procedures not defined here"
+   },
+   {
+    "needs": "debit_cards table lookup (issue_reason, status, expiration_date)",
+    "kind": "data",
+    "why": "Tool selection and requirements depend on card record fields"
+   },
+   {
+    "needs": "debit_card_orders table order reason",
+    "kind": "data",
+    "why": "Alternative source for the card's issue reason"
+   },
+   {
+    "needs": "linked checking account status",
+    "kind": "data",
+    "why": "Account must be OPEN to activate"
+   },
+   {
+    "needs": "procedure for handling suspicious/unauthorized transactions after replacement",
+    "kind": "procedure",
+    "why": "Agent asks about suspicious activity but dispute/fraud handling is defined elsewhere"
+   }
+  ],
+  "provides": [
+   "Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293",
+   "Debit card activation eligibility requirements (verified, card possession, PENDING status, open account, not expired)",
+   "Required customer card details: last 4 digits, MM/YY expiration, 3-digit CVV",
+   "PIN rule: exactly 4 digits, no sequential or repeating patterns",
+   "Step-by-step debit card activation procedure",
+   "Post-activation steps for replacement cards (review transactions, suspicious activity, password change if fraud)",
+   "24-hour grace period for old card on reissued cards",
+   "Card lock after 2 incorrect detail attempts requiring branch visit",
+   "Automatic deactivation of previous cards on activation"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_028": {
+  "summary": "Internal guide for the tool get_debit_cards_by_account_id_7823, which retrieves all debit cards linked to a checking account. It lists the returned fields (status values, issue reasons, limits, etc.), common use cases (pre-checks before ordering, activating, freezing/unfreezing, closing cards, and customer inquiries), and notes: checking accounts only, multiple cards possible, last 4 digits only, empty list if none.",
+  "entities": [
+   {
+    "name": "get_debit_cards_by_account_id_7823",
+    "type": "tool",
+    "canonical": "get_debit_cards_by_account_id_7823"
+   },
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "savings account",
+    "type": "product",
+    "canonical": "savings account"
+   },
+   {
+    "name": "account_id",
+    "type": "data_field",
+    "canonical": "account id"
+   },
+   {
+    "name": "card_id",
+    "type": "data_field",
+    "canonical": "card id"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user id"
+   },
+   {
+    "name": "card_number_last_4",
+    "type": "data_field",
+    "canonical": "card number last 4"
+   },
+   {
+    "name": "status",
+    "type": "data_field",
+    "canonical": "debit card status"
+   },
+   {
+    "name": "issue_reason",
+    "type": "data_field",
+    "canonical": "card issue reason"
+   },
+   {
+    "name": "expiration_date",
+    "type": "data_field",
+    "canonical": "card expiration date"
+   },
+   {
+    "name": "date_issued",
+    "type": "data_field",
+    "canonical": "card date issued"
+   },
+   {
+    "name": "card_design",
+    "type": "data_field",
+    "canonical": "card design"
+   },
+   {
+    "name": "daily_purchase_limit",
+    "type": "fee_or_limit",
+    "canonical": "daily purchase limit"
+   },
+   {
+    "name": "daily_atm_limit",
+    "type": "fee_or_limit",
+    "canonical": "daily atm limit"
+   },
+   {
+    "name": "ordering a new debit card",
+    "type": "process",
+    "canonical": "order debit card"
+   },
+   {
+    "name": "activating a card",
+    "type": "process",
+    "canonical": "debit card activation"
+   },
+   {
+    "name": "freezing/unfreezing",
+    "type": "process",
+    "canonical": "freeze/unfreeze debit card"
+   },
+   {
+    "name": "closing a card",
+    "type": "process",
+    "canonical": "close debit card"
+   },
+   {
+    "name": "activation tool",
+    "type": "tool",
+    "canonical": "debit card activation tool"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "get_debit_cards_by_account_id_7823",
+    "predicate": "applies_to",
+    "object": "checking account",
+    "condition": null,
+    "quote": "This tool only returns debit cards for checking accounts (savings accounts do not have debit cards)"
+   },
+   {
+    "subject": "get_debit_cards_by_account_id_7823",
+    "predicate": "requires",
+    "object": "account id",
+    "condition": null,
+    "quote": "get_debit_cards_by_account_id_7823(account_id) - account_id is the checking account ID to retrieve debit cards for."
+   },
+   {
+    "subject": "order debit card",
+    "predicate": "uses_tool",
+    "object": "get_debit_cards_by_account_id_7823",
+    "condition": "check for existing active or pending card",
+    "quote": "Before ordering a new debit card: Check if customer already has an active or pending card for the account"
+   },
+   {
+    "subject": "card issue reason",
+    "predicate": "determines_value_of",
+    "object": "debit card activation tool",
+    "condition": "before activating a card",
+    "quote": "Before activating a card: Look up the issue_reason to determine which activation tool to use"
+   },
+   {
+    "subject": "freeze/unfreeze debit card",
+    "predicate": "uses_tool",
+    "object": "get_debit_cards_by_account_id_7823",
+    "condition": "verify card exists and check current status",
+    "quote": "Before freezing/unfreezing: Verify the card exists and check its current status"
+   },
+   {
+    "subject": "close debit card",
+    "predicate": "uses_tool",
+    "object": "get_debit_cards_by_account_id_7823",
+    "condition": "confirm card_id and current status",
+    "quote": "Before closing a card: Confirm the card_id and current status"
+   },
+   {
+    "subject": "get_debit_cards_by_account_id_7823",
+    "predicate": "prohibits",
+    "object": "full card number",
+    "condition": null,
+    "quote": "For privacy, full card numbers are never returned - only the last 4 digits"
+   },
+   {
+    "subject": "get_debit_cards_by_account_id_7823",
+    "predicate": "precedes",
+    "object": "debit card activation",
+    "condition": null,
+    "quote": "Before activating a card: Look up the issue_reason to determine which activation tool to use"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Mapping from issue_reason to the specific debit card activation tool",
+    "kind": "tool",
+    "why": "Doc says issue_reason determines which activation tool to use but does not name the tools"
+   },
+   {
+    "needs": "Procedure/tool for ordering a new debit card",
+    "kind": "procedure",
+    "why": "Referenced as a use case but not defined here"
+   },
+   {
+    "needs": "Procedure/tools for freezing, unfreezing and closing debit cards",
+    "kind": "procedure",
+    "why": "Referenced as use cases but not defined here"
+   },
+   {
+    "needs": "Customer's checking account ID",
+    "kind": "data",
+    "why": "Required input to the tool, must be obtained elsewhere"
+   },
+   {
+    "needs": "Rule on whether a new card may be ordered when an active or pending card exists",
+    "kind": "rule",
+    "why": "Doc only says to check; the policy consequence is defined elsewhere"
+   }
+  ],
+  "provides": [
+   "Usage of get_debit_cards_by_account_id_7823(account_id)",
+   "List of debit card fields returned and their meanings",
+   "Debit card status values: ACTIVE, PENDING, FROZEN, CLOSED",
+   "Issue reason values: new_account, first_card, lost, stolen, fraud, expired, damaged, upgrade, bank_reissue",
+   "Card design values: CLASSIC, PREMIUM, CUSTOM",
+   "Rule: savings accounts do not have debit cards; tool applies only to checking accounts",
+   "Rule: only last 4 digits of card number are returned for privacy",
+   "Tool may return multiple cards including closed history; empty list if none",
+   "Pre-check steps before ordering, activating, freezing/unfreezing, and closing debit cards"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_037": {
+  "summary": "Customer-facing explainer of Regulation E debit card/EFT protections (covered transactions, liability tiers by reporting time, dispute rights, investigation and provisional credit timelines, documentation rights, how to dispute) plus agent guidance for decline codes 41 (lost), 43 (stolen, enhanced verification, transfer to security), and internal-only fraud codes 04, 07, 34, 59 with scripted non-disclosure responses.",
+  "entities": [
+   {
+    "name": "Regulation E",
+    "type": "regulation",
+    "canonical": "regulation e"
+   },
+   {
+    "name": "Consumer Financial Protection Bureau (CFPB)",
+    "type": "other",
+    "canonical": "cfpb"
+   },
+   {
+    "name": "electronic fund transfers (EFTs)",
+    "type": "product",
+    "canonical": "electronic fund transfers"
+   },
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "Limited Liability for Unauthorized Transactions",
+    "type": "rule",
+    "canonical": "unauthorized transaction liability limits"
+   },
+   {
+    "name": "Maximum $50 liability within 2 business days",
+    "type": "fee_or_limit",
+    "canonical": "$50 liability limit"
+   },
+   {
+    "name": "Maximum $500 liability within 60 days",
+    "type": "fee_or_limit",
+    "canonical": "$500 liability limit"
+   },
+   {
+    "name": "Right to Dispute Errors",
+    "type": "rule",
+    "canonical": "error dispute rights"
+   },
+   {
+    "name": "Investigation Requirements",
+    "type": "rule",
+    "canonical": "error investigation timelines"
+   },
+   {
+    "name": "Provisional Credit",
+    "type": "rule",
+    "canonical": "provisional credit"
+   },
+   {
+    "name": "Documentation Rights",
+    "type": "rule",
+    "canonical": "documentation rights"
+   },
+   {
+    "name": "dispute process",
+    "type": "process",
+    "canonical": "debit card dispute process"
+   },
+   {
+    "name": "credit cards",
+    "type": "product",
+    "canonical": "credit card"
+   },
+   {
+    "name": "Business accounts",
+    "type": "product",
+    "canonical": "business accounts"
+   },
+   {
+    "name": "CODE 41 - Lost Card",
+    "type": "condition",
+    "canonical": "decline code 41 lost card"
+   },
+   {
+    "name": "CODE 43 - Stolen Card",
+    "type": "condition",
+    "canonical": "decline code 43 stolen card"
+   },
+   {
+    "name": "CODE 04 - Capture Card",
+    "type": "condition",
+    "canonical": "decline code 04 capture card"
+   },
+   {
+    "name": "CODE 07 - Pick Up Card (Special)",
+    "type": "condition",
+    "canonical": "decline code 07 pick up card"
+   },
+   {
+    "name": "CODE 34 - Suspected Fraud",
+    "type": "condition",
+    "canonical": "decline code 34 suspected fraud"
+   },
+   {
+    "name": "CODE 59 - Suspected Fraud",
+    "type": "condition",
+    "canonical": "decline code 59 suspected fraud"
+   },
+   {
+    "name": "issue_reason",
+    "type": "data_field",
+    "canonical": "issue_reason"
+   },
+   {
+    "name": "card status",
+    "type": "data_field",
+    "canonical": "card status"
+   },
+   {
+    "name": "replacement card activation internal protocol",
+    "type": "process",
+    "canonical": "debit card activation"
+   },
+   {
+    "name": "lost debit card protocol",
+    "type": "process",
+    "canonical": "lost debit card protocol"
+   },
+   {
+    "name": "order replacement card protocol",
+    "type": "process",
+    "canonical": "replacement card order"
+   },
+   {
+    "name": "enhanced verification",
+    "type": "process",
+    "canonical": "enhanced identity verification"
+   },
+   {
+    "name": "security questions",
+    "type": "process",
+    "canonical": "security questions verification"
+   },
+   {
+    "name": "transaction history review",
+    "type": "process",
+    "canonical": "transaction history review"
+   },
+   {
+    "name": "transfer_to_human_agents",
+    "type": "tool",
+    "canonical": "transfer_to_human_agents"
+   },
+   {
+    "name": "security team",
+    "type": "role",
+    "canonical": "security team"
+   },
+   {
+    "name": "fraud non-disclosure rule",
+    "type": "rule",
+    "canonical": "fraud flag non-disclosure"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "regulation e",
+    "predicate": "applies_to",
+    "object": "electronic fund transfers",
+    "condition": null,
+    "quote": "governs electronic fund transfers (EFTs) and provides important consumer protections for debit card transactions"
+   },
+   {
+    "subject": "$50 liability limit",
+    "predicate": "limits",
+    "object": "unauthorized transaction liability limits",
+    "condition": "reported within 2 business days",
+    "quote": "**Within 2 business days**: Maximum $50 liability"
+   },
+   {
+    "subject": "$500 liability limit",
+    "predicate": "limits",
+    "object": "unauthorized transaction liability limits",
+    "condition": "reported within 60 days",
+    "quote": "**Within 60 days**: Maximum $500 liability"
+   },
+   {
+    "subject": "error investigation timelines",
+    "predicate": "requires",
+    "object": "debit card dispute process",
+    "condition": "when customer reports an error",
+    "quote": "Investigate promptly (typically within 10 business days)"
+   },
+   {
+    "subject": "provisional credit",
+    "predicate": "applies_to",
+    "object": "debit card dispute process",
+    "condition": "qualifying disputes where investigation takes longer than 10 business days",
+    "quote": "Rho-Bank must provide provisional (temporary) credit within 10 business days if the investigation takes longer than 10 business days"
+   },
+   {
+    "subject": "documentation rights",
+    "predicate": "requires",
+    "object": "provisional credit",
+    "condition": "before reversal",
+    "quote": "Receive advance notice before provisional credit is reversed"
+   },
+   {
+    "subject": "regulation e",
+    "predicate": "prohibits",
+    "object": "credit card",
+    "condition": "does not cover",
+    "quote": "not credit cards (which are covered by different regulations)"
+   },
+   {
+    "subject": "business accounts",
+    "predicate": "exception_to",
+    "object": "regulation e",
+    "condition": null,
+    "quote": "Business accounts may have different protections than personal accounts"
+   },
+   {
+    "subject": "decline code 41 lost card",
+    "predicate": "references",
+    "object": "issue_reason",
+    "condition": null,
+    "quote": "the card will have issue_reason = 'lost' or status will indicate lost"
+   },
+   {
+    "subject": "decline code 41 lost card",
+    "predicate": "prohibits",
+    "object": "card reactivation",
+    "condition": "card reported lost",
+    "quote": "The old card CANNOT be reactivated once reported lost."
+   },
+   {
+    "subject": "decline code 41 lost card",
+    "predicate": "requires",
+    "object": "debit card activation",
+    "condition": "replacement exists with status PENDING",
+    "quote": "If a replacement exists with status PENDING, guide through activation with the internal protocol."
+   },
+   {
+    "subject": "decline code 41 lost card",
+    "predicate": "requires",
+    "object": "lost debit card protocol",
+    "condition": "customer did not report it lost",
+    "quote": "Follow lost debit card protocol to help the customer."
+   },
+   {
+    "subject": "decline code 43 stolen card",
+    "predicate": "requires",
+    "object": "enhanced identity verification",
+    "condition": null,
+    "quote": "Verify customer identity using ENHANCED verification (not standard)"
+   },
+   {
+    "subject": "decline code 43 stolen card",
+    "predicate": "requires",
+    "object": "replacement card order",
+    "condition": "after enhanced verification",
+    "quote": "I can order you a replacement card with a new number.' Follow protocol to order a new one."
+   },
+   {
+    "subject": "decline code 43 stolen card",
+    "predicate": "escalates_to",
+    "object": "security team",
+    "condition": "customer insists they never reported it stolen",
+    "quote": "Use transfer_to_human_agents. Do NOT attempt to resolve this yourself."
+   },
+   {
+    "subject": "decline code 43 stolen card",
+    "predicate": "uses_tool",
+    "object": "transfer_to_human_agents",
+    "condition": "customer insists they never reported it stolen",
+    "quote": "Use transfer_to_human_agents. Do NOT attempt to resolve this yourself."
+   },
+   {
+    "subject": "decline code 04 capture card",
+    "predicate": "uses_tool",
+    "object": "transfer_to_human_agents",
+    "condition": "customer presses for details",
+    "quote": "Use transfer_to_human_agents if customer presses for details."
+   },
+   {
+    "subject": "decline code 07 pick up card",
+    "predicate": "references",
+    "object": "decline code 04 capture card",
+    "condition": null,
+    "quote": "Same response as Code 04."
+   },
+   {
+    "subject": "decline code 59 suspected fraud",
+    "predicate": "references",
+    "object": "decline code 34 suspected fraud",
+    "condition": null,
+    "quote": "Same as Code 34."
+   },
+   {
+    "subject": "fraud flag non-disclosure",
+    "predicate": "prohibits",
+    "object": "disclosing fraud codes",
+    "condition": null,
+    "quote": "**NEVER** tell the customer their card has been flagged for fraud over the phone."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Internal protocol for activating a pending replacement debit card",
+    "kind": "procedure",
+    "why": "Code 41 says to 'guide through activation with the internal protocol' without defining it"
+   },
+   {
+    "needs": "Lost debit card protocol",
+    "kind": "procedure",
+    "why": "Referenced for Code 41 when customer did not report card lost but not described"
+   },
+   {
+    "needs": "Protocol for ordering a replacement debit card",
+    "kind": "procedure",
+    "why": "Code 41/43 instruct to order a replacement following protocol not defined here"
+   },
+   {
+    "needs": "Tool to look up debit card information (issue_reason, status, other cards)",
+    "kind": "tool",
+    "why": "Agent must look up card data but no lookup tool is named"
+   },
+   {
+    "needs": "Tool/data to review recent transaction history",
+    "kind": "tool",
+    "why": "Required for Code 41 and enhanced verification in Code 43"
+   },
+   {
+    "needs": "Standard identity verification and security questions procedure",
+    "kind": "procedure",
+    "why": "Code 41 says 'Ask security questions' and Code 43 contrasts enhanced vs standard verification"
+   },
+   {
+    "needs": "Definition of 'qualifying disputes' for provisional credit",
+    "kind": "definition",
+    "why": "Provisional credit applies to qualifying disputes not defined here"
+   },
+   {
+    "needs": "Dispute filing procedure/tool for Regulation E claims",
+    "kind": "procedure",
+    "why": "Document describes rights but not the internal mechanism to file a dispute"
+   },
+   {
+    "needs": "Business account dispute protections",
+    "kind": "rule",
+    "why": "States business accounts may differ without specifying"
+   },
+   {
+    "needs": "Credit card dispute regulations",
+    "kind": "rule",
+    "why": "Credit cards covered by different regulations not described here"
+   }
+  ],
+  "provides": [
+   "Scope of Regulation E covered electronic fund transfers",
+   "Unauthorized transaction liability tiers: $50 within 2 business days, $500 within 60 days, full liability after 60 days",
+   "List of disputable error types",
+   "Investigation timelines: ~10 business days to investigate, 3 business days to report results, 1 business day to correct",
+   "Provisional credit within 10 business days if investigation exceeds 10 business days",
+   "Documentation rights including advance notice before provisional credit reversal",
+   "Customer steps to dispute a transaction",
+   "Code 41 lost card handling: lost cards cannot be reactivated, check for pending replacement, security steps if not reported by customer",
+   "Code 43 stolen card handling: enhanced verification (name, DOB, last 4 SSN, 2-3 recent transactions), no reactivation, escalate via transfer_to_human_agents if customer denies reporting",
+   "Codes 04, 07, 34, 59 internal-only with scripted branch-visit responses",
+   "Rule never to disclose fraud flags to customers over the phone"
+  ]
+ },
+ "doc_credit_cards_credit_card_account_logistics_003": {
+  "summary": "Internal credit card retention protocol: verify closure eligibility (no pending disputes, no pending replacement cards, account age >= 60 days, zero balance), check closure reason history via get_closure_reason_history_8293 for abuse prevention (skip offers if records in past year), log closure reason via log_credit_card_closure_reason_4521, address concerns (annual fee waiver via apply_credit_card_account_flag_6147 for 2+ year customers, downgrade otherwise), make one tier-based retention offer, accept decision, and remind about 45-day rewards redemption window and 37-day annual fee refund window.",
+  "entities": [
+   {
+    "name": "Credit Card Retention Protocol",
+    "type": "process",
+    "canonical": "credit card retention protocol"
+   },
+   {
+    "name": "credit card account closure",
+    "type": "process",
+    "canonical": "credit card closure"
+   },
+   {
+    "name": "closure eligibility",
+    "type": "rule",
+    "canonical": "closure eligibility"
+   },
+   {
+    "name": "pending transaction disputes",
+    "type": "condition",
+    "canonical": "pending disputes"
+   },
+   {
+    "name": "pending replacement cards",
+    "type": "condition",
+    "canonical": "pending replacement card"
+   },
+   {
+    "name": "minimum account age 60 days",
+    "type": "fee_or_limit",
+    "canonical": "minimum account age for closure"
+   },
+   {
+    "name": "outstanding balance",
+    "type": "condition",
+    "canonical": "outstanding balance"
+   },
+   {
+    "name": "get_closure_reason_history_8293",
+    "type": "tool",
+    "canonical": "get_closure_reason_history_8293"
+   },
+   {
+    "name": "log_credit_card_closure_reason_4521",
+    "type": "tool",
+    "canonical": "log_credit_card_closure_reason_4521"
+   },
+   {
+    "name": "apply_credit_card_account_flag_6147",
+    "type": "tool",
+    "canonical": "apply_credit_card_account_flag_6147"
+   },
+   {
+    "name": "credit_card_account_id",
+    "type": "data_field",
+    "canonical": "credit card account id"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user id"
+   },
+   {
+    "name": "closure_reason",
+    "type": "data_field",
+    "canonical": "closure reason"
+   },
+   {
+    "name": "annual fee waiver",
+    "type": "product",
+    "canonical": "annual fee waiver"
+   },
+   {
+    "name": "annual fee",
+    "type": "fee_or_limit",
+    "canonical": "annual fee"
+   },
+   {
+    "name": "no-annual-fee card downgrade",
+    "type": "process",
+    "canonical": "card downgrade"
+   },
+   {
+    "name": "customer tenure",
+    "type": "data_field",
+    "canonical": "customer tenure"
+   },
+   {
+    "name": "retention offer",
+    "type": "product",
+    "canonical": "retention offer"
+   },
+   {
+    "name": "card tier",
+    "type": "data_field",
+    "canonical": "card tier"
+   },
+   {
+    "name": "bonus points",
+    "type": "product",
+    "canonical": "bonus points"
+   },
+   {
+    "name": "statement credit",
+    "type": "product",
+    "canonical": "statement credit"
+   },
+   {
+    "name": "goodwill credit",
+    "type": "product",
+    "canonical": "goodwill credit"
+   },
+   {
+    "name": "supervisor",
+    "type": "role",
+    "canonical": "supervisor"
+   },
+   {
+    "name": "bonus categories",
+    "type": "product",
+    "canonical": "bonus categories"
+   },
+   {
+    "name": "rewards redemption window 45 days",
+    "type": "fee_or_limit",
+    "canonical": "rewards redemption window after closure"
+   },
+   {
+    "name": "annual fee refund window 37 days",
+    "type": "fee_or_limit",
+    "canonical": "annual fee refund window"
+   },
+   {
+    "name": "abuse prevention",
+    "type": "rule",
+    "canonical": "retention abuse prevention"
+   },
+   {
+    "name": "recurring subscription",
+    "type": "other",
+    "canonical": "recurring subscription"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "credit card closure",
+    "predicate": "requires",
+    "object": "pending disputes",
+    "condition": "must be absent",
+    "quote": "The account must not have any active or pending transaction disputes."
+   },
+   {
+    "subject": "pending replacement card",
+    "predicate": "prohibits",
+    "object": "credit card closure",
+    "condition": "replacement ordered and not yet received or activated",
+    "quote": "If a replacement has been ordered and not yet received or activated, a closure cannot proceed."
+   },
+   {
+    "subject": "minimum account age for closure",
+    "predicate": "limits",
+    "object": "credit card closure",
+    "condition": null,
+    "quote": "The account must be open for at least 60 days."
+   },
+   {
+    "subject": "credit card closure",
+    "predicate": "requires",
+    "object": "outstanding balance",
+    "condition": "balance must be zero",
+    "quote": "The account must have no outstanding balance. If a balance remains, the customer must pay it off before closure."
+   },
+   {
+    "subject": "closure eligibility",
+    "predicate": "precedes",
+    "object": "retention offer",
+    "condition": "if any requirement unmet, do not proceed",
+    "quote": "If any requirement is not met, explain what must be resolved and do not proceed with retention offers."
+   },
+   {
+    "subject": "retention abuse prevention",
+    "predicate": "uses_tool",
+    "object": "get_closure_reason_history_8293",
+    "condition": null,
+    "quote": "Use the get_closure_reason_history_8293 tool to determine whether this specific credit card account has any closure reason records within the past year."
+   },
+   {
+    "subject": "retention abuse prevention",
+    "predicate": "prohibits",
+    "object": "retention offer",
+    "condition": "closure reason records exist within past year",
+    "quote": "If records exist for this account within that time frame, skip retention offers and proceed directly to processing the closure."
+   },
+   {
+    "subject": "get_closure_reason_history_8293",
+    "predicate": "requires",
+    "object": "credit card account id",
+    "condition": null,
+    "quote": "credit_card_account_id (string, required): The credit card account ID the customer wants to close."
+   },
+   {
+    "subject": "closure reason",
+    "predicate": "uses_tool",
+    "object": "log_credit_card_closure_reason_4521",
+    "condition": null,
+    "quote": "Ask the customer why they want to close their account. Then log it using log_credit_card_closure_reason_4521."
+   },
+   {
+    "subject": "log_credit_card_closure_reason_4521",
+    "predicate": "requires",
+    "object": "closure reason",
+    "condition": null,
+    "quote": "closure_reason (string, required): One of: 'annual_fee', 'not_using_card', 'found_better_card', 'unhappy_with_rewards', 'simplifying_finances', 'negative_experience', 'other'."
+   },
+   {
+    "subject": "log_credit_card_closure_reason_4521",
+    "predicate": "requires",
+    "object": "user id",
+    "condition": null,
+    "quote": "user_id (string, required): The customer's unique identifier in the system."
+   },
+   {
+    "subject": "annual fee waiver",
+    "predicate": "applies_to",
+    "object": "customer tenure",
+    "condition": "customer for 2+ years",
+    "quote": "If they have been a customer for 2+ years, offer to waive their annual fee for one year as a loyalty benefit."
+   },
+   {
+    "subject": "annual fee waiver",
+    "predicate": "uses_tool",
+    "object": "apply_credit_card_account_flag_6147",
+    "condition": null,
+    "quote": "Use apply_credit_card_account_flag_6147 (see tool arguments below)."
+   },
+   {
+    "subject": "card downgrade",
+    "predicate": "applies_to",
+    "object": "customer tenure",
+    "condition": "customer for less than 2 years",
+    "quote": "If they have been a customer for less than 2 years, offer a permanent downgrade to a no-annual-fee card while preserving account history."
+   },
+   {
+    "subject": "negative experience complaint",
+    "predicate": "escalates_to",
+    "object": "supervisor",
+    "condition": "if warranted",
+    "quote": "Escalate to a supervisor if warranted."
+   },
+   {
+    "subject": "card tier",
+    "predicate": "determines_value_of",
+    "object": "retention offer",
+    "condition": null,
+    "quote": "make one retention offer based on their card tier"
+   },
+   {
+    "subject": "retention offer",
+    "predicate": "defines",
+    "object": "bonus points",
+    "condition": "entry 500, mid 2,000, premium 5,000",
+    "quote": "Premium and above: Offer 5,000 bonus points or a $50 statement credit"
+   },
+   {
+    "subject": "rewards redemption window after closure",
+    "predicate": "limits",
+    "object": "credit card closure",
+    "condition": "rewards forfeited after 45 days",
+    "quote": "Inform the customer they have 45 days after submitting the closure request to redeem unredeemed rewards; after that, rewards are forfeited."
+   },
+   {
+    "subject": "annual fee refund window",
+    "predicate": "permits",
+    "object": "annual fee",
+    "condition": "closure within 37 days of fee charged",
+    "quote": "advise that a full refund may be available if the closure occurs within 37 days of the fee being charged."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Procedure/tool for actually processing the credit card closure",
+    "kind": "procedure",
+    "why": "Document says 'proceed with closure' but does not describe how to submit it."
+   },
+   {
+    "needs": "How to look up pending disputes, pending replacement cards, account open date and outstanding balance",
+    "kind": "data",
+    "why": "Eligibility checks require account data not supplied here."
+   },
+   {
+    "needs": "Customer tenure data",
+    "kind": "data",
+    "why": "Annual fee waiver vs downgrade depends on whether customer has been with bank 2+ years."
+   },
+   {
+    "needs": "Card tier classification of cards (entry, mid, premium)",
+    "kind": "definition",
+    "why": "Retention offer amounts depend on card tier, which is not defined here."
+   },
+   {
+    "needs": "Procedure/tool for card downgrade to no-annual-fee card",
+    "kind": "procedure",
+    "why": "Downgrade offered but process not described."
+   },
+   {
+    "needs": "Procedure/tool for applying bonus points or statement credits",
+    "kind": "tool",
+    "why": "Retention offers must be applied but no tool given."
+   },
+   {
+    "needs": "Goodwill credit amount and policy",
+    "kind": "threshold",
+    "why": "Only 'modest goodwill credit' mentioned without amount."
+   },
+   {
+    "needs": "Supervisor escalation procedure and criteria",
+    "kind": "procedure",
+    "why": "Escalate 'if warranted' without criteria or method."
+   },
+   {
+    "needs": "Rho-Bank card catalog and benefits",
+    "kind": "data",
+    "why": "Needed to compare against competitor card and help customer apply."
+   },
+   {
+    "needs": "Bonus categories enrollment info and rewards rules",
+    "kind": "data",
+    "why": "Needed to address rewards dissatisfaction."
+   },
+   {
+    "needs": "Annual fee refund procedure",
+    "kind": "procedure",
+    "why": "Refund within 37 days mentioned but not how to issue it."
+   }
+  ],
+  "provides": [
+   "Closure eligibility criteria: no pending disputes, no pending replacement cards, account open at least 60 days, no outstanding balance",
+   "Retention abuse prevention rule: skip retention offers if closure reason records exist for the account in the past year",
+   "Tool arguments for get_closure_reason_history_8293 (credit_card_account_id)",
+   "Tool arguments for log_credit_card_closure_reason_4521 and allowed closure_reason values",
+   "Tool arguments for apply_credit_card_account_flag_6147 annual fee waiver (flag_type 'annual_fee_waived', expiration one year MM/DD/YYYY, reason 'loyalty_benefit')",
+   "Annual fee waiver for customers 2+ years; downgrade to no-annual-fee card for under 2 years",
+   "Tier-based retention offers: entry 500 pts/$5, mid 2,000 pts/$20, premium 5,000 pts/$50; only one offer",
+   "45-day rewards redemption window after closure request",
+   "Full annual fee refund may be available if closure within 37 days of fee charge",
+   "Reason-specific retention handling guidance"
+  ]
+ },
+ "doc_credit_cards_credit_cards_(general)_014": {
+  "summary": "Internal procedure for filing a formal credit card transaction dispute: the agent gathers customer and transaction information, unlocks the file_credit_card_transaction_dispute_4829 tool, and calls it via call_discoverable_agent_tool with 15 arguments. The document defines allowed values for card_action, dispute_reason and resolution_requested. Provisional credit eligibility must be determined from a separate guidelines article.",
+  "entities": [
+   {
+    "name": "file_credit_card_transaction_dispute_4829",
+    "type": "tool",
+    "canonical": "file_credit_card_transaction_dispute_4829"
+   },
+   {
+    "name": "call_discoverable_agent_tool",
+    "type": "tool",
+    "canonical": "call_discoverable_agent_tool"
+   },
+   {
+    "name": "order_replacement_credit_card_7291",
+    "type": "tool",
+    "canonical": "order_replacement_credit_card_7291"
+   },
+   {
+    "name": "credit card transaction dispute",
+    "type": "process",
+    "canonical": "credit card dispute"
+   },
+   {
+    "name": "credit card",
+    "type": "product",
+    "canonical": "credit card"
+   },
+   {
+    "name": "card_action",
+    "type": "data_field",
+    "canonical": "card action"
+   },
+   {
+    "name": "keep_active",
+    "type": "condition",
+    "canonical": "keep active"
+   },
+   {
+    "name": "cancel_and_reissue",
+    "type": "condition",
+    "canonical": "cancel and reissue"
+   },
+   {
+    "name": "transaction_id",
+    "type": "data_field",
+    "canonical": "transaction id"
+   },
+   {
+    "name": "card_last_4_digits",
+    "type": "data_field",
+    "canonical": "card last 4 digits"
+   },
+   {
+    "name": "full_name",
+    "type": "data_field",
+    "canonical": "full name"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user id"
+   },
+   {
+    "name": "phone",
+    "type": "data_field",
+    "canonical": "registered phone number"
+   },
+   {
+    "name": "email",
+    "type": "data_field",
+    "canonical": "registered email address"
+   },
+   {
+    "name": "address",
+    "type": "data_field",
+    "canonical": "registered home address"
+   },
+   {
+    "name": "contacted_merchant",
+    "type": "data_field",
+    "canonical": "contacted merchant"
+   },
+   {
+    "name": "purchase_date",
+    "type": "data_field",
+    "canonical": "purchase date"
+   },
+   {
+    "name": "issue_noticed_date",
+    "type": "data_field",
+    "canonical": "issue noticed date"
+   },
+   {
+    "name": "dispute_reason",
+    "type": "data_field",
+    "canonical": "dispute reason"
+   },
+   {
+    "name": "resolution_requested",
+    "type": "data_field",
+    "canonical": "resolution requested"
+   },
+   {
+    "name": "partial_refund_amount",
+    "type": "data_field",
+    "canonical": "partial refund amount"
+   },
+   {
+    "name": "eligible_for_provisional_credit",
+    "type": "data_field",
+    "canonical": "provisional credit eligibility"
+   },
+   {
+    "name": "provisional credit",
+    "type": "other",
+    "canonical": "provisional credit"
+   },
+   {
+    "name": "Provisional Credit Eligibility Guidelines",
+    "type": "document_reference",
+    "canonical": "provisional credit eligibility guidelines"
+   },
+   {
+    "name": "unauthorized charges",
+    "type": "condition",
+    "canonical": "unauthorized fraudulent charge"
+   },
+   {
+    "name": "tool unlocking",
+    "type": "process",
+    "canonical": "unlock tool"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "credit card dispute",
+    "predicate": "uses_tool",
+    "object": "file_credit_card_transaction_dispute_4829",
+    "condition": null,
+    "quote": "the agent must gather comprehensive information and call the file_credit_card_transaction_dispute_4829 tool"
+   },
+   {
+    "subject": "unlock tool",
+    "predicate": "precedes",
+    "object": "file_credit_card_transaction_dispute_4829",
+    "condition": null,
+    "quote": "First unlock the tool, then call it using call_discoverable_agent_tool"
+   },
+   {
+    "subject": "file_credit_card_transaction_dispute_4829",
+    "predicate": "uses_tool",
+    "object": "call_discoverable_agent_tool",
+    "condition": null,
+    "quote": "call it using call_discoverable_agent_tool with the tool name and a JSON string containing all the required arguments"
+   },
+   {
+    "subject": "card action",
+    "predicate": "applies_to",
+    "object": "keep active",
+    "condition": "user wants to continue using their current card",
+    "quote": "use when user wants to continue using their current card"
+   },
+   {
+    "subject": "card action",
+    "predicate": "applies_to",
+    "object": "cancel and reissue",
+    "condition": "user wants card replaced",
+    "quote": "use when user wants card replaced - whether you've already ordered a replacement card via order_replacement_credit_card_7291 or the cancellation is happening as part of this dispute"
+   },
+   {
+    "subject": "cancel and reissue",
+    "predicate": "references",
+    "object": "order_replacement_credit_card_7291",
+    "condition": null,
+    "quote": "whether you've already ordered a replacement card via order_replacement_credit_card_7291"
+   },
+   {
+    "subject": "partial refund amount",
+    "predicate": "requires",
+    "object": "resolution requested",
+    "condition": "resolution_requested is 'partial_refund'",
+    "quote": "Only required if resolution_requested is 'partial_refund'."
+   },
+   {
+    "subject": "provisional credit eligibility guidelines",
+    "predicate": "determines_value_of",
+    "object": "provisional credit eligibility",
+    "condition": null,
+    "quote": "Agent must determine this based on the Provisional Credit Eligibility Guidelines article in this knowledge base."
+   },
+   {
+    "subject": "file_credit_card_transaction_dispute_4829",
+    "predicate": "requires",
+    "object": "provisional credit eligibility",
+    "condition": null,
+    "quote": "eligible_for_provisional_credit (boolean) - Agent must determine this"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "provisional credit eligibility guidelines",
+    "kind": "rule",
+    "why": "eligible_for_provisional_credit must be determined based on the Provisional Credit Eligibility Guidelines article, not defined here"
+   },
+   {
+    "needs": "procedure to unlock discoverable tools",
+    "kind": "procedure",
+    "why": "Document says to first unlock the tool but does not explain how"
+   },
+   {
+    "needs": "order_replacement_credit_card_7291",
+    "kind": "tool",
+    "why": "Replacement card ordering is referenced for cancel_and_reissue but not defined here"
+   },
+   {
+    "needs": "customer registered profile data (user id, phone, email, address, full name)",
+    "kind": "data",
+    "why": "Agent must look up registered user details to pass as arguments"
+   },
+   {
+    "needs": "transaction details (transaction id, purchase date, card last 4 digits)",
+    "kind": "data",
+    "why": "Agent must look up the disputed transaction's data"
+   }
+  ],
+  "provides": [
+   "procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829",
+   "required argument list for file_credit_card_transaction_dispute_4829",
+   "allowed card_action values (keep_active, cancel_and_reissue) and when to use each",
+   "allowed dispute_reason values",
+   "allowed resolution_requested values (full_refund, partial_refund, reversal_of_charge)",
+   "rule that partial_refund_amount is required only for partial_refund",
+   "date format MM/DD/YYYY for purchase_date and issue_noticed_date"
+  ]
+ },
+ "doc_checking_accounts_checking_accounts_(general)_003": {
+  "summary": "FAQ reference for common online banking error codes (101, 202, 403, 409, 429, 903) with resolutions and escalation steps, plus debit card decline code handling (05 Do Not Honor, 14 Invalid Card Number, 54 Expired Card, 56 No Card Record) including card status, account status, fraud alert, and velocity block checks.",
+  "entities": [
+   {
+    "name": "Error 101",
+    "type": "other",
+    "canonical": "error 101 invalid account or routing details"
+   },
+   {
+    "name": "Error 202",
+    "type": "other",
+    "canonical": "error 202 insufficient funds"
+   },
+   {
+    "name": "Error 403",
+    "type": "other",
+    "canonical": "error 403 authentication failed"
+   },
+   {
+    "name": "Error 409",
+    "type": "other",
+    "canonical": "error 409 duplicate transaction request"
+   },
+   {
+    "name": "Error 429",
+    "type": "other",
+    "canonical": "error 429 too many attempts"
+   },
+   {
+    "name": "Error 903",
+    "type": "other",
+    "canonical": "error 903 account closure request blocked"
+   },
+   {
+    "name": "48 hours wait",
+    "type": "fee_or_limit",
+    "canonical": "account closure retry wait 48 hours"
+   },
+   {
+    "name": "account security holds",
+    "type": "condition",
+    "canonical": "account security hold"
+   },
+   {
+    "name": "CODE 05 - Do Not Honor",
+    "type": "other",
+    "canonical": "decline code 05 do not honor"
+   },
+   {
+    "name": "CODE 14 - Invalid Card Number",
+    "type": "other",
+    "canonical": "decline code 14 invalid card number"
+   },
+   {
+    "name": "CODE 54 - Expired Card",
+    "type": "other",
+    "canonical": "decline code 54 expired card"
+   },
+   {
+    "name": "CODE 56 - No Card Record",
+    "type": "other",
+    "canonical": "decline code 56 no card record"
+   },
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "card status",
+    "type": "data_field",
+    "canonical": "card status"
+   },
+   {
+    "name": "account status",
+    "type": "data_field",
+    "canonical": "account status"
+   },
+   {
+    "name": "fraud_alert_active",
+    "type": "data_field",
+    "canonical": "fraud alert active"
+   },
+   {
+    "name": "alert_source",
+    "type": "data_field",
+    "canonical": "fraud alert source"
+   },
+   {
+    "name": "velocity_blocked",
+    "type": "data_field",
+    "canonical": "velocity block"
+   },
+   {
+    "name": "30 minutes auto-lift",
+    "type": "fee_or_limit",
+    "canonical": "velocity block auto-lift 30 minutes"
+   },
+   {
+    "name": "expiration_date",
+    "type": "data_field",
+    "canonical": "card expiration date"
+   },
+   {
+    "name": "issue_reason",
+    "type": "data_field",
+    "canonical": "card issue reason"
+   },
+   {
+    "name": "date_issued",
+    "type": "data_field",
+    "canonical": "card date issued"
+   },
+   {
+    "name": "card_number_last_4",
+    "type": "data_field",
+    "canonical": "card number last 4"
+   },
+   {
+    "name": "freezing/unfreezing card protocol",
+    "type": "document_reference",
+    "canonical": "freeze unfreeze card protocol"
+   },
+   {
+    "name": "card activation protocol",
+    "type": "document_reference",
+    "canonical": "debit card activation protocol"
+   },
+   {
+    "name": "order replacement card",
+    "type": "process",
+    "canonical": "order replacement debit card"
+   },
+   {
+    "name": "identity verification",
+    "type": "process",
+    "canonical": "customer identity verification"
+   },
+   {
+    "name": "security team / human agents",
+    "type": "role",
+    "canonical": "human agent transfer"
+   },
+   {
+    "name": "1-800-RHO-ACCT",
+    "type": "other",
+    "canonical": "account services line"
+   },
+   {
+    "name": "escalation with logs",
+    "type": "process",
+    "canonical": "error escalation"
+   },
+   {
+    "name": "restricted account disclosure rule",
+    "type": "rule",
+    "canonical": "restricted account non-disclosure"
+   },
+   {
+    "name": "bank-initiated fraud alert rule",
+    "type": "rule",
+    "canonical": "bank initiated fraud alert no clear"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "error 903 account closure request blocked",
+    "predicate": "requires",
+    "object": "account closure retry wait 48 hours",
+    "condition": null,
+    "quote": "Instruct the customer to wait 48 hours and try again."
+   },
+   {
+    "subject": "error 403 authentication failed",
+    "predicate": "requires",
+    "object": "account security hold",
+    "condition": null,
+    "quote": "Check for account security holds."
+   },
+   {
+    "subject": "error escalation",
+    "predicate": "applies_to",
+    "object": "error escalation",
+    "condition": "multiple attempts produce the same result",
+    "quote": "Escalate with logs if multiple attempts produce the same result."
+   },
+   {
+    "subject": "decline code 05 do not honor",
+    "predicate": "requires",
+    "object": "card status",
+    "condition": "step 1, checked in order",
+    "quote": "Look up the debit card information and check the card's status field."
+   },
+   {
+    "subject": "card status",
+    "predicate": "references",
+    "object": "freeze unfreeze card protocol",
+    "condition": "status is FROZEN and customer wants to unfreeze",
+    "quote": "If yes, follow the freezing/unfreezing card protocol."
+   },
+   {
+    "subject": "card status",
+    "predicate": "references",
+    "object": "debit card activation protocol",
+    "condition": "status is PENDING",
+    "quote": "Card not yet activated. Follow protocol to activate it."
+   },
+   {
+    "subject": "card status",
+    "predicate": "precedes",
+    "object": "account status",
+    "condition": "status is ACTIVE",
+    "quote": "If status is ACTIVE \u2192 Continue to step 2."
+   },
+   {
+    "subject": "restricted account non-disclosure",
+    "predicate": "prohibits",
+    "object": "account status",
+    "condition": "status is SUSPENDED or RESTRICTED",
+    "quote": "DO NOT provide specific details if status is SUSPENDED or RESTRICTED."
+   },
+   {
+    "subject": "account status",
+    "predicate": "escalates_to",
+    "object": "account services line",
+    "condition": "account status not OPEN",
+    "quote": "Please visit a branch or call our dedicated account services line at 1-800-RHO-ACCT for assistance."
+   },
+   {
+    "subject": "fraud alert active",
+    "predicate": "permits",
+    "object": "fraud alert active",
+    "condition": "alert_source is customer_initiated and customer confirms transactions legitimate",
+    "quote": "If they confirm all transactions are legitimate, clear the alert."
+   },
+   {
+    "subject": "bank initiated fraud alert no clear",
+    "predicate": "prohibits",
+    "object": "fraud alert active",
+    "condition": "alert_source is bank_initiated",
+    "quote": "If fraud_alert_active is TRUE and alert_source is 'bank_initiated' \u2192 Do NOT clear it."
+   },
+   {
+    "subject": "fraud alert source",
+    "predicate": "escalates_to",
+    "object": "human agent transfer",
+    "condition": "bank_initiated fraud alert",
+    "quote": "I'm transferring you to our security team.' Then transfer to human agents."
+   },
+   {
+    "subject": "velocity block auto-lift 30 minutes",
+    "predicate": "limits",
+    "object": "velocity block",
+    "condition": null,
+    "quote": "This block automatically lifts after 30 minutes."
+   },
+   {
+    "subject": "velocity block",
+    "predicate": "requires",
+    "object": "customer identity verification",
+    "condition": "lifting early",
+    "quote": "To lift early: Verify customer identity, then clear the velocity block."
+   },
+   {
+    "subject": "decline code 14 invalid card number",
+    "predicate": "requires",
+    "object": "card date issued",
+    "condition": "newer ACTIVE card and older CLOSED card",
+    "quote": "I see you received a new card on [date_issued]."
+   },
+   {
+    "subject": "decline code 54 expired card",
+    "predicate": "requires",
+    "object": "card expiration date",
+    "condition": null,
+    "quote": "Look up the debit card information and check expiration_date field."
+   },
+   {
+    "subject": "card issue reason",
+    "predicate": "determines_value_of",
+    "object": "decline code 54 expired card",
+    "condition": "card is expired",
+    "quote": "Look for another card with issue_reason = 'expired' and status PENDING or ACTIVE."
+   },
+   {
+    "subject": "decline code 54 expired card",
+    "predicate": "references",
+    "object": "debit card activation protocol",
+    "condition": "replacement exists and is PENDING",
+    "quote": "Guide through the appropriate activation protocol article."
+   },
+   {
+    "subject": "decline code 54 expired card",
+    "predicate": "requires",
+    "object": "order replacement debit card",
+    "condition": "no replacement exists",
+    "quote": "Let me order one for you now.' and call the appropriate tools to do so."
+   },
+   {
+    "subject": "decline code 56 no card record",
+    "predicate": "requires",
+    "object": "order replacement debit card",
+    "condition": "card_number_last_4 doesn't match any cards on file",
+    "quote": "Offer to order a new card."
+   },
+   {
+    "subject": "decline code 56 no card record",
+    "predicate": "defines",
+    "object": "decline code 14 invalid card number",
+    "condition": null,
+    "quote": "This is different from Code 14 (invalid number) - here the number is valid but completely unknown."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "freezing/unfreezing card protocol",
+    "kind": "procedure",
+    "why": "Code 05 FROZEN status directs agent to follow it but it is not defined here"
+   },
+   {
+    "needs": "debit card activation protocol",
+    "kind": "procedure",
+    "why": "PENDING cards must be activated per an external protocol article"
+   },
+   {
+    "needs": "debit card lookup tool",
+    "kind": "tool",
+    "why": "Agent must look up card status, fraud_alert_active, velocity_blocked, expiration_date, issue_reason fields"
+   },
+   {
+    "needs": "customer accounts lookup tool",
+    "kind": "tool",
+    "why": "Needed to check linked checking account status"
+   },
+   {
+    "needs": "tools to clear fraud alert, clear velocity block, and order replacement card",
+    "kind": "tool",
+    "why": "Document instructs these actions without naming tools"
+   },
+   {
+    "needs": "customer identity verification procedure",
+    "kind": "procedure",
+    "why": "Required before lifting velocity block early; not described"
+   },
+   {
+    "needs": "human agent transfer procedure",
+    "kind": "procedure",
+    "why": "Bank-initiated fraud alerts require transfer to security team"
+   },
+   {
+    "needs": "replacement card ordering procedure",
+    "kind": "procedure",
+    "why": "Codes 05, 54, 56 offer replacement ordering without detailing steps or fees"
+   },
+   {
+    "needs": "escalation procedure for persistent errors",
+    "kind": "procedure",
+    "why": "Says escalate with logs but not to whom or how"
+   }
+  ],
+  "provides": [
+   "Resolutions for error codes 101, 202, 403, 409, 429, 903",
+   "Error 903 account closure retry wait of 48 hours",
+   "Troubleshooting steps when errors persist (screenshots, timestamps, device/browser/app details, escalate with logs)",
+   "Ordered diagnostic procedure for decline code 05 (card status, account status, fraud alert, velocity block)",
+   "Non-disclosure script for SUSPENDED/RESTRICTED accounts referring to 1-800-RHO-ACCT",
+   "Rule: customer-initiated fraud alerts may be cleared after transaction verification; bank-initiated alerts must not be cleared and require transfer",
+   "Velocity block auto-lifts after 30 minutes; may be lifted early after identity verification",
+   "Handling for decline code 14 invalid card number including replaced card and saved merchant card scripts",
+   "Handling for decline code 54 expired card including replacement check by issue_reason",
+   "Definition and handling for decline code 56 no card record and its distinction from code 14"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_032": {
+  "summary": "Internal guideline on when Rho-Bank must issue provisional credit for debit card disputes under Regulation E: issuance timelines (10/20 business days), required conditions (timely reporting within 60 days, qualifying dispute categories, written statement, open unrestricted checking account), cases where it is not required but discretionary, amount rules (full disputed amount minus late-reporting liability of $50 or $500), investigation timelines (45 business days, 90 days for international/foreign POS/new accounts), and reversal procedure if investigation finds against the customer.",
+  "entities": [
+   {
+    "name": "Regulation E",
+    "type": "regulation",
+    "canonical": "regulation e"
+   },
+   {
+    "name": "Provisional Credit",
+    "type": "product",
+    "canonical": "provisional credit"
+   },
+   {
+    "name": "debit card disputes",
+    "type": "process",
+    "canonical": "debit card dispute"
+   },
+   {
+    "name": "Standard accounts provisional credit timeline (10 business days)",
+    "type": "fee_or_limit",
+    "canonical": "provisional credit issuance timeline standard"
+   },
+   {
+    "name": "New accounts provisional credit timeline (20 business days)",
+    "type": "fee_or_limit",
+    "canonical": "provisional credit issuance timeline new account"
+   },
+   {
+    "name": "New account (open less than 30 days)",
+    "type": "condition",
+    "canonical": "new account"
+   },
+   {
+    "name": "Timely Reporting (60 days of statement date)",
+    "type": "condition",
+    "canonical": "timely reporting window"
+   },
+   {
+    "name": "Dispute Category",
+    "type": "data_field",
+    "canonical": "dispute category"
+   },
+   {
+    "name": "unauthorized_transaction",
+    "type": "condition",
+    "canonical": "unauthorized transaction"
+   },
+   {
+    "name": "card_present_fraud",
+    "type": "condition",
+    "canonical": "card present fraud"
+   },
+   {
+    "name": "card_not_present_fraud",
+    "type": "condition",
+    "canonical": "card not present fraud"
+   },
+   {
+    "name": "atm_cash_discrepancy",
+    "type": "condition",
+    "canonical": "atm cash discrepancy"
+   },
+   {
+    "name": "duplicate_charge",
+    "type": "condition",
+    "canonical": "duplicate charge"
+   },
+   {
+    "name": "goods_services_not_received",
+    "type": "condition",
+    "canonical": "goods services not received"
+   },
+   {
+    "name": "recurring_charge_after_cancellation",
+    "type": "condition",
+    "canonical": "recurring charge after cancellation"
+   },
+   {
+    "name": "atm_deposit_not_credited",
+    "type": "condition",
+    "canonical": "atm deposit not credited"
+   },
+   {
+    "name": "incorrect_amount",
+    "type": "condition",
+    "canonical": "incorrect amount"
+   },
+   {
+    "name": "Written Statement",
+    "type": "condition",
+    "canonical": "written statement"
+   },
+   {
+    "name": "Account Standing (OPEN status, no holds or restrictions)",
+    "type": "condition",
+    "canonical": "account status open"
+   },
+   {
+    "name": "checking account",
+    "type": "product",
+    "canonical": "checking account"
+   },
+   {
+    "name": "Contacted merchant first",
+    "type": "condition",
+    "canonical": "merchant contact first"
+   },
+   {
+    "name": "pin_compromised",
+    "type": "data_field",
+    "canonical": "pin compromised"
+   },
+   {
+    "name": "Liability offset ($50 or $500)",
+    "type": "fee_or_limit",
+    "canonical": "customer liability amount"
+   },
+   {
+    "name": "Maximum provisional credit: full transaction amount",
+    "type": "fee_or_limit",
+    "canonical": "debit provisional credit maximum"
+   },
+   {
+    "name": "Credit card tiered maximum amounts",
+    "type": "fee_or_limit",
+    "canonical": "credit card provisional credit tiers"
+   },
+   {
+    "name": "Investigation timeline 45 business days",
+    "type": "fee_or_limit",
+    "canonical": "dispute investigation timeline"
+   },
+   {
+    "name": "Extended investigation timeline 90 days",
+    "type": "fee_or_limit",
+    "canonical": "extended dispute investigation timeline"
+   },
+   {
+    "name": "International transactions / foreign POS",
+    "type": "condition",
+    "canonical": "international transaction"
+   },
+   {
+    "name": "Provisional credit reversal",
+    "type": "process",
+    "canonical": "provisional credit reversal"
+   },
+   {
+    "name": "Written notice 3 business days before reversal",
+    "type": "rule",
+    "canonical": "reversal notice requirement"
+   },
+   {
+    "name": "Right to request documentation",
+    "type": "rule",
+    "canonical": "dispute documentation request right"
+   },
+   {
+    "name": "Statement date",
+    "type": "data_field",
+    "canonical": "statement date"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "regulation e",
+    "predicate": "requires",
+    "object": "provisional credit",
+    "condition": "under certain conditions for debit card disputes",
+    "quote": "Under Regulation E, Rho-Bank is REQUIRED to provide provisional credit for debit card disputes under certain conditions."
+   },
+   {
+    "subject": "provisional credit issuance timeline standard",
+    "predicate": "limits",
+    "object": "provisional credit",
+    "condition": "standard accounts",
+    "quote": "Standard accounts: Must issue within 10 business days of dispute filing"
+   },
+   {
+    "subject": "provisional credit issuance timeline new account",
+    "predicate": "limits",
+    "object": "provisional credit",
+    "condition": "account open less than 30 days",
+    "quote": "New accounts (open less than 30 days): Must issue within 20 business days"
+   },
+   {
+    "subject": "provisional credit",
+    "predicate": "requires",
+    "object": "timely reporting window",
+    "condition": "all required conditions met",
+    "quote": "Customer reported the unauthorized transaction within 60 days of the statement date showing the transaction"
+   },
+   {
+    "subject": "provisional credit",
+    "predicate": "requires",
+    "object": "dispute category",
+    "condition": "category is unauthorized_transaction, card_present_fraud, card_not_present_fraud, atm_cash_discrepancy, or duplicate_charge",
+    "quote": "The dispute is for one of these categories"
+   },
+   {
+    "subject": "provisional credit",
+    "predicate": "requires",
+    "object": "written statement",
+    "condition": null,
+    "quote": "Customer has provided a written statement describing the unauthorized transaction"
+   },
+   {
+    "subject": "provisional credit",
+    "predicate": "requires",
+    "object": "account status open",
+    "condition": null,
+    "quote": "The checking account is in OPEN status with no holds or restrictions"
+   },
+   {
+    "subject": "goods services not received",
+    "predicate": "exception_to",
+    "object": "provisional credit",
+    "condition": "not required but may be offered at discretion",
+    "quote": "Provisional Credit is NOT REQUIRED (but may be offered at discretion) when:"
+   },
+   {
+    "subject": "merchant contact first",
+    "predicate": "exception_to",
+    "object": "provisional credit",
+    "condition": "non-fraud disputes where customer has not contacted merchant",
+    "quote": "Customer has not contacted merchant first (for non-fraud disputes)"
+   },
+   {
+    "subject": "pin compromised",
+    "predicate": "exception_to",
+    "object": "provisional credit",
+    "condition": "pin_compromised = 'yes_shared'",
+    "quote": "Customer shared their PIN voluntarily (pin_compromised = 'yes_shared')"
+   },
+   {
+    "subject": "new account",
+    "predicate": "exception_to",
+    "object": "provisional credit",
+    "condition": "dispute is for a card-not-present transaction",
+    "quote": "Account is less than 30 days old AND the dispute is for a card-not-present transaction"
+   },
+   {
+    "subject": "debit provisional credit maximum",
+    "predicate": "limits",
+    "object": "provisional credit",
+    "condition": null,
+    "quote": "Maximum: The full transaction amount"
+   },
+   {
+    "subject": "customer liability amount",
+    "predicate": "limits",
+    "object": "provisional credit",
+    "condition": "customer reported late",
+    "quote": "Liability offset: If customer reported late, reduce by their liability amount ($50 or $500)"
+   },
+   {
+    "subject": "dispute investigation timeline",
+    "predicate": "applies_to",
+    "object": "provisional credit",
+    "condition": "when provisional credit is issued",
+    "quote": "When provisional credit is issued, the bank has 45 business days to complete the investigation (extended from 10 days)."
+   },
+   {
+    "subject": "extended dispute investigation timeline",
+    "predicate": "applies_to",
+    "object": "international transaction",
+    "condition": "international, foreign POS, or new accounts",
+    "quote": "For international transactions, POS transactions at merchants outside the US, or new accounts, the timeline extends to 90 days."
+   },
+   {
+    "subject": "provisional credit reversal",
+    "predicate": "requires",
+    "object": "reversal notice requirement",
+    "condition": "investigation finds transaction authorized or claim invalid",
+    "quote": "Customer will be notified in writing at least 3 business days before reversal"
+   },
+   {
+    "subject": "provisional credit reversal",
+    "predicate": "permits",
+    "object": "dispute documentation request right",
+    "condition": null,
+    "quote": "Customer has the right to request documentation supporting the finding"
+   },
+   {
+    "subject": "debit provisional credit maximum",
+    "predicate": "references",
+    "object": "credit card provisional credit tiers",
+    "condition": null,
+    "quote": "Unlike credit cards which have tiered maximum amounts, debit card provisional credit is for the FULL disputed amount"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Rule for determining whether customer liability is $50 or $500 for late reporting",
+    "kind": "rule",
+    "why": "Document says reduce by liability amount ($50 or $500) but does not define which applies or what counts as 'late'"
+   },
+   {
+    "needs": "Credit card provisional credit tiered maximum amounts",
+    "kind": "threshold",
+    "why": "Referenced for contrast but not defined here"
+   },
+   {
+    "needs": "Procedure/tool for filing a debit card dispute and issuing provisional credit",
+    "kind": "procedure",
+    "why": "Document states when credit is required but not how to file or post it"
+   },
+   {
+    "needs": "Account data: account open date, status, holds/restrictions, statement date of transaction",
+    "kind": "data",
+    "why": "Agent must look these up to evaluate eligibility conditions"
+   },
+   {
+    "needs": "Definition of which dispute categories count as fraud vs non-fraud",
+    "kind": "definition",
+    "why": "Merchant-contact exception applies only to non-fraud disputes"
+   },
+   {
+    "needs": "Criteria for discretionary provisional credit offers",
+    "kind": "rule",
+    "why": "Document says credit may be offered at discretion without specifying criteria"
+   },
+   {
+    "needs": "Regulation E details",
+    "kind": "rule",
+    "why": "Underlying regulation is referenced but not fully described"
+   }
+  ],
+  "provides": [
+   "Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days",
+   "Conditions under which debit card provisional credit is required (60-day timely reporting, qualifying dispute categories, written statement, open checking account with no holds)",
+   "List of dispute categories qualifying for required provisional credit",
+   "List of conditions where provisional credit is not required but discretionary",
+   "Debit provisional credit amount rule: full disputed amount minus late-reporting liability ($50 or $500)",
+   "Investigation timeline with provisional credit: 45 business days, extended to 90 days for international, foreign POS, or new accounts",
+   "Reversal procedure: reverse credit, notify in writing at least 3 business days before, customer may request supporting documentation"
+  ]
+ },
+ "doc_bank_accounts_bank_accounts_(general)_030": {
+  "summary": "Internal protocol requiring agents, when a customer reports a lost or stolen debit card, to complete the standard debit card freeze/close procedure, check for Rho-Bank credit cards via get_credit_card_accounts_by_user, proactively offer a replacement credit card with a new number, and note the account if the customer declines.",
+  "entities": [
+   {
+    "name": "Lost/Stolen Card - Cross-Product Security Protocol",
+    "type": "process",
+    "canonical": "lost stolen card cross-product security protocol"
+   },
+   {
+    "name": "debit card",
+    "type": "product",
+    "canonical": "debit card"
+   },
+   {
+    "name": "credit card",
+    "type": "product",
+    "canonical": "credit card"
+   },
+   {
+    "name": "standard debit card freeze/close procedure",
+    "type": "process",
+    "canonical": "debit card freeze close procedure"
+   },
+   {
+    "name": "get_credit_card_accounts_by_user",
+    "type": "tool",
+    "canonical": "get_credit_card_accounts_by_user"
+   },
+   {
+    "name": "replacement credit card with a new card number",
+    "type": "process",
+    "canonical": "credit card replacement"
+   },
+   {
+    "name": "account note that offer was made",
+    "type": "process",
+    "canonical": "account note"
+   },
+   {
+    "name": "lost or stolen debit card report",
+    "type": "condition",
+    "canonical": "lost stolen debit card"
+   },
+   {
+    "name": "Agent Script Example",
+    "type": "document_reference",
+    "canonical": "lost wallet agent script"
+   },
+   {
+    "name": "agent",
+    "type": "role",
+    "canonical": "customer service agent"
+   },
+   {
+    "name": "[Card Type]",
+    "type": "data_field",
+    "canonical": "credit card type"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "lost stolen debit card",
+    "predicate": "requires",
+    "object": "debit card freeze close procedure",
+    "condition": null,
+    "quote": "Complete the standard debit card freeze/close procedure"
+   },
+   {
+    "subject": "lost stolen card cross-product security protocol",
+    "predicate": "uses_tool",
+    "object": "get_credit_card_accounts_by_user",
+    "condition": null,
+    "quote": "Use get_credit_card_accounts_by_user to retrieve any credit card accounts for the customer."
+   },
+   {
+    "subject": "debit card freeze close procedure",
+    "predicate": "precedes",
+    "object": "get_credit_card_accounts_by_user",
+    "condition": null,
+    "quote": "1) Complete the standard debit card freeze/close procedure\n2) Check if the customer has any Rho-Bank credit cards on file"
+   },
+   {
+    "subject": "lost stolen card cross-product security protocol",
+    "predicate": "requires",
+    "object": "credit card replacement",
+    "condition": "customer has one or more Rho-Bank credit cards",
+    "quote": "If yes, proactively offer to order a replacement credit card as a security precaution"
+   },
+   {
+    "subject": "lost stolen card cross-product security protocol",
+    "predicate": "requires",
+    "object": "account note",
+    "condition": "customer declines the replacement offer",
+    "quote": "If they decline, note in the account that the offer was made"
+   },
+   {
+    "subject": "get_credit_card_accounts_by_user",
+    "predicate": "determines_value_of",
+    "object": "credit card",
+    "condition": null,
+    "quote": "This will return all active and closed credit card accounts."
+   },
+   {
+    "subject": "lost stolen card cross-product security protocol",
+    "predicate": "applies_to",
+    "object": "lost stolen debit card",
+    "condition": null,
+    "quote": "When a customer reports a lost or stolen debit card:"
+   },
+   {
+    "subject": "lost stolen card cross-product security protocol",
+    "predicate": "references",
+    "object": "lost wallet agent script",
+    "condition": null,
+    "quote": "I see that you also have a [Card Type] credit card with us. Was that card also in your lost wallet?"
+   }
+  ],
+  "needs": [
+   {
+    "needs": "standard debit card freeze/close procedure",
+    "kind": "procedure",
+    "why": "Step 1 requires completing it but the document does not define it"
+   },
+   {
+    "needs": "procedure/tool for ordering a replacement credit card with a new card number",
+    "kind": "procedure",
+    "why": "Agent must offer and order the replacement but the ordering steps/tool are not described"
+   },
+   {
+    "needs": "procedure/tool for adding a note to the customer account",
+    "kind": "tool",
+    "why": "Declined offers must be noted in the account but the method is not specified"
+   },
+   {
+    "needs": "customer's credit card type",
+    "kind": "data",
+    "why": "Needed to fill [Card Type] in the agent script; returned from account lookup"
+   },
+   {
+    "needs": "customer identity/user id for get_credit_card_accounts_by_user",
+    "kind": "data",
+    "why": "Tool retrieves accounts by user, requiring the customer identifier"
+   }
+  ],
+  "provides": [
+   "Cross-product security check sequence after lost/stolen debit card report",
+   "Rule: proactively offer replacement credit card with new card number if customer has Rho-Bank credit cards",
+   "Rule: ask whether the credit card was also in the lost/stolen wallet",
+   "Rule: if customer declines, note in the account that the offer was made",
+   "Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts)",
+   "Agent script for offering credit card replacement",
+   "Rationale: wallet theft often involves multiple cards"
+  ]
+ },
+ "doc_credit_cards_credit_cards_(general)_017": {
+  "summary": "Internal procedure for applying a statement credit to a customer's credit card account using the apply_statement_credit_8472 tool (unlocked via unlock_discoverable_agent_tool and invoked via call_discoverable_agent_tool), including required arguments, allowed reason codes, and result verification.",
+  "entities": [
+   {
+    "name": "statement credit",
+    "type": "product",
+    "canonical": "statement credit"
+   },
+   {
+    "name": "apply_statement_credit_8472",
+    "type": "tool",
+    "canonical": "apply_statement_credit_8472"
+   },
+   {
+    "name": "unlock_discoverable_agent_tool",
+    "type": "tool",
+    "canonical": "unlock_discoverable_agent_tool"
+   },
+   {
+    "name": "call_discoverable_agent_tool",
+    "type": "tool",
+    "canonical": "call_discoverable_agent_tool"
+   },
+   {
+    "name": "get_credit_card_accounts_by_user",
+    "type": "tool",
+    "canonical": "get_credit_card_accounts_by_user"
+   },
+   {
+    "name": "user_id",
+    "type": "data_field",
+    "canonical": "user id"
+   },
+   {
+    "name": "credit_card_account_id",
+    "type": "data_field",
+    "canonical": "credit card account id"
+   },
+   {
+    "name": "amount",
+    "type": "data_field",
+    "canonical": "credit amount"
+   },
+   {
+    "name": "reason",
+    "type": "data_field",
+    "canonical": "statement credit reason"
+   },
+   {
+    "name": "goodwill adjustment",
+    "type": "condition",
+    "canonical": "goodwill adjustment"
+   },
+   {
+    "name": "promotional credit",
+    "type": "condition",
+    "canonical": "promotional credit"
+   },
+   {
+    "name": "annual fee reversal",
+    "type": "condition",
+    "canonical": "annual fee reversal"
+   },
+   {
+    "name": "late fee reversal",
+    "type": "condition",
+    "canonical": "late fee reversal"
+   },
+   {
+    "name": "interest charge reversal",
+    "type": "condition",
+    "canonical": "interest charge reversal"
+   },
+   {
+    "name": "dispute resolution",
+    "type": "process",
+    "canonical": "dispute resolution"
+   },
+   {
+    "name": "price match",
+    "type": "condition",
+    "canonical": "price match"
+   },
+   {
+    "name": "retention offer",
+    "type": "condition",
+    "canonical": "retention offer"
+   },
+   {
+    "name": "error correction",
+    "type": "condition",
+    "canonical": "billing error correction"
+   },
+   {
+    "name": "credit card transaction history",
+    "type": "data_field",
+    "canonical": "credit card transaction history"
+   },
+   {
+    "name": "statement balance",
+    "type": "data_field",
+    "canonical": "statement balance"
+   },
+   {
+    "name": "credit card account",
+    "type": "product",
+    "canonical": "credit card account"
+   }
+  ],
+  "relations": [
+   {
+    "subject": "statement credit",
+    "predicate": "uses_tool",
+    "object": "apply_statement_credit_8472",
+    "condition": null,
+    "quote": "use the apply_statement_credit_8472 tool"
+   },
+   {
+    "subject": "unlock_discoverable_agent_tool",
+    "predicate": "precedes",
+    "object": "call_discoverable_agent_tool",
+    "condition": null,
+    "quote": "First unlock the tool using unlock_discoverable_agent_tool, then call it using call_discoverable_agent_tool"
+   },
+   {
+    "subject": "apply_statement_credit_8472",
+    "predicate": "requires",
+    "object": "user_id",
+    "condition": null,
+    "quote": "user_id (string, required)"
+   },
+   {
+    "subject": "apply_statement_credit_8472",
+    "predicate": "requires",
+    "object": "credit_card_account_id",
+    "condition": null,
+    "quote": "credit_card_account_id (string, required)"
+   },
+   {
+    "subject": "apply_statement_credit_8472",
+    "predicate": "requires",
+    "object": "amount",
+    "condition": null,
+    "quote": "amount (number, required)"
+   },
+   {
+    "subject": "apply_statement_credit_8472",
+    "predicate": "requires",
+    "object": "reason",
+    "condition": null,
+    "quote": "reason (string, required)"
+   },
+   {
+    "subject": "get_credit_card_accounts_by_user",
+    "predicate": "determines_value_of",
+    "object": "credit_card_account_id",
+    "condition": null,
+    "quote": "This can be found by calling get_credit_card_accounts_by_user."
+   },
+   {
+    "subject": "amount",
+    "predicate": "limits",
+    "object": "statement credit",
+    "condition": null,
+    "quote": "Must be a positive number (e.g., 25.00 for a $25 credit)."
+   },
+   {
+    "subject": "reason",
+    "predicate": "defines",
+    "object": "statement credit",
+    "condition": null,
+    "quote": "Must be exactly one of:"
+   },
+   {
+    "subject": "statement credit",
+    "predicate": "applies_to",
+    "object": "statement balance",
+    "condition": "after applying, to confirm result",
+    "quote": "Verify the credit appears as a negative transaction in the customer\u2019s credit card transaction history and reduces the statement balance."
+   }
+  ],
+  "needs": [
+   {
+    "needs": "Eligibility/authorization policy for when goodwill, retention, fee reversal, or other statement credits may be granted and in what amounts",
+    "kind": "rule",
+    "why": "Document only explains how to apply a credit, not when an agent is permitted to or limits on amount"
+   },
+   {
+    "needs": "Customer user_id lookup/identity verification",
+    "kind": "data",
+    "why": "user_id is required but the document doesn't say how to obtain it"
+   },
+   {
+    "needs": "get_credit_card_accounts_by_user tool usage",
+    "kind": "tool",
+    "why": "Required to find credit_card_account_id"
+   },
+   {
+    "needs": "Dispute resolution process",
+    "kind": "procedure",
+    "why": "dispute_resolution reason implies a separate dispute process determines when credit is issued"
+   },
+   {
+    "needs": "Procedure to view credit card transaction history",
+    "kind": "tool",
+    "why": "Needed to verify the credit posted"
+   }
+  ],
+  "provides": [
+   "Procedure for applying a credit card statement credit via apply_statement_credit_8472",
+   "Requirement to unlock tool with unlock_discoverable_agent_tool before calling via call_discoverable_agent_tool",
+   "Required arguments: user_id, credit_card_account_id, amount, reason",
+   "Amount must be a positive number in dollars",
+   "Allowed reason codes: goodwill_adjustment, promotional_credit, annual_fee_reversal, late_fee_reversal, interest_charge_reversal, dispute_resolution, price_match, retention_offer, error_correction, other",
+   "Verification step: credit appears as negative transaction and reduces statement balance"
+  ]
+ }
+}

@@ -1,0 +1,472 @@
+[
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "gold-docs",
+  "task": "task_074",
+  "index": 20,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply works out the same net credits as the reference ($27.00, $14.50, $4.75, $3.70) and explains them, but it applies none of them. It neither contradicts nor rules out the credits, so it has not yet committed to the action the reference takes."
+ },
+ {
+  "file": "gen0",
+  "candidate": "plain",
+  "run": "base-B",
+  "task": "task_075",
+  "index": 10,
+  "n": 0,
+  "rejudge": "same_decision",
+  "why": "Like the reference, the new reply recommends the same two accounts, Green Fee-Free and Purple, with matching fee details. It takes no action and still requires identity verification with two identifiers before opening. Its extra questions about usage only help the customer choose and do not drop any condition the reference imposes."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "base-B",
+  "task": "task_075",
+  "index": 10,
+  "n": 0,
+  "rejudge": "same_decision",
+  "why": "Both replies compare the accounts' foreign ATM fees and point to Green Fee-Free as the zero-Rho-Bank-fee option, with Purple as the alternative. Neither opens anything yet. Both require identity verification with any two of date of birth, email, phone or address before opening. The new reply's added request for a full name and its leaner framing don't change the decision."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-B",
+  "task": "task_075",
+  "index": 10,
+  "n": 0,
+  "rejudge": "contrary_decision",
+  "why": "The reference says it cannot confirm whether Purple's $2.50 out-of-network fee applies abroad, and it leaves the choice to the customer. The new reply resolves that uncertainty on its own by assuming the fee doesn't apply. It then firmly recommends Purple as the lowest-cost option and moves toward opening it, dropping the caveat the reference kept."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It has not opened any account and has not committed either way, so it could still ask for the startup-eligibility and account-selection confirmations the reference requires."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It does not open any account, so it neither honors nor violates the reference's requirement to get the startup-eligibility and account-selection confirmations first."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It does not open any account or skip the confirmations yet, so it has not committed either way relative to the reference's requirement to confirm first."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-B",
+  "task": "task_018",
+  "index": 4,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only searches the documentation for reward-related policy. It does not commit to anything, and it does not skip the identity verification the reference requires."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 0,
+  "rejudge": "same_decision",
+  "why": "The new reply identifies the same five under-rewarded transactions and offers the cash back dispute tool for each of them. It recommends disputing only those five, which matches the reference giving the tool for those five transactions. It does not dispute the over-rewarded Google Ads transaction, and neither does the reference."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 0,
+  "rejudge": "same_decision",
+  "why": "The new reply names the same five underpaid transactions and offers the same dispute-submission tool for each. It does not offer a dispute for the overpaid one. It only asks for confirmation before handing the tool over, so it aligns with the reference's action."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 0,
+  "rejudge": "contrary_decision",
+  "why": "The reference gives the cash-back dispute tool for five specific transactions. The new reply gives it once with no transaction_id, which drops that per-transaction limit and leaves the scope of the disputes open."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "base-A",
+  "task": "task_016",
+  "index": 25,
+  "n": 0,
+  "rejudge": "contrary_decision",
+  "why": "The reference refuses to look up the purchase made on the friend's card. The new reply instead calls a transaction lookup, apparently to check that same purchase. That proceeds with the access the reference rules out, rather than declining."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "base-A",
+  "task": "task_016",
+  "index": 25,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only makes a read-only lookup of referral records. It has not yet checked or confirmed the friend's transaction, approved or completed the referral, or declined. So it has not committed either way."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-A",
+  "task": "task_016",
+  "index": 25,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only makes lookup tool calls for account and transaction data. It has not yet told the customer anything, nor committed to verifying the transaction or changing the referral status."
+ },
+ {
+  "file": "gen0",
+  "candidate": "plain",
+  "run": "gold-docs",
+  "task": "task_074",
+  "index": 20,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "The new reply commits to the same fee-refund credits as the reference, with matching amounts: $27.00 for Purple, $14.50 for Light Blue and $4.75 for Dark Green. It has not executed the tool calls yet and is cut off, but nothing in it departs from the reference's decision."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "gold-docs",
+  "task": "task_074",
+  "index": 20,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The new reply credits accounts 2, 3 and 4 with different, larger amounts (17.0, 6.5 and 5.5) than the reference (14.5, 4.75 and 3.7). It therefore refunds more than the reference allows."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "gold-docs",
+  "task": "task_099",
+  "index": 14,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The new reply still names World Blue as the top-paying option, but it drops the qualifying conditions the reference requires. Those include new money held for 30 days, the partner being a new customer, not sharing an address, and bonus reversal if he closes the account within 90 days. It also introduces alternative business referral options that the reference does not offer."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "base-B",
+  "task": "task_026",
+  "index": 41,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "Both replies give the user the same dispute tool to run four times, for the same four transactions, with the same user_id and transaction_id. The new reply leaves out the expected-rate context and the warning that GitHub's cash back may be lowered. That is missing information rather than a different action or a dropped refusal, limit, check or condition."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "base-B",
+  "task": "task_075",
+  "index": 10,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "The new reply gives essentially the same comparison as the reference. It highlights Green Fee-Free and Purple with matching fees, limits, maintenance waivers and the same caveat about the $2.50 out-of-network fee, and it notes the costlier alternatives. Instead of recommending one outright, it asks usage questions to help pick, but it neither commits to opening an account nor drops a check. The identity verification the reference mentions only applies once an account is chosen, which this reply has not reached."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "base-B",
+  "task": "task_075",
+  "index": 10,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "Both replies compare the accounts on foreign ATM fees and ask the customer to confirm which account to open. Both also require identity verification before opening anything. The new reply leans toward recommending the Green Fee-Free account, but it still lists Purple and its terms. It commits to nothing the reference rules out and drops no required check."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-B",
+  "task": "task_075",
+  "index": 10,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The reference leaves the choice to the customer and flags the $2.50 out-of-network fee as unconfirmed abroad. The new reply instead recommends Purple outright and resolves that open question by assuming the $0.00 fee applies. It then moves toward opening that account without asking which one the customer wants."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The reference holds off on opening any account until the customer confirms the Sky Blue startup eligibility (within 4 years of formation) and confirms the exact account selections. The new reply drops the formation-date check. It proceeds to open both accounts right away and starts unlocking the account-opening tool."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It neither opens an account nor asks the user anything, so it has not yet committed to or skipped the confirmations the reference requires."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "base-A",
+  "task": "task_018",
+  "index": 37,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The new reply claims the corrected amounts 'hold' and states a net correction of about 2,089 points ($20.89) as though settled. That drops the reference's explicit limit that the agent cannot promise how the review will turn out. It only disclaims the timeline, not the outcome."
+ },
+ {
+  "file": "gen0",
+  "candidate": "plain",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "Both replies give the user the same submit_cash_back_dispute_0589 tool for the same user_id, so the core decision to let the user file cash-back disputes is the same. The new reply grants it once without pre-filled transaction IDs, whereas the reference grants it for five specific transactions. That is a difference in pre-filled arguments, not a different or contrary action."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "The new reply flags the same five under-rewarded transactions and offers the cash back dispute tool for them, which matches the reference. It is only asking for confirmation before handing over the tool, and it commits to nothing the reference rules out."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "The new reply names the same five transactions and offers the same cash back dispute tool with the same user ID and transaction IDs. It asks for confirmation before handing the tool over, but it commits to the same course of action and adds no contrary limits."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-A",
+  "task": "task_028",
+  "index": 25,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The reference gives the cash-back dispute tool five times, each pre-filled with the user ID and one specific transaction. The new reply gives the tool once with empty arguments. That drops both the user ID and the scoping to the five chosen transactions, so it does not commit to the same disputes and removes the limit the reference imposed."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-A",
+  "task": "task_074",
+  "index": 6,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only searches and reads policy documents about ATM features on checking accounts. It has not committed to any action, has not asked for identity verification, and has not skipped it."
+ },
+ {
+  "file": "gen0",
+  "candidate": "review",
+  "run": "base-A",
+  "task": "task_018",
+  "index": 25,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The reference gives the dispute tool for one transaction only (txn_adea68821a1d). The new reply gives it for six transactions, including the Google Ads one, which goes beyond the scope the reference set."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-A",
+  "task": "task_016",
+  "index": 25,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only makes a lookup tool call (fetching the user's referrals). It does not yet decline, approve, or commit to anything regarding the friend's transaction or the referral status."
+ },
+ {
+  "file": "gen0",
+  "candidate": "method_review",
+  "run": "base-A",
+  "task": "task_075",
+  "index": 28,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only reads a document and searches files. It has not recommended an account, stated any caveats or offered to open one, so it has not committed either way."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "base-B",
+  "task": "task_072",
+  "index": 33,
+  "n": 0,
+  "rejudge": "contrary_decision",
+  "why": "The new reply leaves out the reference's rule that the same account can't get another credit for 14 days. It even invites the customer to report a repeat fee right away, which drops that limit."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "base-B",
+  "task": "task_072",
+  "index": 33,
+  "n": 0,
+  "rejudge": "same_decision",
+  "why": "The new reply confirms the same outcome: the $14.00 and $3.50 credits stand and nothing further needs to change on either account. It adds an audit-style breakdown of the fee errors but takes no new action. It is cut off before mentioning the 14-day credit limit, so it cannot be shown to drop that condition."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It has not opened any account and has not skipped the startup-eligibility and account-selection confirmations the reference requires, so it has not committed either way."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It has not opened any account or committed to doing so. It has also not yet asked for or skipped the confirmations the reference requires, so no decision has been made either way."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "base-A",
+  "task": "task_057",
+  "index": 69,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only runs a shell search for overdraft-related tools. It does not give the check deposit instructions, refuse to deposit on the user's behalf, or commit to any action, so no decision has been made yet."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "base-A",
+  "task": "task_057",
+  "index": 47,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only reads account documents through a shell command. It has not recommended an account, declined anything, or offered to open one, so it has not yet committed to a decision either way."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "base-A",
+  "task": "task_074",
+  "index": 6,
+  "n": 0,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only reads fee-term documents with a shell command. It says it is still waiting for verification details, so it neither drops the identity check nor commits to any account-specific action."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "base-B",
+  "task": "task_024",
+  "index": 13,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only reads documents to re-check Silver card details. It has not yet confirmed or changed the recommendation, so it commits to nothing either way."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "base-B",
+  "task": "task_024",
+  "index": 13,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only runs a shell command to read card documents and search files. It doesn't confirm or reject the recommendation, so nothing has been committed yet."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "base-B",
+  "task": "task_072",
+  "index": 33,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "The new reply confirms the same completed credits: Bluest corrections total $14.00 and Light Green nets to $3.50. It takes no new or conflicting action and does not offer anything the reference rules out. It is cut off before reaching the reference's 14-day note, but nothing it says contradicts that limit."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only unlocks the account-opening tool, which is a preparatory step. It has not opened any account or told the customer anything, so it neither drops nor fulfills the reference's requirement to confirm startup eligibility and the account selections first."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "gold-docs",
+  "task": "task_071",
+  "index": 19,
+  "n": 1,
+  "rejudge": "contrary_decision",
+  "why": "The reference requires explicit confirmation of both account selections before opening anything. The new reply moves to open the Gold Saver account right away, without getting that confirmation, and so drops a condition the reference imposes."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "base-A",
+  "task": "task_057",
+  "index": 47,
+  "n": 1,
+  "rejudge": "same_decision",
+  "why": "Both replies take no action, keep Blue as the recommended account, and ask the user to confirm before opening it. The new reply skips the Evergreen and premium-account questions, but it does not commit to anything the reference rules out. It also drops no refusal or required check; instead it adds a caveat about linking a savings account."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c1",
+  "run": "base-A",
+  "task": "task_074",
+  "index": 6,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only searches the policy documents for ATM-related information. It has not yet acted on the account, given account-specific information, or skipped the identity check, so it has not committed either way."
+ },
+ {
+  "file": "evolve_gen1",
+  "candidate": "g1c0",
+  "run": "base-A",
+  "task": "task_016",
+  "index": 25,
+  "n": 1,
+  "rejudge": "no_decision_yet",
+  "why": "The new reply only makes lookup calls for the user's own accounts and transactions. It does not appear to access the friend's account, and it has not yet confirmed, approved or refused anything about the referral transaction."
+ }
+]

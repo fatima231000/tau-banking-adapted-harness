@@ -1,0 +1,1780 @@
+{
+ "sample": [
+  "doc_bank_accounts_bank_accounts_(general)_018",
+  "doc_bank_accounts_bank_accounts_(general)_023",
+  "doc_bank_accounts_bank_accounts_(general)_025",
+  "doc_bank_accounts_bank_accounts_(general)_026",
+  "doc_bank_accounts_bank_accounts_(general)_029",
+  "doc_bank_accounts_bank_accounts_(general)_031",
+  "doc_bank_accounts_bank_accounts_(general)_035",
+  "doc_bank_accounts_bank_accounts_(general)_039",
+  "doc_bank_accounts_bank_accounts_(general)_043",
+  "doc_bank_accounts_bank_accounts_(general)_044",
+  "doc_credit_cards_credit_cards_(general)_016",
+  "doc_bank_accounts_bank_accounts_(general)_024",
+  "doc_bank_accounts_bank_accounts_(general)_028",
+  "doc_bank_accounts_bank_accounts_(general)_037",
+  "doc_credit_cards_credit_card_account_logistics_003",
+  "doc_credit_cards_credit_cards_(general)_014",
+  "doc_checking_accounts_checking_accounts_(general)_003",
+  "doc_bank_accounts_bank_accounts_(general)_032",
+  "doc_bank_accounts_bank_accounts_(general)_030",
+  "doc_credit_cards_credit_cards_(general)_017"
+ ],
+ "bm25_edges": [
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 81.55
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "score": 80.73
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "score": 78.0
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_029",
+   "score": 281.02
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "score": 183.94
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 179.15
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_026",
+   "score": 270.24
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 255.13
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "score": 246.36
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "score": 199.91
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "score": 163.91
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "score": 163.26
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_029",
+   "b": "doc_bank_accounts_bank_accounts_(general)_023",
+   "score": 342.54
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_029",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "score": 175.52
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_029",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 169.9
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "score": 420.2
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_032",
+   "score": 403.0
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "score": 372.13
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_bank_accounts_bank_accounts_(general)_032",
+   "score": 135.09
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "score": 113.99
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 111.64
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_039",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "score": 245.51
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_039",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "score": 222.58
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_039",
+   "b": "doc_bank_accounts_bank_accounts_(general)_026",
+   "score": 196.01
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "score": 283.94
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "score": 200.92
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 171.73
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "score": 314.87
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 132.62
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 127.08
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_016",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "score": 181.08
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_016",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 174.32
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_016",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "score": 169.13
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "score": 276.74
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "score": 263.01
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "score": 247.17
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "score": 172.38
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "score": 152.81
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_029",
+   "score": 136.51
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "score": 484.62
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 418.48
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_bank_accounts_bank_accounts_(general)_030",
+   "score": 343.43
+  },
+  {
+   "a": "doc_credit_cards_credit_card_account_logistics_003",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "score": 313.78
+  },
+  {
+   "a": "doc_credit_cards_credit_card_account_logistics_003",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 299.87
+  },
+  {
+   "a": "doc_credit_cards_credit_card_account_logistics_003",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "score": 299.4
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_014",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 277.01
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_014",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "score": 214.31
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_014",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 183.28
+  },
+  {
+   "a": "doc_checking_accounts_checking_accounts_(general)_003",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "score": 549.55
+  },
+  {
+   "a": "doc_checking_accounts_checking_accounts_(general)_003",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "score": 436.93
+  },
+  {
+   "a": "doc_checking_accounts_checking_accounts_(general)_003",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "score": 412.52
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_032",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "score": 222.76
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_032",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "score": 190.29
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_032",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "score": 175.61
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "score": 169.25
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "score": 155.07
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 142.91
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_017",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "score": 171.35
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_017",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "score": 165.68
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_017",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "score": 145.68
+  }
+ ],
+ "entity_edges": [
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_029",
+   "needs_provides": [
+    "[general)_023 needs] account tier definitions and tier-based fee schedule (rule) \u2190 [general)_029 provides] Delivery fee values by tier and shipping speed (Mid expedited $15, Premium rush $35, Elite all $0) | Gives tier-based delivery fee values.",
+    "[general)_023 needs] account tier definitions and tier-based fee schedule (rule) \u2190 [general)_029 provides] Design fees by tier for CLASSIC, PREMIUM, CUSTOM designs | Gives tier-based design fees.",
+    "[general)_029 needs] order_debit_card_5739 tool specification (tool) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Ordering procedure using order_debit_card_5739."
+   ],
+   "shared_tools": [
+    "order_debit_card_5739"
+   ],
+   "shared_entities": [
+    "standard shipping",
+    "classic card design",
+    "custom card design fee",
+    "order_debit_card_5739"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "needs_provides": [
+    "[general)_023 needs] debit_cards table lookup (data) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Tool for looking up debit cards by account.",
+    "[general)_028 needs] Procedure/tool for ordering a new debit card (procedure) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Debit card ordering procedure.",
+    "[general)_028 needs] Rule on whether a new card may be ordered when an active or pending card exists (rule) \u2190 [general)_023 provides] debit card eligibility requirements (checking only, verified, OPEN, 3 business days, max 1 active card, $25 minimum balance, age 18+, no pending order, US address) | Eligibility allows max 1 active card and no pending order."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account",
+    "debit card activation"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "needs_provides": [
+    "[general)_025 needs] debit card ordering / replacement process (procedure) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Step-by-step debit card ordering procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "needs_provides": [
+    "[general)_025 needs] transaction dispute filing procedure (procedure) \u2190 [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Defines how to file a debit card dispute.",
+    "[general)_031 needs] close and reissue card tool/procedure (tool) \u2190 [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "needs_provides": [
+    "[general)_025 needs] lookup of card details (status, user_id, date_issued, pending transactions, pending refunds) (data) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool.",
+    "[general)_025 needs] lookup of card details (status, user_id, date_issued, pending transactions, pending refunds) (data) \u2190 [general)_028 provides] List of debit card fields returned and their meanings | Defines the card fields returned by the lookup.",
+    "[general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) \u2190 [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Close procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "debit card status",
+    "date issued",
+    "card id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_026",
+   "needs_provides": [
+    "[general)_026 needs] Debit card closure procedure for lost/stolen cards (procedure) \u2190 [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | close_debit_card_4721 usage with a reason parameter.",
+    "[general)_026 needs] Debit card closure procedure for lost/stolen cards (procedure) \u2190 [general)_025 provides] lost/stolen cards closed immediately with no cooling-off period | Lost/stolen cards are closed immediately."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "pending transactions",
+    "identity verification",
+    "debit card status",
+    "card id",
+    "recurring subscription"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "needs_provides": [
+    "[general)_026 needs] Card status and ownership lookup (card_id, card status, owner) (data) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Card lookup returns card_id and status.",
+    "[general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) \u2190 [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze procedure.",
+    "[general)_028 needs] Procedure/tools for freezing, unfreezing and closing debit cards (procedure) \u2190 [general)_026 provides] Unfreeze steps using unfreeze_debit_card_3893 with card_id | Unfreeze procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card status",
+    "card id",
+    "debit card closure"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_029",
+   "needs_provides": [
+    "[general)_029 needs] tool/procedure to retrieve all cards for the account (tool) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Retrieves all cards for an account."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "date issued",
+    "issue reason"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_029",
+   "needs_provides": [
+    "[general)_029 needs] card closure procedure and closure timestamp (procedure) \u2190 [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Card closure tool procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "date issued"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_032",
+   "needs_provides": [
+    "[general)_031 needs] Debit Card Provisional Credit Guidelines (rule) \u2190 [general)_032 provides] Conditions under which debit card provisional credit is required (60-day timely reporting, qualifying dispute categories, written statement, open checking account with no holds) | Conditions requiring debit card provisional credit.",
+    "[general)_031 needs] Debit Card Provisional Credit Guidelines (rule) \u2190 [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | Provisional credit deadlines.",
+    "[general)_031 needs] Debit Card Provisional Credit Guidelines (rule) \u2190 [general)_032 provides] Debit provisional credit amount rule: full disputed amount minus late-reporting liability ($50 or $500) | Rule for the provisional credit amount.",
+    "[general)_032 needs] Rule for determining whether customer liability is $50 or $500 for late reporting (rule) \u2190 [general)_031 provides] Regulation E liability tiers: $50 within 2 business days, $500 within 60 days, unlimited after 60 days | Reg E liability tiers of $50 and $500.",
+    "[general)_032 needs] Procedure/tool for filing a debit card dispute and issuing provisional credit (procedure) \u2190 [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit card dispute filing tool.",
+    "[general)_032 needs] Definition of which dispute categories count as fraud vs non-fraud (definition) \u2190 [general)_031 provides] Fraud vs unauthorized_transaction categorization rule | Fraud vs unauthorized categorization rule."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "regulation e",
+    "debit card dispute",
+    "provisional credit",
+    "dispute category",
+    "written statement",
+    "pin compromised"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "needs_provides": [
+    "[general)_031 needs] transaction lookup via get_bank_account_transactions_9173 (tool) \u2190 [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Usage of get_bank_account_transactions_9173."
+   ],
+   "shared_tools": [
+    "get_bank_account_transactions_9173"
+   ],
+   "shared_entities": [
+    "get_bank_account_transactions_9173",
+    "transaction type",
+    "everyonepay"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "needs_provides": [
+    "[general)_031 needs] close and reissue card tool/procedure (tool) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Procedure for ordering a reissued card."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "needs_provides": [
+    "[general)_031 needs] freeze_debit_card_3892 usage (tool) \u2190 [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze steps using freeze_debit_card_3892."
+   ],
+   "shared_tools": [
+    "freeze_debit_card_3892"
+   ],
+   "shared_entities": [
+    "identity verification",
+    "freeze_debit_card_3892"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_032",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "needs_provides": [
+    "[general)_035 needs] Definition of what qualifies as a 'new account' for the extended 20-day provisional credit window (definition) \u2190 [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | New account defined as open less than 30 days.",
+    "[general)_035 needs] Definition of international/POS transactions qualifying for the 90-day investigation window (definition) \u2190 [general)_032 provides] Investigation timeline with provisional credit: 45 business days, extended to 90 days for international, foreign POS, or new accounts | Lists international and foreign POS transactions for the extended window.",
+    "[general)_035 needs] Dispute filing procedure and dispute category definitions (procedure) \u2190 [general)_032 provides] List of dispute categories qualifying for required provisional credit | Lists qualifying dispute categories.",
+    "[general)_035 needs] Whether day counts are business or calendar days and the start date for timelines (definition) \u2190 [general)_032 provides] Provisional credit issuance deadlines: 10 business days standard, 20 business days for accounts open less than 30 days | Specifies business days for the deadlines."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card dispute",
+    "provisional credit",
+    "dispute category",
+    "dispute investigation timeline",
+    "new account"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) \u2190 [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Defines the scope of Regulation E.",
+    "[general)_035 needs] Underlying regulation (e.g., Regulation E) establishing the dispute timelines (rule) \u2190 [general)_037 provides] Investigation timelines: ~10 business days to investigate, 3 business days to report results, 1 business day to correct | Regulation E investigation timelines."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "provisional credit",
+    "dispute investigation timeline"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "needs_provides": [
+    "[general)_035 needs] Dispute filing procedure and dispute category definitions (procedure) \u2190 [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing arguments and categories."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card dispute",
+    "provisional credit",
+    "dispute category",
+    "police report"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [
+    "[general)_039 needs] Customer's debit card ID and whether an alert is customer- or bank-initiated (data) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Lookup returns the debit card ID."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "card id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [
+    "[general)_039 needs] Process for handling reported unauthorized transactions/disputes (procedure) \u2190 [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit dispute filing procedure.",
+    "[general)_039 needs] Process for handling reported unauthorized transactions/disputes (procedure) \u2190 [general)_031 provides] Pre-filing requirements: verified, >= $1.00, within 60 days, open checking account, ATM ownership check | Pre-filing requirements for disputes."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [
+    "[general)_043 needs] Usage details for submit_interest_discrepancy_report_7294 (tool) \u2190 [general)_044 provides] Parameter definitions for submit_interest_discrepancy_report_7294 (account_id, user_id, expected_apy, actual_apy, amount_difference) with APY format as percentage number | Parameter definitions for the discrepancy report tool.",
+    "[general)_043 needs] Usage details for submit_interest_discrepancy_report_7294 (tool) \u2190 [general)_044 provides] Criteria for when to submit an interest discrepancy report (missing APY boost, incorrect tier rate, missing relationship bonus, system calculation error) | Criteria for when to submit the report.",
+    "[general)_044 needs] apply_savings_account_credit_6831 usage and parameters (tool) \u2190 [general)_043 provides] Parameters of apply_savings_account_credit_6831 (account_id, amount > 0, credit_type enum) | Parameters of apply_savings_account_credit_6831.",
+    "[general)_044 needs] apply_savings_account_credit_6831 usage and parameters (tool) \u2190 [general)_043 provides] Six-step procedure for applying a savings account credit | Procedure for applying a savings credit."
+   ],
+   "shared_tools": [
+    "get_bank_account_transactions_9173",
+    "apply_savings_account_credit_6831",
+    "get_all_user_accounts_by_user_id_3847",
+    "submit_interest_discrepancy_report_7294"
+   ],
+   "shared_entities": [
+    "get_bank_account_transactions_9173",
+    "savings account",
+    "account id",
+    "identity verification",
+    "apply_savings_account_credit_6831",
+    "get_all_user_accounts_by_user_id_3847",
+    "submit_interest_discrepancy_report_7294",
+    "linked checking apy boost",
+    "savings apy rates",
+    "relationship bonus",
+    "backend team",
+    "interest discrepancy report"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [
+    "[general)_044 needs] get_bank_account_transactions_9173 tool (tool) \u2190 [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Usage of the transactions tool.",
+    "[general)_044 needs] Customer account and transaction data (data) \u2190 [general)_018 provides] Transaction record field definitions: transaction_id, account_id, date, description, amount, type, status | Defines transaction record fields."
+   ],
+   "shared_tools": [
+    "get_bank_account_transactions_9173"
+   ],
+   "shared_entities": [
+    "get_bank_account_transactions_9173",
+    "savings account",
+    "account id"
+   ]
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_014",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [
+    "[general)_016 needs] reason code definitions (definition) \u2190 [general)_014 provides] allowed dispute_reason values | Allowed credit card dispute reason values."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "transaction id",
+    "user id",
+    "credit card dispute",
+    "card last 4 digits",
+    "credit card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "needs_provides": [
+    "[general)_024 needs] debit_cards table lookup (issue_reason, status, expiration_date) (data) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool.",
+    "[general)_024 needs] debit_cards table lookup (issue_reason, status, expiration_date) (data) \u2190 [general)_028 provides] List of debit card fields returned and their meanings | Card fields such as issue_reason, status and expiration.",
+    "[general)_028 needs] Mapping from issue_reason to the specific debit card activation tool (tool) \u2190 [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Maps issue_reason to an activation tool."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card activation",
+    "issue reason",
+    "card last 4 digits",
+    "card expiration date"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "needs_provides": [
+    "[general)_024 needs] procedure for handling suspicious/unauthorized transactions after replacement (procedure) \u2190 [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Dispute filing for unauthorized transactions."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Internal protocol for activating a pending replacement debit card (procedure) \u2190 [general)_024 provides] Step-by-step debit card activation procedure | Step-by-step activation procedure.",
+    "[general)_037 needs] Internal protocol for activating a pending replacement debit card (procedure) \u2190 [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Selects the activation tool by issue_reason."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card activation",
+    "issue reason"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Lost debit card protocol (procedure) \u2190 [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Closing a card with reason 'lost'."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "replacement debit card order"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Protocol for ordering a replacement debit card (procedure) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Ordering procedure for a replacement card."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card activation"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Tool to look up debit card information (issue_reason, status, other cards) (tool) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card activation",
+    "issue reason"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Tool/data to review recent transaction history (tool) \u2190 [general)_018 provides] Usage of get_bank_account_transactions_9173(account_id) to retrieve checking/savings transaction history | Transaction history tool."
+   ],
+   "shared_tools": [],
+   "shared_entities": []
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_032",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Definition of 'qualifying disputes' for provisional credit (definition) \u2190 [general)_032 provides] List of dispute categories qualifying for required provisional credit | Lists dispute categories qualifying for provisional credit.",
+    "[general)_032 needs] Rule for determining whether customer liability is $50 or $500 for late reporting (rule) \u2190 [general)_037 provides] Unauthorized transaction liability tiers: $50 within 2 business days, $500 within 60 days, full liability after 60 days | Liability tiers by reporting time.",
+    "[general)_032 needs] Regulation E details (rule) \u2190 [general)_037 provides] Scope of Regulation E covered electronic fund transfers | Regulation E scope.",
+    "[general)_032 needs] Regulation E details (rule) \u2190 [general)_037 provides] Unauthorized transaction liability tiers: $50 within 2 business days, $500 within 60 days, full liability after 60 days | Regulation E liability rules.",
+    "[general)_032 needs] Regulation E details (rule) \u2190 [general)_037 provides] Investigation timelines: ~10 business days to investigate, 3 business days to report results, 1 business day to correct | Regulation E timelines."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "regulation e",
+    "provisional credit",
+    "dispute investigation timeline",
+    "documentation rights"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [
+    "[general)_037 needs] Dispute filing procedure/tool for Regulation E claims (procedure) \u2190 [general)_031 provides] Argument definitions and allowed values for file_debit_card_transaction_dispute_6281 | Debit card dispute filing tool arguments."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "regulation e",
+    "reg e liability limits",
+    "provisional credit"
+   ]
+  },
+  {
+   "a": "doc_credit_cards_credit_card_account_logistics_003",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [
+    "[ogistics_003 needs] Procedure/tool for applying bonus points or statement credits (tool) \u2190 [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Statement credit procedure.",
+    "[ogistics_003 needs] Annual fee refund procedure (procedure) \u2190 [general)_017 provides] Procedure for applying a credit card statement credit via apply_statement_credit_8472 | Statement credit can be used for annual fee reversal.",
+    "[ogistics_003 needs] Annual fee refund procedure (procedure) \u2190 [general)_017 provides] Allowed reason codes: goodwill_adjustment, promotional_credit, annual_fee_reversal, late_fee_reversal, interest_charge_reversal, dispute_resolution, price_match, retention_offer, error_correction, other | annual_fee_reversal is an allowed reason code.",
+    "[general)_017 needs] Eligibility/authorization policy for when goodwill, retention, fee reversal, or other statement credits may be granted and in what amounts (rule) \u2190 [ogistics_003 provides] Tier-based retention offers: entry 500 pts/$5, mid 2,000 pts/$20, premium 5,000 pts/$50; only one offer | Retention offer credit amounts by tier."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "goodwill credit",
+    "credit card account id",
+    "retention offer",
+    "statement credit"
+   ]
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_014",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [
+    "[general)_014 needs] procedure to unlock discoverable tools (procedure) \u2190 [general)_017 provides] Requirement to unlock tool with unlock_discoverable_agent_tool before calling via call_discoverable_agent_tool | Explains unlocking discoverable tools.",
+    "[general)_017 needs] Dispute resolution process (procedure) \u2190 [general)_014 provides] procedure for filing a credit card transaction dispute via file_credit_card_transaction_dispute_4829 | Credit card dispute filing procedure."
+   ],
+   "shared_tools": [
+    "call_discoverable_agent_tool"
+   ],
+   "shared_entities": [
+    "user id",
+    "call_discoverable_agent_tool",
+    "unlock tool"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [
+    "[general)_003 needs] freezing/unfreezing card protocol (procedure) \u2190 [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze procedure.",
+    "[general)_003 needs] freezing/unfreezing card protocol (procedure) \u2190 [general)_026 provides] Unfreeze steps using unfreeze_debit_card_3893 with card_id | Unfreeze procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [
+    "[general)_003 needs] debit card activation protocol (procedure) \u2190 [general)_024 provides] Step-by-step debit card activation procedure | Activation procedure.",
+    "[general)_003 needs] debit card activation protocol (procedure) \u2190 [general)_024 provides] Tool selection mapping from issue_reason to activate_debit_card_8291/8292/8293 | Activation tool mapping."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "debit card activation",
+    "issue reason",
+    "card last 4 digits",
+    "card expiration date"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [
+    "[general)_003 needs] debit card lookup tool (tool) \u2190 [general)_028 provides] Usage of get_debit_cards_by_account_id_7823(account_id) | Debit card lookup tool."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card activation",
+    "date issued",
+    "issue reason",
+    "card last 4 digits",
+    "card expiration date",
+    "freeze/unfreeze debit card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_039",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [
+    "[general)_003 needs] tools to clear fraud alert, clear velocity block, and order replacement card (tool) \u2190 [general)_039 provides] Usage, parameters and reason codes (customer_verified, velocity_clear) for clear_debit_card_fraud_alert_4892 | Clear fraud alert/velocity tool usage."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "bank-initiated fraud alert",
+    "velocity block",
+    "velocity block auto-lift 30 minutes"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [
+    "[general)_003 needs] tools to clear fraud alert, clear velocity block, and order replacement card (tool) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Order replacement card tool.",
+    "[general)_003 needs] replacement card ordering procedure (procedure) \u2190 [general)_023 provides] step-by-step debit card ordering procedure using order_debit_card_5739 | Card ordering procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "debit card activation"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_030",
+   "needs_provides": [
+    "[general)_030 needs] standard debit card freeze/close procedure (procedure) \u2190 [general)_026 provides] Freeze steps using freeze_debit_card_3892 with card_id | Freeze procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": [
+    "lost or stolen card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_030",
+   "needs_provides": [
+    "[general)_030 needs] standard debit card freeze/close procedure (procedure) \u2190 [general)_025 provides] close_debit_card_4721 usage with parameters card_id and reason | Close procedure."
+   ],
+   "shared_tools": [],
+   "shared_entities": []
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [
+    "[general)_017 needs] get_credit_card_accounts_by_user tool usage (tool) \u2190 [general)_030 provides] Use of get_credit_card_accounts_by_user to check credit cards (returns active and closed accounts) | Usage of get_credit_card_accounts_by_user."
+   ],
+   "shared_tools": [
+    "get_credit_card_accounts_by_user"
+   ],
+   "shared_entities": [
+    "get_credit_card_accounts_by_user"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [
+    "get_bank_account_transactions_9173"
+   ],
+   "shared_entities": [
+    "get_bank_account_transactions_9173",
+    "savings account",
+    "account id",
+    "monthly maintenance fee",
+    "fee refund"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [
+    "get_bank_account_transactions_9173"
+   ],
+   "shared_entities": [
+    "get_bank_account_transactions_9173",
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [
+    "get_bank_account_transactions_9173"
+   ],
+   "shared_entities": [
+    "get_bank_account_transactions_9173",
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_023",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_028",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account",
+    "account id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account",
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account",
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account",
+    "account id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "savings account",
+    "account id",
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "account id",
+    "transaction id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "account id",
+    "supervisor"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "account id",
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "account id",
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "transaction id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "transaction id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "transaction id",
+    "user id",
+    "dispute id",
+    "dispute date",
+    "dispute status"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "transaction id",
+    "user id",
+    "provisional credit"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "pending transactions"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_018",
+   "b": "doc_bank_accounts_bank_accounts_(general)_026",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "pending transactions"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_026",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "account status open",
+    "mobile app"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_024",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "debit cards table",
+    "debit card activation"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "card id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_039",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_039",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "card id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "date issued",
+    "replacement debit card order"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_026",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "recurring subscription"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_025",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification",
+    "recurring subscription"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_043",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_044",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "identity verification"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_023",
+   "b": "doc_bank_accounts_bank_accounts_(general)_032",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "account status open"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_bank_accounts_bank_accounts_(general)_032",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "account status open"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "debit card activation",
+    "replacement debit card order",
+    "issue reason",
+    "card status",
+    "transfer to human agent"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "dispute resolution"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_035",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "supervisor"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_bank_accounts_bank_accounts_(general)_035",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "minimum account age for closure",
+    "recurring subscription"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_025",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_credit_cards_credit_cards_(general)_016",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_044",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_credit_cards_credit_card_account_logistics_003",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_credit_cards_credit_card_account_logistics_003",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "card last 4 digits"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_028",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "user id",
+    "card last 4 digits"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_029",
+   "b": "doc_checking_accounts_checking_accounts_(general)_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "date issued",
+    "issue reason"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "recurring subscription"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_026",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "recurring subscription"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_bank_accounts_bank_accounts_(general)_029",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "replacement debit card",
+    "issue reason"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_029",
+   "b": "doc_bank_accounts_bank_accounts_(general)_031",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "checking account tier"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_029",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "issue reason"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_032",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "provisional credit",
+    "unauthorized transaction"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_031",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "provisional credit",
+    "card action",
+    "merchant contact"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "provisional credit",
+    "credit card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_credit_cards_credit_card_account_logistics_003",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "supervisor",
+    "goodwill credit"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "security team"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_bank_accounts_bank_accounts_(general)_039",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "customer service agent"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_043",
+   "b": "doc_credit_cards_credit_cards_(general)_017",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "goodwill credit",
+    "credit amount"
+   ]
+  },
+  {
+   "a": "doc_checking_accounts_checking_accounts_(general)_003",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "card last 4 digits"
+   ]
+  },
+  {
+   "a": "doc_checking_accounts_checking_accounts_(general)_003",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "card last 4 digits"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "card last 4 digits"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_024",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "card last 4 digits"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_037",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "credit card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_credit_cards_credit_cards_(general)_014",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "credit card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_credit_cards_credit_cards_(general)_016",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "credit card"
+   ]
+  },
+  {
+   "a": "doc_bank_accounts_bank_accounts_(general)_030",
+   "b": "doc_bank_accounts_bank_accounts_(general)_037",
+   "needs_provides": [],
+   "shared_tools": [],
+   "shared_entities": [
+    "credit card"
+   ]
+  }
+ ],
+ "canonical_map": {
+  "card last 4 digits": "card last 4 digits",
+  "card last4": "card last 4 digits",
+  "card number last 4": "card last 4 digits",
+  "card id": "card id",
+  "card_id": "card id",
+  "date issued": "date issued",
+  "date_issued": "date issued",
+  "card date issued": "date issued",
+  "dispute id": "dispute id",
+  "dispute_id": "dispute id",
+  "transaction id": "transaction id",
+  "transaction_id": "transaction id",
+  "user id": "user id",
+  "user_id": "user id",
+  "issue reason": "issue reason",
+  "issue_reason": "issue reason",
+  "card issue reason": "issue reason",
+  "regulation e": "regulation e",
+  "electronic fund transfers": "regulation e",
+  "reg e liability limits": "reg e liability limits",
+  "unauthorized transaction liability limits": "reg e liability limits",
+  "debit cards table": "debit cards table",
+  "debit_cards table": "debit cards table",
+  "velocity block auto-lift 30 minutes": "velocity block auto-lift 30 minutes",
+  "velocity block expiry 30 minutes": "velocity block auto-lift 30 minutes",
+  "rush delivery fee": "rush delivery fee",
+  "expedited delivery fee": "rush delivery fee",
+  "rush shipping": "rush shipping",
+  "expedited shipping": "rush shipping",
+  "standard shipping": "standard shipping",
+  "standard delivery": "standard shipping",
+  "custom card design fee": "custom card design fee",
+  "design fee": "custom card design fee",
+  "premium card design fee": "custom card design fee",
+  "monthly maintenance fee": "monthly maintenance fee",
+  "monthly fee": "monthly maintenance fee",
+  "goodwill credit": "goodwill credit",
+  "goodwill adjustment": "goodwill credit",
+  "identity verification": "identity verification",
+  "customer identity verification": "identity verification",
+  "customer verification": "identity verification",
+  "human agent transfer": "transfer to human agent",
+  "transfer_to_human_agents": "transfer to human agent",
+  "mobile app": "mobile app",
+  "rho-bank mobile app": "mobile app",
+  "replacement debit card order": "replacement debit card order",
+  "order replacement debit card": "replacement debit card order",
+  "replacement card order": "replacement debit card order",
+  "replacement debit card": "replacement debit card",
+  "reissued debit card": "replacement debit card",
+  "debit card replacement": "replacement debit card",
+  "freeze/unfreeze debit card": "freeze/unfreeze debit card",
+  "freeze unfreeze card protocol": "freeze/unfreeze debit card",
+  "debit card closure": "debit card closure",
+  "close debit card": "debit card closure",
+  "lost or stolen card": "lost or stolen card",
+  "lost stolen debit card": "lost or stolen card",
+  "merchant contact": "merchant contact",
+  "contacted merchant": "merchant contact",
+  "dispute date": "dispute date",
+  "dispute filing date": "dispute date",
+  "dispute investigation timeline": "dispute investigation timeline",
+  "dispute investigation deadline": "dispute investigation timeline",
+  "error investigation timelines": "dispute investigation timeline",
+  "dispute regulatory timelines": "dispute investigation timeline",
+  "unauthorized transaction": "unauthorized transaction",
+  "unauthorized fraudulent charge": "unauthorized transaction",
+  "documentation rights": "documentation rights",
+  "dispute documentation request right": "documentation rights",
+  "fee refund": "fee refund",
+  "fee rebate": "fee refund",
+  "rebate credit": "fee refund",
+  "provisional credit eligibility": "provisional credit eligibility",
+  "provisional credit eligibility guidelines": "provisional credit eligibility",
+  "savings apy rates": "savings apy rates",
+  "savings tier rate": "savings apy rates",
+  "apy tier rate": "savings apy rates",
+  "unlock tool": "unlock tool",
+  "unlock_discoverable_agent_tool": "unlock tool",
+  "decline code 34 suspected fraud": "decline code suspected fraud",
+  "decline code 59 suspected fraud": "decline code suspected fraud",
+  "bank-initiated fraud alert": "bank-initiated fraud alert",
+  "bank initiated fraud alert no clear": "bank-initiated fraud alert",
+  "recurring subscription": "recurring subscription",
+  "recurring payments": "recurring subscription",
+  "debit card activation": "debit card activation",
+  "debit card activation protocol": "debit card activation",
+  "minimum account age for closure": "minimum account age for closure",
+  "debit card minimum age for closure": "minimum account age for closure"
+ },
+ "generic_entities": [
+  "checking account",
+  "debit card"
+ ],
+ "tokens": {
+  "input": 20017,
+  "output": 6104
+ }
+}
