@@ -102,6 +102,25 @@ DECISION_NOTE = (
 )
 
 
+SKILLS = """
+<skills>
+The bank's procedures have been compiled into skill cards. A card gives, for one kind of request:
+the procedure's steps in order, the lookups that prove each condition, how each tool argument is
+determined, and rulings where the bank's documents conflict or leave a gap.
+
+How to work:
+1. When the customer asks for something, call `skill_search` with a few words describing it, and
+   `load_skill` the card that fits. Do this before you promise, refuse, recommend or act.
+2. Follow the card: do its steps in order, make its lookups, and apply its rulings. A ruling is the
+   bank's decision on a point where the documents disagree; follow it rather than re-deciding.
+3. Confirm the specific rule you rely on in the card's source document before a state-changing call.
+4. If no card fits, or a card says it is STALE, work from the knowledge base directly.
+5. Do what the customer asked. Advice in a document is something to tell the customer, not a
+   reason to replace their request with a different action.
+</skills>
+""".strip()
+
+
 def build_system_prompt(base: str, cfg: HarnessConfig) -> str:
     """Base agent prompt (instructions + domain policy) followed by the enabled harness sections."""
     parts = [base]
@@ -111,4 +130,24 @@ def build_system_prompt(base: str, cfg: HarnessConfig) -> str:
         parts.append(CONFLICTS)
     if cfg.index or cfg.kb_search:
         parts.append(INDEX)
+    if cfg.skills:
+        parts.append(SKILLS)
     return "\n".join(parts)
+
+
+CHECKER_PROMPT = """You review decisions made by a bank's customer-service agent. You see the customer's
+recent messages, the agent's decision record, and the full text of the documents it cites. You do not
+see the agent's reasoning. Judge only from the documents' wording and the conversation.
+
+Reject the decision if any of these holds:
+- refuse / narrow / condition / not_eligible: the quoted rule does not, by its own words, require this
+  restriction for this customer, or the evidence does not show the rule's condition holds now. A rule
+  that applies only "if" something is true needs evidence that it is true, not that it might be.
+- eligible / not_eligible: a criterion the cited documents state is missing, or one is marked met
+  without evidence.
+- recommend: an option the cited documents offer for this request is missing from the candidates, or
+  the chosen option does not meet the customer's stated requirements as well as another option does.
+Uphold it otherwise. Do not invent rules; if the documents leave the question open, uphold.
+
+Answer with JSON only: {"verdict": "uphold" | "reject", "reason": "<one or two sentences naming the
+rule or option>"}"""

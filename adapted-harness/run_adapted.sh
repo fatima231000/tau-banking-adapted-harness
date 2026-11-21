@@ -23,7 +23,8 @@ ids=$(cat "adapted-harness/splits/$split.txt")
 [ -f .env ] || { echo "missing .env with ANTHROPIC_API_KEY at the repo root" >&2; exit 1; }
 set -a; . ./.env; set +a
 retrieval="${HARNESS_RETRIEVAL:-terminal_use}"
-echo "harness retrieval=$retrieval (component switches are logged by the agent factory)" >&2
+export HARNESS_PRESET="${HARNESS_PRESET:-lean}"   # lean = skill cards + lean check + caching; "" = v8 gates
+echo "harness preset=${HARNESS_PRESET:-none} retrieval=$retrieval" >&2
 # shellcheck disable=SC2086
 exec uv run tau2 run --domain banking_knowledge --agent adapted_agent \
   --agent-llm claude-sonnet-5-5 --agent-llm-args '{}' \

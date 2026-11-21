@@ -151,7 +151,37 @@ def decision_record(
     return ""
 
 
+def skill_search(situation: str) -> str:
+    """Find a skill card: a compiled procedure for a kind of customer request.
+
+    A card lists the procedure's steps in order, the lookups that prove each condition, how each
+    tool argument is determined, and where the documents conflict. Describe the situation in a
+    few words (what the customer wants done). Returns matching card ids to load.
+
+    Args:
+        situation: What the customer wants, e.g. "close a lost debit card".
+
+    Returns:
+        Matching skill card ids with a one-line description each.
+    """
+    return ""
+
+
+def load_skill(skill_id: str) -> str:
+    """Load a skill card found with skill_search and follow it.
+
+    Args:
+        skill_id: The card id returned by skill_search.
+
+    Returns:
+        The card: procedure steps, lookups, conditions, argument rules, open issues.
+    """
+    return ""
+
+
 VIRTUAL_TOOLS = {
+    "skill_search",
+    "load_skill",
     "precheck",
     "update_ledger",
     "kb_related",

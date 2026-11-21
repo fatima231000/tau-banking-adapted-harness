@@ -19,19 +19,26 @@ from tau2.agent.adapted import kb as K
 from tau2.agent.adapted.config import HarnessConfig
 from tau2.agent.adapted.context import AdaptedAgentState, ContextBuilder
 from tau2.agent.adapted.gate import Gate, check_decision, gated_key
-from tau2.agent.adapted.prompts import DECISION_NOTE, build_system_prompt
+from tau2.agent.adapted.prompts import (
+    CHECKER_PROMPT,
+    DECISION_NOTE,
+    build_system_prompt,
+)
 from tau2.agent.adapted.virtual_tools import (
     VIRTUAL_TOOLS,
     decision_record,
     kb_related,
     kb_search,
+    load_skill,
     precheck,
+    skill_search,
     update_ledger,
 )
 from tau2.agent.llm_agent import LLMAgent
 from tau2.data_model.message import (
     AssistantMessage,
     MultiToolMessage,
+    SystemMessage,
     ToolMessage,
     UserMessage,
 )
@@ -77,6 +84,8 @@ class AdaptedLLMAgent(LLMAgent):
             virtual.append(as_tool(kb_search))
         if self.cfg.decisions:
             virtual.append(as_tool(decision_record))
+        if self.cfg.skills:
+            virtual += [as_tool(skill_search), as_tool(load_skill)]
         super().__init__(
             tools=list(tools) + virtual,
             domain_policy=domain_policy,
@@ -122,6 +131,7 @@ class AdaptedLLMAgent(LLMAgent):
         )
         if isinstance(message, UserMessage):
             state.turn_grounded, state.bounced = False, False
+            state.checker_rejections = 0
         # Results of harness tools that shared a turn with real calls go in the same tool-result block.
         state.messages.extend(state.pending_virtual)
         state.pending_virtual = []
@@ -137,6 +147,26 @@ class AdaptedLLMAgent(LLMAgent):
             calls = out.tool_calls or []
             virtual = [tc for tc in calls if tc.name in VIRTUAL_TOOLS]
             real = [tc for tc in calls if tc.name not in VIRTUAL_TOOLS]
+
+            # Lean check (no forms): required lookups before a write, request count before a transfer.
+            if self.cfg.lean_gate and real and (held := self._lean_block(real, state)):
+                state.messages.append(out)
+                for tc in calls:
+                    if tc.id in held:
+                        reply = held[tc.id]
+                        events.append(
+                            {"type": "lean_block", "tool": tc.name, "why": reply[:200]}
+                        )
+                    elif tc.name in VIRTUAL_TOOLS:
+                        reply = self._answer(tc, [], state, events)
+                    else:
+                        reply = "NOT EXECUTED: another call in this turn was held. Re-issue this call."
+                    state.messages.append(
+                        ToolMessage(
+                            id=tc.id, role="tool", content=reply, requestor="assistant"
+                        )
+                    )
+                continue
 
             # Harness tools (not precheck) mixed with real calls: answer them now, send the rest.
             if (
@@ -225,8 +255,23 @@ class AdaptedLLMAgent(LLMAgent):
                     )
                     state.passed_prechecks.pop(idx)
                 events += [{"type": "gate_override", "action": k} for k in overrides]
+                if (
+                    self.cfg.skills
+                ):  # exploit (card in context) or explore (no card) at each write
+                    events += [
+                        {
+                            "type": "write_mode",
+                            "tool": k,
+                            "card_loaded": k in state.loaded_skills,
+                        }
+                        for tc in calls
+                        if (k := gated_key(tc))
+                        and ":" not in k
+                        and k != "transfer_to_human_agents"
+                    ]
                 self.context.outgoing(out, state)
-                out.cost, out.usage = cost, usage
+                out.cost, out.usage = cost + state.checker_cost, usage
+                state.checker_cost = 0.0
                 if events:
                     out.raw_data = {**(out.raw_data or {}), "harness": events}
                 state.messages.append(out)
@@ -252,6 +297,109 @@ class AdaptedLLMAgent(LLMAgent):
         )
         state.messages.append(msg)
         return msg, state
+
+    def _check_independently(
+        self, record: dict, state: AdaptedAgentState
+    ) -> tuple[str, str]:
+        """Maker/checker: a fresh model call that sees only the request, the decision, and the cited
+        documents (not the agent's reasoning), and judges the decision against the documents."""
+        docs = []
+        for d in {
+            str(x.get("doc_id", ""))
+            for x in (record.get("rules") or []) + (record.get("candidates") or [])
+        }:
+            did = K.kb().resolve(d)
+            if did:
+                docs.append(
+                    f'<document id="{did}">\n# {K.kb().docs[did]["title"]}\n{K.kb().docs[did]["content"]}\n</document>'
+                )
+        customer = [
+            m.content
+            for m in state.messages
+            if isinstance(m, UserMessage)
+            and m.content
+            and not m.content.startswith("[harness note")
+        ][-4:]
+        body = (
+            f"<customer_messages>\n"
+            + "\n---\n".join(c.split("\n\n[harness note")[0] for c in customer)
+            + "\n</customer_messages>\n<decision>\n"
+            + json.dumps(record, indent=1)[:6000]
+            + "\n</decision>\n"
+            + "\n".join(docs)[:14000]
+        )
+        try:
+            r = generate(
+                model=self.llm,
+                tools=None,
+                call_name="decision_checker",
+                messages=[
+                    SystemMessage(role="system", content=CHECKER_PROMPT),
+                    UserMessage(role="user", content=body),
+                ],
+                **self.llm_args,
+            )
+            state.checker_cost += r.cost or 0.0
+            m = re.search(r"\{.*\}", r.content or "", re.S)
+            out = json.loads(m.group(0)) if m else {}
+            v = str(out.get("verdict", "uphold")).lower()
+            return ("reject" if v == "reject" else "uphold"), str(
+                out.get("reason", "")
+            )[:800]
+        except Exception as e:  # the checker never blocks a conversation by failing
+            logger.warning(f"adapted harness: checker failed ({e})")
+            return "uphold", ""
+
+    def _lean_block(self, real, state: AdaptedAgentState) -> dict:
+        """Calls to hold, with the reason. Bounded: a call is held at most twice (a transfer once)."""
+        held = {}
+        done = set(state.called_tools)
+        if done & {
+            "get_user_information_by_id",
+            "get_user_information_by_name",
+            "get_user_information_by_email",
+            "log_verification",
+        }:
+            done |= {
+                "get_user_information_by_id",
+                "get_user_information_by_name",
+                "get_user_information_by_email",
+            }
+        for tc in real:
+            key = gated_key(tc)
+            if key is None:
+                continue
+            if tc.name == "transfer_to_human_agents":
+                if state.human_requests < 4 and state.rejections.get(key, 0) < 1:
+                    state.rejections[key] = 1
+                    held[tc.id] = (
+                        f"NOT EXECUTED YET: the customer has asked for a human {state.human_requests} "
+                        "time(s). Policy: if the issue is within your capabilities, help first; after 4 "
+                        "requests you may transfer. Transfer now only if no procedure can resolve the "
+                        "issue or a document prescribes a transfer for this situation; then re-issue."
+                    )
+                continue
+            missing = [
+                p
+                for p in K.contracts(self.cfg.contracts_path)
+                .get(key, {})
+                .get("prerequisite_calls", [])
+                if p["tool"] not in done and p["tool"] != "get_current_time"
+            ]
+            if missing and state.rejections.get(key, 0) < 2:
+                state.rejections[key] = state.rejections.get(key, 0) + 1
+                seen, lines = set(), []
+                for p in missing:
+                    if p["tool"] not in seen:
+                        seen.add(p["tool"])
+                        lines.append(f"- {p['tool']}: {p['purpose']}")
+                held[tc.id] = (
+                    f"NOT EXECUTED YET: {key} needs these lookups first, each proving one of its "
+                    "conditions:\n"
+                    + "\n".join(lines)
+                    + "\nMake them, check the result, then re-issue."
+                )
+        return held
 
     def _screen(self, calls, state: AdaptedAgentState):
         blocked, matched, overrides = [], {}, []
@@ -287,6 +435,15 @@ class AdaptedLLMAgent(LLMAgent):
             )
             if problems:
                 return "DECISION RECORD FAILED:\n- " + "\n- ".join(problems)
+            if self.cfg.checker and state.checker_rejections < 2:
+                verdict, reason = self._check_independently(tc.arguments, state)
+                events.append({"type": "checker", "verdict": verdict, "reason": reason})
+                if verdict == "reject":
+                    state.checker_rejections += 1
+                    return (
+                        "DECISION REJECTED by an independent reviewer who read the cited documents:\n"
+                        f"{reason}\nRevise the decision (or do what the customer asked), then record it again."
+                    )
             state.turn_grounded = True
             return "DECISION RECORDED. You may now tell the customer, citing the rule in plain words."
         if tc.name == "update_ledger":
@@ -370,6 +527,25 @@ class AdaptedLLMAgent(LLMAgent):
                     "returned": shown,
                 }
             )
+            return text
+        if tc.name == "skill_search":
+            text, shown = K.skill_search_text(
+                self.cfg, str(tc.arguments.get("situation", ""))
+            )
+            events.append(
+                {
+                    "type": "skill_search",
+                    "query": tc.arguments.get("situation"),
+                    "returned": shown,
+                }
+            )
+            return text
+        if tc.name == "load_skill":
+            sid = str(tc.arguments.get("skill_id", "")).strip()
+            text, fresh = K.skill_text(self.cfg, sid)
+            if fresh == "fresh" and sid not in state.loaded_skills:
+                state.loaded_skills.append(sid)
+            events.append({"type": "load_skill", "skill": sid, "freshness": fresh})
             return text
         if tc.name == "kb_related":
             text, shown = K.related_text(self.cfg, str(tc.arguments.get("doc_id", "")))

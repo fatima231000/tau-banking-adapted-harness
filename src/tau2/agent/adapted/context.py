@@ -50,6 +50,9 @@ class AdaptedAgentState(LLMAgentState):
         False  # a restriction this turn was recorded with a verified rule
     )
     bounced: bool = False  # decision gate already bounced once this turn
+    checker_rejections: int = 0  # independent checker rejections this turn (bounded)
+    checker_cost: float = 0.0  # checker spend not yet attributed to a returned message
+    loaded_skills: list[str] = []  # skill cards the model has seen
 
 
 def add_workflow(cfg: HarnessConfig, doc: str, state: "AdaptedAgentState") -> None:
@@ -146,7 +149,7 @@ class ContextBuilder:
         if name == "unlock_discoverable_agent_tool" and content.startswith(
             "Tool unlocked"
         ):
-            msg = self._annotate_unlock(msg, content)
+            msg = self._annotate_unlock(msg, content, state)
         return msg
 
     def _cap_grep(self, content: str) -> str:
@@ -169,7 +172,9 @@ class ContextBuilder:
             "read one with KB_search or a narrower grep):\n" + "\n".join(listed)
         )
 
-    def _annotate_unlock(self, msg: ToolMessage, content: str) -> ToolMessage:
+    def _annotate_unlock(
+        self, msg: ToolMessage, content: str, state: "AdaptedAgentState"
+    ) -> ToolMessage:
         tool = content.split("\n", 1)[0].removeprefix("Tool unlocked: ").strip()
         notes = []
         if self.cfg.derived:
@@ -182,6 +187,11 @@ class ContextBuilder:
                 )
         if ct := K.cards_text(self.cfg, tool):
             notes.append(f"[harness] {ct}")
+        if self.cfg.skills and tool not in state.loaded_skills:
+            card, fresh = K.skill_text(self.cfg, tool)
+            if fresh != "missing":
+                state.loaded_skills.append(tool)
+                notes.append(f"[skill card for this tool]\n{card}")
         if self.cfg.early_checklist:
             # Show the whole checklist now, so the first precheck can pass.
             if self.cfg.contracts and (c := K.contract_text(self.cfg, tool)):

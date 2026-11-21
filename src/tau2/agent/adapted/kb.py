@@ -400,3 +400,75 @@ def search_text(query: str, k: int = 8) -> tuple[str, list[str]]:
         "Read a document in full with: cat <file>. Quote rules from the full text."
     )
     return "\n".join(lines), [d for d, _, _ in hits]
+
+
+# ---- skill cards: compiled procedures, loaded before deciding ---------------------------
+
+
+@lru_cache(maxsize=4)
+def skills(path: str) -> dict:
+    try:
+        return json.load(open(path))["skills"]
+    except Exception as e:
+        logger.warning(f"adapted harness: no skill cards loaded ({e})")
+        return {}
+
+
+@lru_cache(maxsize=4)
+def _skill_bm25(path: str):
+    from rank_bm25 import BM25Okapi
+
+    sk = skills(path)
+    ids = sorted(sk)
+    return ids, (BM25Okapi([_tokens(sk[i]["text"]) for i in ids]) if ids else None)
+
+
+def skill_search_text(
+    cfg: HarnessConfig, query: str, k: int = 3
+) -> tuple[str, list[str]]:
+    """Find cards by describing the situation. Returns titles only (progressive disclosure)."""
+    ids, bm = _skill_bm25(cfg.skills_path)
+    q = _tokens(query)
+    if not bm or not q:
+        return "No skill cards available.", []
+    scores = bm.get_scores(q)
+    top = [
+        ids[j]
+        for j in sorted(range(len(ids)), key=lambda j: -scores[j])[:k]
+        if scores[j] > 0
+    ]
+    if not top:
+        return f"No skill card matches: {query}. Search the knowledge base instead.", []
+    sk = skills(cfg.skills_path)
+    lines = [f"Skill cards for: {query}"]
+    for i in top:
+        scen = "; ".join(sk[i]["scenarios"][:3]) or sk[i]["purpose"]
+        lines.append(f"- {i}: {sk[i]['purpose']} (procedures: {scen})")
+    lines.append(
+        "Load the one that fits with load_skill(skill_id). If none fits, search the knowledge base."
+    )
+    return "\n".join(lines), top
+
+
+def skill_text(cfg: HarnessConfig, skill_id: str) -> tuple[str, str]:
+    """A card's text and its freshness: 'fresh', 'stale' (a source doc changed) or 'missing'."""
+    import hashlib
+
+    sk = skills(cfg.skills_path).get(str(skill_id).strip())
+    if not sk:
+        return (
+            f"No skill card named {skill_id}. Use skill_search to find one.",
+            "missing",
+        )
+    changed = [
+        d
+        for d, h in sk["sources"].items()
+        if d not in kb().docs
+        or hashlib.sha256(kb().docs[d]["content"].encode()).hexdigest()[:16] != h
+    ]
+    if changed:
+        return (
+            f"SKILL {skill_id} is STALE: its source document(s) changed since the card was compiled "
+            f"({[sanitize(d) + '.md' for d in changed]}). Do not rely on the card: read those documents."
+        ), "stale"
+    return sk["text"], "fresh"

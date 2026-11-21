@@ -30,9 +30,10 @@ class HarnessConfig:
     index: bool = True  # kb_related connected-document lookup
     kb_search: bool = True  # harness BM25 search with snippets (hybrid with the shell)
     decision_gate: bool = True  # bounce text that states a decision without a record
-    decisions: bool = (
-        True  # decision_record + request conservation + optional free-text check
-    )
+    decisions: bool = True  # decision_record, request conservation, free-text check
+    # Off by default: on replay of 57 v8 decision records it upheld 91%, rejected 2 in passing
+    # tasks and missed the decisive errors, so as a blocking gate it adds regressions, not gains.
+    checker: bool = False  # independent model reviews each decision record (ablation)
     early_checklist: bool = True  # show contract + known issues at unlock time
     mix_virtual: bool = True  # harness tools may share a turn with real calls
     cache: bool = True  # prompt caching on the agent's model calls
@@ -73,10 +74,37 @@ class HarnessConfig:
         default=os.path.join(_KB_INDEX_DIR, "out", "known_issues.json")
     )
     arg_rules_path: str = field(default=os.path.join(_KB_INDEX_DIR, "arg_rules.json"))
+    # Skill cards: compiled procedures with conflict rulings, loaded before deciding.
+    skills: bool = False
+    lean_gate: bool = False  # form-free check: required lookups before a write; request count before a transfer
+    skills_path: str = field(default=os.path.join(_KB_INDEX_DIR, "out", "skills.json"))
+
+    @classmethod
+    def preset(cls, name: str) -> "HarnessConfig":
+        """Named configurations. "lean": cards + lean check + caching, every form-based gate off."""
+        if name == "lean":
+            return cls(
+                gate=False,
+                ledger=False,
+                derived=False,
+                contracts=False,
+                conflicts=False,
+                index=False,
+                kb_search=False,
+                decision_gate=False,
+                decisions=False,
+                early_checklist=False,
+                workflows=False,
+                known_issues=False,
+                checker=False,
+                skills=True,
+                lean_gate=True,
+            )
+        return cls()
 
     @classmethod
     def from_env(cls) -> "HarnessConfig":
-        d = cls()
+        d = cls.preset(os.environ.get("HARNESS_PRESET", "").strip().lower())
         return cls(
             gate=_flag("HARNESS_GATE", d.gate),
             ledger=_flag("HARNESS_LEDGER", d.ledger),
@@ -87,6 +115,7 @@ class HarnessConfig:
             kb_search=_flag("HARNESS_KBSEARCH", d.kb_search),
             decision_gate=_flag("HARNESS_DECISION", d.decision_gate),
             decisions=_flag("HARNESS_DECISIONS", d.decisions),
+            checker=_flag("HARNESS_CHECKER", d.checker),
             early_checklist=_flag("HARNESS_EARLY", d.early_checklist),
             mix_virtual=_flag("HARNESS_MIX", d.mix_virtual),
             cache=_flag("HARNESS_CACHE", d.cache),
@@ -98,12 +127,17 @@ class HarnessConfig:
             contracts_path=os.environ.get("HARNESS_CONTRACTS_PATH", d.contracts_path),
             index_path=os.environ.get("HARNESS_INDEX_PATH", d.index_path),
             rule_cards_path=os.environ.get("HARNESS_RULECARDS_PATH", d.rule_cards_path),
+            skills=_flag("HARNESS_SKILLS", d.skills),
+            lean_gate=_flag("HARNESS_LEANGATE", d.lean_gate),
+            skills_path=os.environ.get("HARNESS_SKILLS_PATH", d.skills_path),
         )
 
     def summary(self) -> dict:
         return {
             k: getattr(self, k)
             for k in (
+                "skills",
+                "lean_gate",
                 "gate",
                 "ledger",
                 "derived",
@@ -113,6 +147,7 @@ class HarnessConfig:
                 "kb_search",
                 "decision_gate",
                 "decisions",
+                "checker",
                 "early_checklist",
                 "mix_virtual",
                 "cache",
